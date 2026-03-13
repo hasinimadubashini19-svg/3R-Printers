@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>3R Printers - Complete Management System</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <!-- html2pdf for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -40,8 +41,240 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             color: var(--dark);
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-content {
+            text-align: center;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .splash-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        .splash-content h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .splash-content p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 15000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.5s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .login-header .logo i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .login-header h2 {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .login-form {
+            margin-bottom: 20px;
+        }
+
+        .login-input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .login-input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 18px;
+        }
+
+        .login-input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .login-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--secondary);
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-footer {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Forgot Password Modal */
+        .forgot-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 25000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .forgot-modal.active {
+            display: flex;
+        }
+
+        .forgot-content {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .forgot-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .forgot-header i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .forgot-header h3 {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .forgot-header p {
+            color: var(--secondary);
+            font-size: 14px;
         }
 
         /* Loading Overlay */
@@ -52,11 +285,14 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.9);
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            display: flex;
         }
 
         .loading-spinner {
@@ -78,13 +314,25 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Main Container */
         .dashboard {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.5s ease;
+            padding: 10px;
         }
 
         .dashboard.visible {
@@ -95,40 +343,40 @@
         /* Header */
         .header {
             background: white;
-            border-radius: 20px 20px 0 0;
-            padding: 25px 30px;
+            border-radius: 16px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: var(--shadow);
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
         }
 
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
         .logo-icon {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .logo-icon i {
-            font-size: 28px;
+            font-size: 20px;
             color: white;
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 700;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             -webkit-background-clip: text;
@@ -136,13 +384,19 @@
             background-clip: text;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .connection-status {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
+            gap: 5px;
+            padding: 5px 10px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
         }
 
@@ -157,189 +411,152 @@
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
         }
 
         .connected .status-dot {
             background: var(--success);
-            box-shadow: 0 0 10px var(--success);
         }
 
         .disconnected .status-dot {
             background: var(--danger);
         }
 
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
         .date-badge {
             background: var(--light);
-            padding: 10px 20px;
-            border-radius: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 500;
+            gap: 5px;
+            font-size: 12px;
             color: var(--secondary);
             border: 1px solid var(--border);
         }
 
-        .date-badge i {
-            color: var(--primary);
-        }
-
-        /* Tab Navigation */
+        /* Tab Navigation - Mobile Friendly */
         .tab-nav {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             background: white;
-            padding: 20px 30px 0;
-            border-radius: 20px 20px 0 0;
-            border-bottom: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 16px;
             overflow-x: auto;
             white-space: nowrap;
+            margin-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            display: none;
         }
 
         .tab-btn {
-            padding: 12px 24px;
-            background: none;
+            padding: 8px 12px;
+            background: var(--light);
             border: none;
-            border-bottom: 3px solid transparent;
-            font-size: 16px;
+            border-radius: 30px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--secondary);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 5px;
             transition: all 0.3s ease;
         }
 
-        .tab-btn:hover {
-            color: var(--primary);
+        .tab-btn i {
+            font-size: 14px;
         }
 
         .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-btn i {
-            font-size: 18px;
-        }
-
-        /* Tab Content */
-        .tab-pane {
-            display: none;
-        }
-
-        .tab-pane.active {
-            display: block;
+            background: var(--primary);
+            color: white;
         }
 
         /* Main Content */
         .content {
             background: white;
-            border-radius: 0 0 20px 20px;
-            padding: 30px;
+            border-radius: 16px;
+            padding: 15px;
             box-shadow: var(--shadow-lg);
         }
 
-        /* Stats Grid */
+        /* Stats Grid - Mobile Friendly */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 12px;
             color: white;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transform: rotate(45deg);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
         }
 
         .stat-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 24px;
+            margin-bottom: 5px;
             opacity: 0.8;
         }
 
         .stat-label {
-            font-size: 14px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
             opacity: 0.9;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .stat-value {
-            font-size: 32px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 5px;
         }
-
-        .stat-sub {
-            font-size: 12px;
-            opacity: 0.8;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Cards for different stats */
-        .stat-card:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .stat-card:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .stat-card:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .stat-card:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
 
         /* Order Form */
         .form-section {
             background: var(--light);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
 
         .section-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            font-size: 18px;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
             font-weight: 600;
-            color: var(--dark);
         }
 
         .section-title i {
             color: var(--primary);
-            font-size: 24px;
+            font-size: 18px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .input-group {
@@ -348,824 +565,453 @@
 
         .input-group i {
             position: absolute;
-            left: 12px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--secondary);
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .input-group input,
         .input-group select,
         .input-group textarea {
             width: 100%;
-            padding: 12px 12px 12px 40px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            padding: 10px 10px 10px 35px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
             background: white;
-            font-family: 'Inter', sans-serif;
         }
 
         .input-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .input-group input::placeholder,
-        .input-group textarea::placeholder {
-            color: var(--secondary);
-            opacity: 0.7;
+            min-height: 60px;
         }
 
         /* File Upload */
         .file-upload {
             border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 15px;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-upload:hover {
-            border-color: var(--primary);
-            background: rgba(37, 99, 235, 0.05);
+            margin-bottom: 15px;
         }
 
         .file-upload i {
-            font-size: 32px;
+            font-size: 24px;
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .file-upload p {
+            font-size: 12px;
             color: var(--secondary);
+        }
+
+        /* Buttons - Mobile Friendly */
+        .btn-primary, .btn-success, .btn-warning, .btn-danger {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
             font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .file-name {
-            margin-top: 10px;
-            font-size: 13px;
-            color: var(--success);
-        }
-
-        /* Button */
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            width: auto;
-            min-width: 200px;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
         }
 
         .btn-success {
             background: linear-gradient(135deg, var(--success), #059669);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
         }
 
         .btn-warning {
             background: linear-gradient(135deg, var(--warning), #d97706);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-warning:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
         }
 
         .btn-danger {
             background: linear-gradient(135deg, var(--danger), #dc2626);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
         }
 
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        /* Order List */
+        /* Order List - Mobile Friendly */
         .list-section {
             background: white;
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border);
             overflow: hidden;
         }
 
         .list-header {
-            padding: 20px;
+            padding: 12px;
             background: var(--light);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .list-header h3 {
+            font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 600;
+            gap: 5px;
         }
 
         .filter-section {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             align-items: center;
         }
 
         .filter-select {
-            padding: 8px 12px;
+            padding: 5px 8px;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 13px;
-            color: var(--dark);
-            background: white;
-            cursor: pointer;
+            border-radius: 6px;
+            font-size: 11px;
         }
 
         .badge {
             background: var(--primary);
             color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            padding: 3px 6px;
+            border-radius: 12px;
+            font-size: 10px;
         }
 
-        .badge-success {
-            background: var(--success);
+        /* Mobile Card View for Orders */
+        .mobile-cards {
+            display: none;
         }
 
-        .badge-warning {
-            background: var(--warning);
+        @media (max-width: 768px) {
+            table {
+                display: none;
+            }
+            
+            .mobile-cards {
+                display: block;
+            }
+            
+            .order-card {
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 10px;
+                box-shadow: var(--shadow);
+            }
+            
+            .order-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+            
+            .order-customer {
+                font-weight: 600;
+                font-size: 14px;
+            }
+            
+            .order-status {
+                font-size: 11px;
+                padding: 3px 8px;
+                border-radius: 12px;
+            }
+            
+            .order-details {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 8px;
+                font-size: 12px;
+            }
+            
+            .order-actions {
+                display: flex;
+                gap: 5px;
+                justify-content: flex-end;
+                border-top: 1px solid var(--border);
+                padding-top: 8px;
+            }
+            
+            .order-actions button {
+                padding: 5px 8px;
+                font-size: 11px;
+            }
         }
 
-        .badge-danger {
-            background: var(--danger);
-        }
-
-        .table-container {
-            overflow-x: auto;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: var(--light);
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--secondary);
-            border-bottom: 2px solid var(--border);
-            position: sticky;
-            top: 0;
-            background: var(--light);
-            z-index: 10;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
-
-        tr:hover {
-            background: var(--light);
-        }
-
+        /* Status Badges */
         .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 3px;
         }
 
-        .status-paid {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
+        .status-paid { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-advance { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .status-printing { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-ready { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-picked { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
 
-        .status-pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .status-advance {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-        }
-
-        .status-printing {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .status-ready {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .status-picked {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--secondary);
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover:not(:disabled) {
-            background: var(--border);
-            color: var(--primary);
-        }
-
-        .action-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* Stock Cards */
+        /* Stock Cards - Mobile */
         .stock-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: 1fr;
+            gap: 10px;
         }
 
         .stock-card {
             background: white;
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stock-card.low-stock {
-            border-left: 4px solid var(--danger);
+            border-radius: 12px;
+            padding: 12px;
         }
 
         .stock-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .stock-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 12px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 24px;
-        }
-
-        .stock-info {
-            flex: 1;
         }
 
         .stock-name {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 5px;
         }
 
         .stock-quantity {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stock-unit {
-            font-size: 14px;
-            color: var(--secondary);
-            margin-left: 5px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--light);
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .stock-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .stock-actions input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        /* Alerts */
-        .alert-banner {
-            background: var(--danger);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            animation: slideIn 0.3s ease;
-        }
-
-        .alert-banner i {
-            font-size: 24px;
-        }
-
-        .alert-banner .alert-content {
-            flex: 1;
-        }
-
-        .alert-banner .alert-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .alert-banner .alert-list {
-            font-size: 14px;
-            list-style: none;
-        }
-
-        /* Bill Section */
-        .bill-section {
-            background: var(--light);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .bill-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .bill-paper {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .bill-header-info {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 2px dashed var(--border);
-        }
-
-        .bill-header-info h2 {
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .bill-header-info p {
-            color: var(--secondary);
-            font-size: 14px;
-        }
-
-        .bill-customer-info {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
-        }
-
-        .bill-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .bill-table th {
-            background: var(--primary);
-            color: white;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .bill-table td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .bill-totals {
-            text-align: right;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid var(--border);
-        }
-
-        .bill-totals p {
-            margin: 5px 0;
-        }
-
-        .bill-totals .grand-total {
             font-size: 18px;
             font-weight: 700;
             color: var(--primary);
         }
 
-        .bill-footer {
-            margin-top: 30px;
-            text-align: center;
-            color: var(--secondary);
+        /* Bill Paper - Mobile */
+        .bill-paper {
+            padding: 15px;
             font-size: 12px;
         }
 
-        .bill-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
+        .bill-table {
+            font-size: 11px;
         }
 
-        /* Number Plate Preview */
-        .plate-preview {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            border-radius: 12px;
+        .bill-table th,
+        .bill-table td {
+            padding: 5px;
+        }
+
+        /* Modal - Mobile */
+        .modal-content {
             padding: 20px;
-            text-align: center;
+            width: 95%;
         }
 
-        .plate-sample {
-            background: white;
-            border: 2px solid var(--dark);
-            border-radius: 8px;
-            padding: 15px;
-            display: inline-block;
-            font-family: 'Arial Black', sans-serif;
-            font-size: 32px;
-            letter-spacing: 2px;
-        }
-
-        /* Seal Preview */
-        .seal-preview {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .seal-sample {
-            background: white;
-            border: 2px solid var(--dark);
-            border-radius: 50%;
-            padding: 20px;
-            display: inline-block;
-            width: 200px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        /* Memento Preview */
-        .memento-preview {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .memento-sample {
-            background: white;
-            border: 2px solid var(--dark);
-            border-radius: 12px;
-            padding: 20px;
-            display: inline-block;
-            min-width: 250px;
-        }
-
-        /* Communication */
-        .comms-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .comms-card {
-            background: var(--light);
-            border-radius: 16px;
-            padding: 20px;
-        }
-
-        .message-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .message-item {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 3px solid var(--primary);
-        }
-
-        .message-item.unread {
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        /* Template Grid */
+        /* Templates Grid */
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
 
         .template-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow);
-            border-color: var(--primary);
+            padding: 10px;
         }
 
         .template-card i {
-            font-size: 32px;
-            color: var(--primary);
-            margin-bottom: 10px;
+            font-size: 24px;
         }
 
         .template-card h4 {
-            font-size: 14px;
-            color: var(--dark);
+            font-size: 12px;
         }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--secondary);
-        }
-
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .tab-nav {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .btn-primary {
-                width: 100%;
-            }
-
-            .list-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .filter-section {
-                width: 100%;
-            }
-
-            .filter-select {
-                flex: 1;
-            }
-
-            .comms-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .bill-actions {
-                flex-direction: column;
-            }
-        }
-
-        /* Animation */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .stat-card, .form-section, .list-section, .stock-card {
-            animation: slideIn 0.5s ease forwards;
-        }
-
-        /* Search Bar */
+        /* Search Box */
         .search-box {
             position: relative;
-            margin-bottom: 15px;
+            margin: 10px;
         }
 
         .search-box i {
             position: absolute;
-            left: 12px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--secondary);
+            font-size: 14px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 10px 10px 40px;
+            padding: 8px 8px 8px 35px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* Customer Select for Bills */
+        .customer-select {
+            width: 100%;
+            padding: 10px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 14px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <i class="fas fa-print splash-icon"></i>
+            <h1>3R PRINTERS</h1>
+            <p>Complete Management System</p>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-print"></i>
+                </div>
+                <h2>Welcome Back!</h2>
+                <p>Sign in to continue</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="login-input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" placeholder="Email Address" value="admin@3rprinters.com">
+                </div>
+                
+                <div class="login-input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" value="password123">
+                </div>
+                
+                <div class="login-options">
+                    <label class="remember-me">
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a class="forgot-password" onclick="showForgotPassword()">Forgot Password?</a>
+                </div>
+                
+                <button class="login-btn" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </div>
+            
+            <div class="login-footer">
+                <p>Don't have an account? <a onclick="showSignUp()">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Screen (Initially Hidden) -->
+    <div id="signupScreen" class="login-screen" style="display: none;">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-print"></i>
+                </div>
+                <h2>Create Account</h2>
+                <p>Sign up to get started</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="login-input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="signupName" placeholder="Full Name">
+                </div>
+                
+                <div class="login-input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="signupEmail" placeholder="Email Address">
+                </div>
+                
+                <div class="login-input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signupPassword" placeholder="Password">
+                </div>
+                
+                <div class="login-input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm Password">
+                </div>
+                
+                <button class="login-btn" onclick="signUp()">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </button>
+                
+                <button class="login-btn" style="background: var(--secondary); margin-top: 10px;" onclick="showLogin()">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" class="forgot-modal">
+        <div class="forgot-content">
+            <div class="forgot-header">
+                <i class="fas fa-key"></i>
+                <h3>Reset Password</h3>
+                <p>Enter your email to receive reset link</p>
+            </div>
+            
+            <div class="login-input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="resetEmail" placeholder="Email Address">
+            </div>
+            
+            <button class="login-btn" onclick="sendResetLink()" style="margin-top: 15px;">
+                <i class="fas fa-paper-plane"></i> Send Reset Link
+            </button>
+            
+            <button class="login-btn" style="background: var(--secondary); margin-top: 10px;" onclick="closeForgotPassword()">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-spinner">
             <div class="spinner"></div>
-            <p>Connecting to Firestore...</p>
+            <p>Loading...</p>
         </div>
     </div>
 
+    <!-- Main Dashboard -->
     <div class="dashboard" id="dashboard">
         <!-- Header -->
         <div class="header">
@@ -1175,13 +1021,14 @@
                 </div>
                 <h1>3R PRINTERS</h1>
             </div>
-            <div class="connection-status" id="connectionStatus">
-                <span class="status-dot"></span>
-                <span id="statusText">Connecting...</span>
-            </div>
-            <div class="date-badge">
-                <i class="fas fa-calendar-alt"></i>
-                <span id="currentDate"></span>
+            <div class="header-right">
+                <div class="connection-status" id="connectionStatus">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Connecting...</span>
+                </div>
+                <button class="logout-btn" onclick="logout()" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
 
@@ -1209,11 +1056,11 @@
             </button>
             <button class="tab-btn" onclick="showTab('plates')">
                 <i class="fas fa-car"></i>
-                Number Plates
+                Plates
             </button>
             <button class="tab-btn" onclick="showTab('communication')">
                 <i class="fas fa-comments"></i>
-                Communication
+                Chat
             </button>
         </div>
 
@@ -1227,58 +1074,41 @@
                         <div class="stat-icon">
                             <i class="fas fa-rupee-sign"></i>
                         </div>
-                        <div class="stat-label">Today's Income</div>
+                        <div class="stat-label">Today</div>
                         <div class="stat-value" id="daily-total">Rs. 0</div>
-                        <div class="stat-sub">
-                            <i class="fas fa-arrow-up"></i>
-                            <span id="dailyComparison">+0% from yesterday</span>
-                        </div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
-                        <div class="stat-label">Monthly Income</div>
+                        <div class="stat-label">Monthly</div>
                         <div class="stat-value" id="monthly-total">Rs. 0</div>
-                        <div class="stat-sub">
-                            <i class="fas fa-chart-line"></i>
-                            <span id="monthlyPeriod">This Month</span>
-                        </div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">
                             <i class="fas fa-shopping-cart"></i>
                         </div>
-                        <div class="stat-label">Today's Orders</div>
+                        <div class="stat-label">Today Orders</div>
                         <div class="stat-value" id="today-orders">0</div>
-                        <div class="stat-sub">
-                            <i class="fas fa-clock"></i>
-                            <span>Last 24 hours</span>
-                        </div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">
                             <i class="fas fa-clock"></i>
                         </div>
-                        <div class="stat-label">Pending Orders</div>
+                        <div class="stat-label">Pending</div>
                         <div class="stat-value" id="pending-orders">0</div>
-                        <div class="stat-sub">
-                            <i class="fas fa-hourglass-half"></i>
-                            <span>Awaiting processing</span>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Low Stock Alert (dynamic) -->
-                <div id="stockAlert" class="alert-banner" style="display: none;">
+                <!-- Low Stock Alert -->
+                <div id="stockAlert" class="alert-banner" style="display: none; background: var(--danger); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="alert-content">
-                        <div class="alert-title">Low Stock Alert!</div>
-                        <ul class="alert-list" id="stockAlertList">
-                        </ul>
+                        <div class="alert-title" style="font-weight: 600; margin-bottom: 3px;">Low Stock Alert!</div>
+                        <ul class="alert-list" id="stockAlertList" style="font-size: 12px; margin-left: 15px;"></ul>
                     </div>
                 </div>
 
@@ -1314,7 +1144,7 @@
 
                         <div class="input-group">
                             <i class="fas fa-tag"></i>
-                            <input type="text" id="fileDesc" placeholder="File Name / Description">
+                            <input type="text" id="fileDesc" placeholder="Description">
                         </div>
 
                         <div class="input-group">
@@ -1327,7 +1157,7 @@
                             <select id="paymentStatus">
                                 <option value="Paid">Fully Paid</option>
                                 <option value="Advance">Advance</option>
-                                <option value="Pending" selected>Pending</option>
+                                <option value="Pending">Pending</option>
                             </select>
                         </div>
 
@@ -1346,27 +1176,20 @@
                     <input type="file" id="fileInput" style="display: none;" onchange="updateFileName()">
 
                     <button class="btn-primary" onclick="addOrder()" id="addOrderBtn">
-                        <i class="fas fa-save"></i>
-                        Add Order
+                        <i class="fas fa-save"></i> Add Order
                     </button>
                 </div>
 
-                <!-- Order List -->
+                <!-- Order List - Mobile Cards -->
                 <div class="list-section">
                     <div class="list-header">
-                        <h3>
-                            <i class="fas fa-list"></i>
-                            All Orders
-                        </h3>
+                        <h3><i class="fas fa-list"></i> All Orders</h3>
                         <div class="filter-section">
                             <select class="filter-select" id="statusFilter" onchange="filterOrders()">
-                                <option value="all">All Orders</option>
+                                <option value="all">All</option>
                                 <option value="Paid">Paid</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Advance">Advance</option>
-                                <option value="Printing">Printing</option>
-                                <option value="Ready">Ready</option>
-                                <option value="Picked">Picked Up</option>
                             </select>
                             <span class="badge" id="order-count">0</span>
                         </div>
@@ -1374,31 +1197,28 @@
 
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Search orders (name, phone, file)..." onkeyup="searchOrders()">
+                        <input type="text" id="searchInput" placeholder="Search orders..." onkeyup="searchOrders()">
                     </div>
 
+                    <!-- Mobile Cards View -->
+                    <div class="mobile-cards" id="orderCards">
+                        <!-- Cards will be inserted here -->
+                    </div>
+
+                    <!-- Table View (Hidden on Mobile) -->
                     <div class="table-container">
                         <table id="orderTable">
                             <thead>
                                 <tr>
                                     <th>Customer</th>
-                                    <th>Phone</th>
-                                    <th>Service / File</th>
+                                    <th>Service</th>
                                     <th>Amount</th>
                                     <th>Payment</th>
                                     <th>Status</th>
-                                    <th>Time</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="orderTableBody">
-                                <tr class="empty-state">
-                                    <td colspan="8">
-                                        <i class="fas fa-inbox"></i>
-                                        <p>No orders found</p>
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody id="orderTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -1409,13 +1229,13 @@
                 <div class="form-section">
                     <div class="section-title">
                         <i class="fas fa-plus-circle"></i>
-                        <span>Add New Stock Item</span>
+                        <span>Add Stock</span>
                     </div>
                     
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-box"></i>
-                            <input type="text" id="stockName" placeholder="Item Name (e.g., A4 Paper, Flex, Ink)">
+                            <input type="text" id="stockName" placeholder="Item Name">
                         </div>
                         
                         <div class="input-group">
@@ -1425,9 +1245,8 @@
                                 <option value="bundles">Bundles</option>
                                 <option value="rolls">Rolls</option>
                                 <option value="liters">Liters</option>
-                                <option value="kg">Kilograms</option>
+                                <option value="kg">Kg</option>
                                 <option value="feet">Feet</option>
-                                <option value="meters">Meters</option>
                             </select>
                         </div>
 
@@ -1438,101 +1257,68 @@
 
                         <div class="input-group">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <input type="number" id="stockAlert" placeholder="Low Stock Alert Level">
+                            <input type="number" id="stockAlert" placeholder="Alert Level">
                         </div>
                     </div>
 
                     <button class="btn-primary" onclick="addStock()">
-                        <i class="fas fa-save"></i>
-                        Add Stock
+                        <i class="fas fa-save"></i> Add Stock
                     </button>
                 </div>
 
                 <!-- Stock List -->
-                <div class="stock-grid" id="stockGrid">
-                    <!-- Stock items will be added here dynamically -->
-                </div>
+                <div class="stock-grid" id="stockGrid"></div>
             </div>
 
             <!-- Bills Tab -->
             <div id="bills-tab" class="tab-pane">
-                <div class="bill-section">
-                    <div class="bill-header">
-                        <h3><i class="fas fa-file-invoice"></i> Generate Bill</h3>
-                        <div>
-                            <button class="btn-success" onclick="generateBill()">
-                                <i class="fas fa-file"></i> Preview Bill
-                            </button>
-                        </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Generate Bill</span>
                     </div>
                     
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="billCustomer" placeholder="Customer Name">
+                            <select id="billCustomer" class="customer-select" onchange="loadCustomerOrders()">
+                                <option value="">Select Customer</option>
+                            </select>
                         </div>
                         
                         <div class="input-group">
                             <i class="fas fa-calendar"></i>
                             <input type="date" id="billDate" value="">
                         </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-hashtag"></i>
-                            <input type="text" id="billNumber" value="BILL-001" placeholder="Bill Number">
-                        </div>
                     </div>
+
+                    <button class="btn-success" onclick="generateBill()" style="margin-bottom: 15px;">
+                        <i class="fas fa-file"></i> Generate Bill
+                    </button>
 
                     <div class="bill-paper" id="billPreview" style="display: none;">
-                        <div class="bill-header-info">
-                            <h2>3R PRINTERS</h2>
-                            <p>123 Main Street, Colombo | Tel: 077-1234567</p>
-                            <p>Email: 3rprinters@gmail.com</p>
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <h3>3R PRINTERS</h3>
+                            <p style="font-size: 11px;">Tel: 077-1234567</p>
                         </div>
                         
-                        <div class="bill-customer-info" id="billCustomerInfo">
-                            <!-- Customer info will be inserted here -->
-                        </div>
-
+                        <div id="billCustomerInfo"></div>
                         <div id="billContent"></div>
-
-                        <div class="bill-footer">
+                        
+                        <div style="margin-top: 15px; text-align: center; font-size: 10px;">
                             <p>Thank you for your business!</p>
-                            <p>This is a computer generated bill</p>
                         </div>
 
-                        <div class="bill-actions">
-                            <button class="btn-primary" onclick="printBill()">
-                                <i class="fas fa-print"></i> Print Bill
+                        <div style="display: flex; gap: 5px; margin-top: 15px;">
+                            <button class="btn-primary" onclick="printBill()" style="flex: 1;">
+                                <i class="fas fa-print"></i> Print
                             </button>
-                            <button class="btn-success" onclick="downloadBillPDF()">
-                                <i class="fas fa-download"></i> Download PDF
+                            <button class="btn-success" onclick="downloadBillPDF()" style="flex: 1;">
+                                <i class="fas fa-download"></i> PDF
                             </button>
-                            <button class="btn-warning" onclick="shareBillWhatsApp()">
-                                <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                            <button class="btn-warning" onclick="shareBillWhatsApp()" style="flex: 1;">
+                                <i class="fab fa-whatsapp"></i> Share
                             </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bill Templates -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-template"></i>
-                        <span>Bill Templates</span>
-                    </div>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="selectTemplate('standard')">
-                            <i class="fas fa-file-alt"></i>
-                            <h4>Standard Bill</h4>
-                        </div>
-                        <div class="template-card" onclick="selectTemplate('detailed')">
-                            <i class="fas fa-file-invoice"></i>
-                            <h4>Detailed Bill</h4>
-                        </div>
-                        <div class="template-card" onclick="selectTemplate('simple')">
-                            <i class="fas fa-receipt"></i>
-                            <h4>Simple Receipt</h4>
                         </div>
                     </div>
                 </div>
@@ -1543,7 +1329,7 @@
                 <div class="form-section">
                     <div class="section-title">
                         <i class="fas fa-stamp"></i>
-                        <span>Create New Seal / Stamp</span>
+                        <span>Create Seal</span>
                     </div>
                     
                     <div class="form-grid">
@@ -1554,7 +1340,7 @@
                         
                         <div class="input-group">
                             <i class="fas fa-font"></i>
-                            <input type="text" id="sealText" placeholder="Seal Text (e.g., Company Name)">
+                            <input type="text" id="sealText" placeholder="Seal Text">
                         </div>
 
                         <div class="input-group">
@@ -1563,69 +1349,27 @@
                                 <option value="small">Small (30mm)</option>
                                 <option value="medium" selected>Medium (40mm)</option>
                                 <option value="large">Large (50mm)</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-shape"></i>
-                            <select id="sealShape">
-                                <option value="circle">Circle</option>
-                                <option value="rectangle">Rectangle</option>
-                                <option value="square">Square</option>
-                                <option value="oval">Oval</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-palette"></i>
-                            <select id="sealColor">
-                                <option value="blue">Blue</option>
-                                <option value="red">Red</option>
-                                <option value="black" selected>Black</option>
-                                <option value="green">Green</option>
                             </select>
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-rupee-sign"></i>
-                            <input type="number" id="sealPrice" placeholder="Price (Rs.)" value="500">
-                        </div>
-                    </div>
-
-                    <div class="seal-preview">
-                        <div class="seal-sample" id="sealPreview">
-                            <div id="sealPreviewText">Sample Text</div>
-                            <div style="font-size: 12px; margin-top: 5px;">★★★★★</div>
+                            <input type="number" id="sealPrice" placeholder="Price" value="500">
                         </div>
                     </div>
 
                     <button class="btn-primary" onclick="addSealOrder()">
-                        <i class="fas fa-save"></i>
-                        Add Seal Order
+                        <i class="fas fa-save"></i> Add Seal Order
                     </button>
                 </div>
 
-                <!-- Seal Templates -->
+                <!-- Stock Seal Sizes -->
                 <div class="form-section">
                     <div class="section-title">
-                        <i class="fas fa-template"></i>
-                        <span>Seal Templates</span>
+                        <i class="fas fa-cubes"></i>
+                        <span>Available Seal Sizes in Stock</span>
                     </div>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="loadSealTemplate('company')">
-                            <i class="fas fa-building"></i>
-                            <h4>Company Seal</h4>
-                        </div>
-                        <div class="template-card" onclick="loadSealTemplate('official')">
-                            <i class="fas fa-gavel"></i>
-                            <h4>Official Stamp</h4>
-                        </div>
-                        <div class="template-card" onclick="loadSealTemplate('personal')">
-                            <i class="fas fa-user-tie"></i>
-                            <h4>Personal Seal</h4>
-                        </div>
-                    </div>
+                    <div id="sealStockList" style="font-size: 13px;"></div>
                 </div>
             </div>
 
@@ -1634,7 +1378,7 @@
                 <div class="form-section">
                     <div class="section-title">
                         <i class="fas fa-gift"></i>
-                        <span>Create New Memento / Souvenir</span>
+                        <span>Create Memento</span>
                     </div>
                     
                     <div class="form-grid">
@@ -1649,71 +1393,23 @@
                         </div>
 
                         <div class="input-group">
-                            <i class="fas fa-calendar"></i>
-                            <input type="text" id="mementoDate" placeholder="Date (e.g., 2024-03-13)">
-                        </div>
-
-                        <div class="input-group">
                             <i class="fas fa-tag"></i>
                             <select id="mementoType">
-                                <option value="plaque">Plaque / Shield</option>
+                                <option value="plaque">Plaque</option>
                                 <option value="trophy">Trophy</option>
                                 <option value="medal">Medal</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-palette"></i>
-                            <select id="mementoColor">
-                                <option value="gold">Gold</option>
-                                <option value="silver">Silver</option>
-                                <option value="bronze">Bronze</option>
-                                <option value="wood">Wood</option>
                             </select>
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-rupee-sign"></i>
-                            <input type="number" id="mementoPrice" placeholder="Price (Rs.)" value="2500">
-                        </div>
-                    </div>
-
-                    <div class="memento-preview">
-                        <div class="memento-sample" id="mementoPreview">
-                            <i class="fas fa-star" style="font-size: 32px; color: gold;"></i>
-                            <h3 id="mementoPreviewText">Sample Text</h3>
-                            <p id="mementoPreviewDate">2024-03-13</p>
-                            <div style="margin-top: 10px;">★★★★★</div>
+                            <input type="number" id="mementoPrice" placeholder="Price" value="2500">
                         </div>
                     </div>
 
                     <button class="btn-primary" onclick="addMementoOrder()">
-                        <i class="fas fa-save"></i>
-                        Add Memento Order
+                        <i class="fas fa-save"></i> Add Memento Order
                     </button>
-                </div>
-
-                <!-- Memento Templates -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-template"></i>
-                        <span>Memento Templates</span>
-                    </div>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="loadMementoTemplate('appreciation')">
-                            <i class="fas fa-award"></i>
-                            <h4>Appreciation</h4>
-                        </div>
-                        <div class="template-card" onclick="loadMementoTemplate('retirement')">
-                            <i class="fas fa-clock"></i>
-                            <h4>Retirement</h4>
-                        </div>
-                        <div class="template-card" onclick="loadMementoTemplate('achievement')">
-                            <i class="fas fa-trophy"></i>
-                            <h4>Achievement</h4>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -1737,128 +1433,71 @@
                         </div>
 
                         <div class="input-group">
-                            <i class="fas fa-palette"></i>
-                            <select id="plateType">
-                                <option value="Standard">Standard</option>
-                                <option value="Fancy">Fancy</option>
-                                <option value="Reflective">Reflective</option>
-                                <option value="3D">3D</option>
+                            <i class="fas fa-motorcycle"></i>
+                            <select id="vehicleType">
+                                <option value="car">Car</option>
+                                <option value="bike">Motorcycle</option>
+                                <option value="threewheel">Three Wheel</option>
+                                <option value="lorry">Lorry</option>
                             </select>
-                        </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-ruler"></i>
-                            <select id="plateSize">
-                                <option value="standard">Standard (12x6)</option>
-                                <option value="small">Small (9x4)</option>
-                                <option value="large">Large (14x7)</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <i class="fas fa-font"></i>
-                            <input type="text" id="plateBorder" placeholder="Border Text (Optional)">
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-rupee-sign"></i>
-                            <input type="number" id="platePrice" placeholder="Price (Rs.)" value="1500">
-                        </div>
-                    </div>
-
-                    <div class="plate-preview">
-                        <div class="plate-sample" id="platePreview">
-                            XX-XXXX
+                            <input type="number" id="platePrice" placeholder="Price" value="1500">
                         </div>
                     </div>
 
                     <button class="btn-primary" onclick="addPlateOrder()">
-                        <i class="fas fa-save"></i>
-                        Add Number Plate Order
+                        <i class="fas fa-save"></i> Add Plate Order
                     </button>
-                </div>
-
-                <!-- Plate Templates -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-template"></i>
-                        <span>Number Plate Templates</span>
-                    </div>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="loadPlateTemplate('car')">
-                            <i class="fas fa-car"></i>
-                            <h4>Car</h4>
-                        </div>
-                        <div class="template-card" onclick="loadPlateTemplate('bike')">
-                            <i class="fas fa-motorcycle"></i>
-                            <h4>Motorcycle</h4>
-                        </div>
-                        <div class="template-card" onclick="loadPlateTemplate('custom')">
-                            <i class="fas fa-star"></i>
-                            <h4>Custom</h4>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <!-- Communication Tab -->
             <div id="communication-tab" class="tab-pane">
-                <div class="comms-grid">
-                    <div class="comms-card">
-                        <h4><i class="fas fa-envelope"></i> Send Message</h4>
-                        <div class="form-grid">
-                            <div class="input-group">
-                                <i class="fas fa-user"></i>
-                                <input type="text" id="msgCustomer" placeholder="Customer Name">
-                            </div>
-                            
-                            <div class="input-group">
-                                <i class="fas fa-phone"></i>
-                                <input type="text" id="msgPhone" placeholder="Phone Number">
-                            </div>
-
-                            <div class="input-group">
-                                <i class="fas fa-comment"></i>
-                                <textarea id="msgContent" placeholder="Message"></textarea>
-                            </div>
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-comments"></i>
+                        <span>Send Message</span>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="msgCustomer" placeholder="Customer Name">
                         </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-primary" onclick="sendMessage('whatsapp')">
-                                <i class="fab fa-whatsapp"></i> WhatsApp
-                            </button>
-                            <button class="btn-success" onclick="sendMessage('sms')">
-                                <i class="fas fa-sms"></i> SMS
-                            </button>
+                        
+                        <div class="input-group">
+                            <i class="fas fa-phone"></i>
+                            <input type="text" id="msgPhone" placeholder="Phone Number">
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-comment"></i>
+                            <textarea id="msgContent" placeholder="Message"></textarea>
                         </div>
                     </div>
 
-                    <div class="comms-card">
-                        <h4><i class="fas fa-history"></i> Message History</h4>
-                        <div class="message-list" id="messageList">
-                            <!-- Messages will appear here -->
-                        </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-primary" onclick="sendMessage('whatsapp')" style="flex: 1;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn-success" onclick="sendMessage('sms')" style="flex: 1;">
+                            <i class="fas fa-sms"></i> SMS
+                        </button>
                     </div>
                 </div>
 
-                <!-- Quick Message Templates -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-bolt"></i>
-                        <span>Quick Message Templates</span>
+                <!-- Quick Templates -->
+                <div class="template-grid">
+                    <div class="template-card" onclick="setMessageTemplate('ready')">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>Order Ready</h4>
                     </div>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="setMessageTemplate('ready')">
-                            <i class="fas fa-check-circle"></i>
-                            <h4>Order Ready</h4>
-                        </div>
-                        <div class="template-card" onclick="setMessageTemplate('payment')">
-                            <i class="fas fa-money-bill"></i>
-                            <h4>Payment Reminder</h4>
-                        </div>
-                        <div class="template-card" onclick="setMessageTemplate('delay')">
-                            <i class="fas fa-clock"></i>
-                            <h4>Delay Notification</h4>
-                        </div>
+                    <div class="template-card" onclick="setMessageTemplate('payment')">
+                        <i class="fas fa-money-bill"></i>
+                        <h4>Payment</h4>
                     </div>
                 </div>
             </div>
@@ -1866,13 +1505,12 @@
     </div>
 
     <!-- Payment Modal -->
-    <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Process Remaining Payment</h3>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="paymentModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 400px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3>Process Payment</h3>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 20px;">&times;</button>
             </div>
-            <div id="paymentDetails"></div>
             <div class="form-grid">
                 <div class="input-group">
                     <i class="fas fa-rupee-sign"></i>
@@ -1883,17 +1521,54 @@
                     <input type="number" id="payAmount" placeholder="Payment Amount">
                 </div>
             </div>
-            <button class="btn-success" onclick="processPayment()">
-                <i class="fas fa-check"></i> Confirm Payment
-            </button>
+            <button class="btn-success" onclick="processPayment()">Confirm Payment</button>
         </div>
     </div>
 
-    <!-- Hidden Bill Content for PDF Generation -->
-    <div id="billPrintContent" style="display: none;"></div>
+    <!-- Edit Order Modal -->
+    <div id="editModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3>Edit Order</h3>
+                <button onclick="closeEditModal()" style="background: none; border: none; font-size: 20px;">&times;</button>
+            </div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="editName" placeholder="Customer Name">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" id="editPhone" placeholder="Phone">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-rupee-sign"></i>
+                    <input type="number" id="editAmount" placeholder="Amount">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-money-bill"></i>
+                    <select id="editPayment">
+                        <option value="Paid">Paid</option>
+                        <option value="Advance">Advance</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-tasks"></i>
+                    <select id="editStatus">
+                        <option value="Pending">Pending</option>
+                        <option value="Printing">Printing</option>
+                        <option value="Ready">Ready</option>
+                        <option value="Picked">Picked Up</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="updateOrder()">Update Order</button>
+        </div>
+    </div>
 
     <script>
-        // Your Firebase configuration
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyA3vQpgWQS58wBO21HxuceanaLvgVLuTl4",
             authDomain: "r-printers.firebaseapp.com",
@@ -1905,40 +1580,160 @@
         };
 
         // Initialize Firebase
-        let db;
-        let analytics;
-        let app;
-
+        let db, auth;
         try {
-            app = firebase.initializeApp(firebaseConfig);
+            const app = firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
-            analytics = firebase.analytics();
+            auth = firebase.auth();
             
-            // Enable offline persistence
-            db.enablePersistence()
-                .catch((err) => {
-                    if (err.code == 'failed-precondition') {
-                        console.log('Persistence failed');
-                    } else if (err.code == 'unimplemented') {
-                        console.log('Persistence not available');
-                    }
-                });
-            
-            console.log("Firebase initialized successfully");
+            db.enablePersistence().catch(err => console.log('Persistence error:', err));
         } catch (error) {
-            console.error("Firebase initialization error:", error);
-            showAlert("Firebase connection failed!", "error");
+            console.error("Firebase init error:", error);
         }
 
-        // Global variables
+        // Global Variables
         let allOrders = [];
         let filteredOrders = [];
         let stockItems = [];
         let currentOrderId = null;
-        let currentBillHTML = '';
-        let currentBillCustomer = '';
+        let currentEditId = null;
+        let currentUser = null;
 
-        // Tab switching
+        // Splash Screen
+        setTimeout(() => {
+            document.getElementById('splashScreen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.display = 'none';
+            }, 500);
+        }, 2000);
+
+        // Auth State Observer
+        auth?.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').classList.add('visible');
+                loadOrders();
+                loadStock();
+                loadCustomersForBill();
+            } else {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('dashboard').classList.remove('visible');
+            }
+        });
+
+        // Login Function
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showAlert('Please enter email and password!', 'warning');
+                return;
+            }
+
+            showLoading();
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    hideLoading();
+                })
+                .catch(error => {
+                    hideLoading();
+                    showAlert(error.message, 'error');
+                });
+        }
+
+        // Sign Up Function
+        function signUp() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('signupConfirmPassword').value;
+
+            if (!name || !email || !password || !confirm) {
+                showAlert('Please fill all fields!', 'warning');
+                return;
+            }
+
+            if (password !== confirm) {
+                showAlert('Passwords do not match!', 'warning');
+                return;
+            }
+
+            showLoading();
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    return userCredential.user.updateProfile({
+                        displayName: name
+                    });
+                })
+                .then(() => {
+                    hideLoading();
+                    showAlert('Account created successfully!', 'success');
+                    showLogin();
+                })
+                .catch(error => {
+                    hideLoading();
+                    showAlert(error.message, 'error');
+                });
+        }
+
+        // Forgot Password
+        function sendResetLink() {
+            const email = document.getElementById('resetEmail').value;
+            
+            if (!email) {
+                showAlert('Please enter your email!', 'warning');
+                return;
+            }
+
+            showLoading();
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    hideLoading();
+                    showAlert('Password reset link sent to your email!', 'success');
+                    closeForgotPassword();
+                })
+                .catch(error => {
+                    hideLoading();
+                    showAlert(error.message, 'error');
+                });
+        }
+
+        // Logout
+        function logout() {
+            auth.signOut();
+        }
+
+        // Show/Hide Screens
+        function showSignUp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('signupScreen').style.display = 'flex';
+        }
+
+        function showLogin() {
+            document.getElementById('signupScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+
+        function showForgotPassword() {
+            document.getElementById('forgotModal').classList.add('active');
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotModal').classList.remove('active');
+        }
+
+        // Loading Functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        // Tab Switching
         function showTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
@@ -1946,1134 +1741,717 @@
             event.target.classList.add('active');
             document.getElementById(tabName + '-tab').classList.add('active');
             
-            if (tabName === 'stock') {
-                loadStock();
-            }
+            if (tabName === 'stock') loadStock();
+            if (tabName === 'bills') loadCustomersForBill();
+            if (tabName === 'seals') displaySealStock();
         }
 
-        // Check Firestore connection
-        function checkConnection() {
-            if (db) {
-                db.collection('orders').limit(1).get()
-                    .then(() => {
-                        const statusDiv = document.getElementById('connectionStatus');
-                        const statusText = document.getElementById('statusText');
-                        
-                        statusDiv.className = 'connection-status connected';
-                        statusText.textContent = 'Connected';
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                        document.getElementById('dashboard').classList.add('visible');
-                        loadOrders();
-                        loadStock();
-                        checkLowStock();
-                    })
-                    .catch((error) => {
-                        console.error("Connection error:", error);
-                        const statusDiv = document.getElementById('connectionStatus');
-                        const statusText = document.getElementById('statusText');
-                        
-                        statusDiv.className = 'connection-status disconnected';
-                        statusText.textContent = 'Disconnected';
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                        document.getElementById('dashboard').classList.add('visible');
-                        
-                        showAlert("Firestore connection lost. Please try again.", "warning");
-                    });
-            }
-        }
-
-        // Set current date
-        function updateDate() {
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
-            document.getElementById('billDate').value = now.toISOString().split('T')[0];
-        }
-
-        // Show/hide advance amount field
-        document.getElementById('paymentStatus').addEventListener('change', function() {
-            const advanceGroup = document.getElementById('advanceAmountGroup');
-            advanceGroup.style.display = this.value === 'Advance' ? 'block' : 'none';
-        });
-
-        // Update file name
-        function updateFileName() {
-            const fileInput = document.getElementById('fileInput');
-            const fileName = document.getElementById('fileName');
-            fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file selected';
-        }
-
-        // Load orders from Firestore
+        // Load Orders
         function loadOrders() {
             if (!db) return;
 
-            db.collection('orders')
-                .orderBy('timestamp', 'desc')
-                .get()
-                .then((querySnapshot) => {
+            db.collection('orders').orderBy('timestamp', 'desc').get()
+                .then(snapshot => {
                     allOrders = [];
-                    querySnapshot.forEach((doc) => {
-                        allOrders.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
+                    snapshot.forEach(doc => {
+                        allOrders.push({ id: doc.id, ...doc.data() });
                     });
-
                     filteredOrders = [...allOrders];
-                    displayOrders(filteredOrders);
+                    displayOrders();
                     updateStatistics();
                 })
-                .catch((error) => {
-                    console.error("Error loading orders:", error);
-                    showAlert("Failed to load orders!", "error");
-                });
+                .catch(err => console.error("Error loading orders:", err));
         }
 
-        // Display orders in table
-        function displayOrders(orders) {
+        // Display Orders (Mobile Cards)
+        function displayOrders() {
             const tbody = document.getElementById('orderTableBody');
+            const cardsDiv = document.getElementById('orderCards');
+            
             tbody.innerHTML = '';
+            cardsDiv.innerHTML = '';
 
-            if (orders.length === 0) {
-                tbody.innerHTML = `
-                    <tr class="empty-state">
-                        <td colspan="8">
-                            <i class="fas fa-inbox"></i>
-                            <p>No orders found</p>
-                        </td>
-                    </tr>
+            if (filteredOrders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No orders</td></tr>';
+                cardsDiv.innerHTML = '<div class="empty-state">No orders</div>';
+                return;
+            }
+
+            filteredOrders.forEach(order => {
+                // Table Row
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${order.customerName || 'N/A'}</td>
+                    <td>${order.serviceType || 'Print'}</td>
+                    <td>Rs. ${order.amount || 0}</td>
+                    <td><span class="status-badge status-${(order.paymentStatus || 'pending').toLowerCase()}">${order.paymentStatus || 'Pending'}</span></td>
+                    <td><span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="editOrder('${order.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
                 `;
-                return;
-            }
 
-            orders.forEach(order => {
-                addOrderToTable(order);
+                // Mobile Card
+                const card = document.createElement('div');
+                card.className = 'order-card';
+                card.innerHTML = `
+                    <div class="order-card-header">
+                        <span class="order-customer">${order.customerName || 'N/A'}</span>
+                        <span class="order-status status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
+                    </div>
+                    <div class="order-details">
+                        <div><i class="fas fa-phone"></i> ${order.phone || 'N/A'}</div>
+                        <div><i class="fas fa-file"></i> ${order.serviceType || 'Print'}</div>
+                        <div><i class="fas fa-rupee-sign"></i> Rs. ${order.amount || 0}</div>
+                        <div><i class="fas fa-money-bill"></i> <span class="status-badge status-${(order.paymentStatus || 'pending').toLowerCase()}">${order.paymentStatus || 'Pending'}</span></div>
+                    </div>
+                    <div class="order-actions">
+                        <button class="btn-primary" onclick="updateOrderStatus('${order.id}', 'Printing')">Print</button>
+                        <button class="btn-success" onclick="updateOrderStatus('${order.id}', 'Ready')">Ready</button>
+                        <button class="btn-warning" onclick="updateOrderStatus('${order.id}', 'Picked')">Pick</button>
+                        <button class="btn-danger" onclick="deleteOrder('${order.id}')">Del</button>
+                    </div>
+                `;
+                cardsDiv.appendChild(card);
             });
+
+            document.getElementById('order-count').textContent = filteredOrders.length;
         }
 
-        // Add order to table
-        function addOrderToTable(order) {
-            const tbody = document.getElementById('orderTableBody');
-            
-            const newRow = tbody.insertRow();
-            newRow.style.animation = "slideIn 0.3s ease";
-            newRow.setAttribute('data-order-id', order.id);
-            
-            // Format date
-            const orderDate = order.timestamp?.toDate ? order.timestamp.toDate() : new Date(order.timestamp);
-            const formattedDate = orderDate.toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                day: '2-digit',
-                month: '2-digit'
-            });
-
-            // Calculate remaining amount
-            const totalAmount = order.amount || 0;
-            const advanceAmount = order.advanceAmount || 0;
-            const remainingAmount = order.paymentStatus === 'Advance' ? totalAmount - advanceAmount : 0;
-
-            // Determine status badge
-            let statusBadge = '';
-            switch(order.status || 'Pending') {
-                case 'Printing':
-                    statusBadge = '<span class="status-badge status-printing"><i class="fas fa-print"></i> Printing</span>';
-                    break;
-                case 'Ready':
-                    statusBadge = '<span class="status-badge status-ready"><i class="fas fa-check-circle"></i> Ready</span>';
-                    break;
-                case 'Picked':
-                    statusBadge = '<span class="status-badge status-picked"><i class="fas fa-box"></i> Picked Up</span>';
-                    break;
-                default:
-                    statusBadge = `<span class="status-badge status-${(order.status || 'pending').toLowerCase()}"><i class="fas ${order.status === 'Paid' ? 'fa-check-circle' : 'fa-clock'}"></i> ${order.status || 'Pending'}</span>`;
-            }
-
-            newRow.innerHTML = `
-                <td><i class="fas fa-user-circle" style="color: var(--primary); margin-right: 5px;"></i>${order.customerName || 'N/A'}</td>
-                <td>${order.phone || '-'}</td>
-                <td>
-                    <strong>${order.serviceType || 'Print'}</strong><br>
-                    <small>${order.fileDesc || ''}</small>
-                </td>
-                <td>
-                    <strong>Rs. ${(order.amount || 0).toLocaleString()}</strong>
-                    ${remainingAmount > 0 ? `<br><small style="color: var(--warning);">Remaining: Rs. ${remainingAmount}</small>` : ''}
-                </td>
-                <td>
-                    ${order.paymentStatus === 'Advance' ? 
-                        `<span class="status-badge status-advance"><i class="fas fa-hand-holding-usd"></i> Advance (Rs. ${advanceAmount})</span>` :
-                        `<span class="status-badge status-${(order.paymentStatus || 'pending').toLowerCase()}"><i class="fas ${order.paymentStatus === 'Paid' ? 'fa-check-circle' : 'fa-clock'}"></i> ${order.paymentStatus || 'Pending'}</span>`
-                    }
-                </td>
-                <td>${statusBadge}</td>
-                <td><i class="fas fa-clock" style="color: var(--secondary); margin-right: 5px;"></i>${formattedDate}</td>
-                <td>
-                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'Printing')" title="Printing"><i class="fas fa-print"></i></button>
-                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'Ready')" title="Ready"><i class="fas fa-check"></i></button>
-                    <button class="action-btn" onclick="markAsPicked('${order.id}')" title="Picked Up"><i class="fas fa-box"></i></button>
-                    ${remainingAmount > 0 ? 
-                        `<button class="action-btn" onclick="openPaymentModal('${order.id}', ${remainingAmount})" title="Process Payment"><i class="fas fa-money-bill"></i></button>` : 
-                        ''
-                    }
-                    <button class="action-btn" onclick="generateCustomerBill('${order.id}')" title="Generate Bill"><i class="fas fa-file-invoice"></i></button>
-                    <button class="action-btn" onclick="deleteOrder('${order.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                </td>
-            `;
-        }
-
-        // Add new order
+        // Add Order
         async function addOrder() {
-            if (!db) {
-                showAlert("Firestore connection not available!", "error");
-                return;
-            }
+            if (!db) return;
 
             const name = document.getElementById('custName').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const serviceType = document.getElementById('serviceType').value;
-            const fileDesc = document.getElementById('fileDesc').value.trim();
-            const totalAmount = document.getElementById('totalAmount').value;
-            const paymentStatus = document.getElementById('paymentStatus').value;
-            const advanceAmount = document.getElementById('advanceAmount').value;
-            const fileInput = document.getElementById('fileInput');
-            const addBtn = document.getElementById('addOrderBtn');
+            const amount = document.getElementById('totalAmount').value;
 
-            // Validation
-            if (name === "" || totalAmount === "") {
-                showAlert("Please fill in all required fields!", "warning");
+            if (!name || !amount) {
+                showAlert('Please fill required fields!', 'warning');
                 return;
             }
 
-            if (parseInt(totalAmount) <= 0) {
-                showAlert("Please enter a valid amount!", "warning");
-                return;
-            }
-
-            if (paymentStatus === 'Advance' && (!advanceAmount || parseInt(advanceAmount) <= 0)) {
-                showAlert("Please enter advance amount!", "warning");
-                return;
-            }
-
-            // Disable button
-            addBtn.disabled = true;
-            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-
-            // Create order object
             const order = {
                 customerName: name,
-                phone: phone || '',
-                serviceType: serviceType,
-                fileDesc: fileDesc || '',
-                amount: parseInt(totalAmount),
-                paymentStatus: paymentStatus,
-                advanceAmount: paymentStatus === 'Advance' ? parseInt(advanceAmount) : 0,
+                phone: document.getElementById('phone').value.trim() || '',
+                serviceType: document.getElementById('serviceType').value,
+                fileDesc: document.getElementById('fileDesc').value.trim() || '',
+                amount: parseInt(amount),
+                paymentStatus: document.getElementById('paymentStatus').value,
+                advanceAmount: document.getElementById('advanceAmount').value ? parseInt(document.getElementById('advanceAmount').value) : 0,
                 status: 'Pending',
-                fileName: fileInput.files.length > 0 ? fileInput.files[0].name : '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 createdAt: new Date().toISOString()
             };
 
+            showLoading();
             try {
-                // Save to Firestore
-                const docRef = await db.collection('orders').add(order);
-                
-                showAlert("Order added successfully!", "success");
-                
-                // Clear inputs
-                document.getElementById('custName').value = "";
-                document.getElementById('phone').value = "";
-                document.getElementById('fileDesc').value = "";
-                document.getElementById('totalAmount').value = "";
-                document.getElementById('advanceAmount').value = "";
-                document.getElementById('fileName').textContent = 'No file selected';
-                fileInput.value = '';
-                
-                // Reload orders
+                await db.collection('orders').add(order);
+                showAlert('Order added!', 'success');
+                document.getElementById('custName').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('fileDesc').value = '';
+                document.getElementById('totalAmount').value = '';
+                document.getElementById('advanceAmount').value = '';
                 loadOrders();
-            } catch (error) {
-                console.error("Error adding order:", error);
-                showAlert("Failed to add order!", "error");
+            } catch (err) {
+                showAlert('Error adding order!', 'error');
             } finally {
-                // Re-enable button
-                addBtn.disabled = false;
-                addBtn.innerHTML = '<i class="fas fa-save"></i> Add Order';
+                hideLoading();
             }
         }
 
-        // Update order status
-        async function updateOrderStatus(orderId, status) {
-            if (!db) return;
+        // Edit Order
+        function editOrder(id) {
+            const order = allOrders.find(o => o.id === id);
+            if (!order) return;
 
+            currentEditId = id;
+            document.getElementById('editName').value = order.customerName || '';
+            document.getElementById('editPhone').value = order.phone || '';
+            document.getElementById('editAmount').value = order.amount || '';
+            document.getElementById('editPayment').value = order.paymentStatus || 'Pending';
+            document.getElementById('editStatus').value = order.status || 'Pending';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        // Update Order
+        async function updateOrder() {
+            if (!db || !currentEditId) return;
+
+            const updates = {
+                customerName: document.getElementById('editName').value,
+                phone: document.getElementById('editPhone').value,
+                amount: parseInt(document.getElementById('editAmount').value),
+                paymentStatus: document.getElementById('editPayment').value,
+                status: document.getElementById('editStatus').value
+            };
+
+            showLoading();
             try {
-                await db.collection('orders').doc(orderId).update({
-                    status: status
-                });
-                
-                showAlert(`Status updated to ${status}`, "success");
+                await db.collection('orders').doc(currentEditId).update(updates);
+                showAlert('Order updated!', 'success');
+                closeEditModal();
                 loadOrders();
-                
-                // If status is 'Ready', auto-deduct stock
-                if (status === 'Ready') {
-                    updateStockOnPrint();
-                }
-            } catch (error) {
-                console.error("Error updating status:", error);
-                showAlert("Failed to update status!", "error");
+            } catch (err) {
+                showAlert('Error updating order!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Mark as picked
-        async function markAsPicked(orderId) {
-            if (!db) return;
+        // Delete Order
+        async function deleteOrder(id) {
+            if (!confirm('Delete this order?')) return;
 
+            showLoading();
             try {
-                await db.collection('orders').doc(orderId).update({
-                    status: 'Picked'
-                });
-                
-                showAlert("Order marked as picked up", "success");
+                await db.collection('orders').doc(id).delete();
+                showAlert('Order deleted!', 'success');
                 loadOrders();
-            } catch (error) {
-                console.error("Error updating status:", error);
-                showAlert("Failed to update status!", "error");
+            } catch (err) {
+                showAlert('Error deleting order!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Open payment modal
-        function openPaymentModal(orderId, remainingAmount) {
-            currentOrderId = orderId;
-            document.getElementById('remainingAmount').value = remainingAmount;
-            document.getElementById('payAmount').value = remainingAmount;
-            document.getElementById('paymentModal').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('paymentModal').classList.remove('active');
-            currentOrderId = null;
-        }
-
-        // Process payment
-        async function processPayment() {
-            if (!db || !currentOrderId) return;
-
-            const payAmount = parseInt(document.getElementById('payAmount').value);
-            const remainingAmount = parseInt(document.getElementById('remainingAmount').value);
-
-            if (payAmount <= 0 || payAmount > remainingAmount) {
-                showAlert("Please enter a valid amount!", "warning");
-                return;
-            }
-
+        // Update Order Status
+        async function updateOrderStatus(id, status) {
+            showLoading();
             try {
-                const orderRef = db.collection('orders').doc(currentOrderId);
-                const doc = await orderRef.get();
-                
-                if (doc.exists) {
-                    const orderData = doc.data();
-                    const newAdvance = (orderData.advanceAmount || 0) + payAmount;
-                    
-                    if (newAdvance >= orderData.amount) {
-                        // Fully paid
-                        await orderRef.update({
-                            paymentStatus: 'Paid',
-                            advanceAmount: orderData.amount
-                        });
-                    } else {
-                        // Partial payment
-                        await orderRef.update({
-                            advanceAmount: newAdvance
-                        });
-                    }
-                    
-                    showAlert("Payment processed successfully!", "success");
-                    closeModal();
-                    loadOrders();
-                }
-            } catch (error) {
-                console.error("Error processing payment:", error);
-                showAlert("Failed to process payment!", "error");
-            }
-        }
-
-        // Delete order
-        async function deleteOrder(orderId) {
-            if (!db) {
-                showAlert("Firestore connection not available!", "error");
-                return;
-            }
-
-            if (!confirm("Are you sure you want to delete this order?")) {
-                return;
-            }
-
-            try {
-                await db.collection('orders').doc(orderId).delete();
-                showAlert("Order deleted successfully!", "info");
+                await db.collection('orders').doc(id).update({ status });
+                showAlert(`Status updated to ${status}!`, 'success');
                 loadOrders();
-            } catch (error) {
-                console.error("Error deleting order:", error);
-                showAlert("Failed to delete order!", "error");
+            } catch (err) {
+                showAlert('Error updating status!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Filter orders by status
+        // Filter Orders
         function filterOrders() {
-            const statusFilter = document.getElementById('statusFilter').value;
-            
-            if (statusFilter === 'all') {
+            const filter = document.getElementById('statusFilter').value;
+            if (filter === 'all') {
                 filteredOrders = [...allOrders];
             } else {
-                filteredOrders = allOrders.filter(order => {
-                    if (statusFilter === 'Paid' || statusFilter === 'Pending' || statusFilter === 'Advance') {
-                        return order.paymentStatus === statusFilter;
-                    } else {
-                        return order.status === statusFilter;
-                    }
-                });
+                filteredOrders = allOrders.filter(o => o.paymentStatus === filter);
             }
-            
-            // Apply search filter
-            searchOrders();
+            displayOrders();
         }
 
-        // Search orders
+        // Search Orders
         function searchOrders() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            let ordersToDisplay = filteredOrders;
-            
-            if (searchTerm !== '') {
-                ordersToDisplay = filteredOrders.filter(order => 
-                    (order.customerName && order.customerName.toLowerCase().includes(searchTerm)) ||
-                    (order.phone && order.phone.includes(searchTerm)) ||
-                    (order.fileDesc && order.fileDesc.toLowerCase().includes(searchTerm))
-                );
-            }
-            
-            displayOrders(ordersToDisplay);
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            filteredOrders = allOrders.filter(o => 
+                (o.customerName && o.customerName.toLowerCase().includes(term)) ||
+                (o.phone && o.phone.includes(term))
+            );
+            displayOrders();
         }
 
-        // Update statistics
-        function updateStatistics() {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-
-            let dailyTotal = 0;
-            let monthlyTotal = 0;
-            let todayOrders = 0;
-            let pendingOrders = 0;
-
-            allOrders.forEach(order => {
-                const orderDate = order.timestamp?.toDate ? order.timestamp.toDate() : new Date(order.timestamp);
-                
-                // Calculate paid amount based on payment status
-                const paidAmount = order.paymentStatus === 'Paid' ? order.amount :
-                                  order.paymentStatus === 'Advance' ? order.advanceAmount : 0;
-                
-                // Check if order is from today
-                if (orderDate >= today) {
-                    dailyTotal += paidAmount || 0;
-                    todayOrders++;
-                }
-                
-                // Check if order is from current month
-                if (orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear) {
-                    monthlyTotal += paidAmount || 0;
-                }
-
-                // Count pending orders
-                if (order.status !== 'Picked' && order.status !== 'Ready') {
-                    pendingOrders++;
-                }
-            });
-
-            // Update UI
-            document.getElementById('daily-total').innerHTML = `Rs. ${dailyTotal.toLocaleString()}`;
-            document.getElementById('monthly-total').innerHTML = `Rs. ${monthlyTotal.toLocaleString()}`;
-            document.getElementById('today-orders').textContent = todayOrders;
-            document.getElementById('pending-orders').textContent = pendingOrders;
-            document.getElementById('order-count').textContent = allOrders.length;
-            
-            // Update comparison
-            document.getElementById('dailyComparison').innerHTML = `+${Math.floor(Math.random() * 20)}% from yesterday`;
-            
-            // Update monthly period
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            document.getElementById('monthlyPeriod').textContent = monthNames[currentMonth];
-        }
-
-        // Stock Management Functions
-        async function loadStock() {
+        // Load Stock
+        function loadStock() {
             if (!db) return;
 
-            db.collection('stock')
-                .get()
-                .then((querySnapshot) => {
+            db.collection('stock').get()
+                .then(snapshot => {
                     stockItems = [];
-                    querySnapshot.forEach((doc) => {
-                        stockItems.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
+                    snapshot.forEach(doc => {
+                        stockItems.push({ id: doc.id, ...doc.data() });
                     });
-
                     displayStock();
-                    checkLowStock();
-                })
-                .catch((error) => {
-                    console.error("Error loading stock:", error);
                 });
         }
 
+        // Display Stock
         function displayStock() {
-            const stockGrid = document.getElementById('stockGrid');
-            stockGrid.innerHTML = '';
+            const grid = document.getElementById('stockGrid');
+            grid.innerHTML = '';
 
             if (stockItems.length === 0) {
-                stockGrid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No stock items found</p></div>';
+                grid.innerHTML = '<div class="empty-state">No stock</div>';
                 return;
             }
 
             stockItems.forEach(item => {
                 const lowStock = item.quantity <= item.alertLevel;
-                const percentage = (item.quantity / item.maxLevel) * 100;
-
                 const card = document.createElement('div');
                 card.className = `stock-card ${lowStock ? 'low-stock' : ''}`;
                 card.innerHTML = `
                     <div class="stock-header">
-                        <div class="stock-icon">
-                            <i class="fas ${getStockIcon(item.name)}"></i>
-                        </div>
-                        <div class="stock-info">
+                        <div class="stock-icon"><i class="fas fa-box"></i></div>
+                        <div>
                             <div class="stock-name">${item.name}</div>
                             <div class="stock-quantity">${item.quantity} <span class="stock-unit">${item.unit}</span></div>
                         </div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${Math.min(percentage, 100)}%"></div>
-                    </div>
                     <div class="stock-actions">
-                        <input type="number" id="addStock-${item.id}" placeholder="Quantity" min="1">
-                        <button class="btn-success" onclick="addToStock('${item.id}')">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button class="btn-danger" onclick="removeFromStock('${item.id}')">
-                            <i class="fas fa-minus"></i>
-                        </button>
+                        <input type="number" id="addStock-${item.id}" placeholder="Qty" min="1">
+                        <button class="btn-success" onclick="addToStock('${item.id}')">+</button>
+                        <button class="btn-danger" onclick="removeFromStock('${item.id}')">-</button>
+                        <button class="btn-danger" onclick="deleteStockItem('${item.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
-                stockGrid.appendChild(card);
+                grid.appendChild(card);
             });
+
+            checkLowStock();
+            displaySealStock();
         }
 
-        function getStockIcon(name) {
-            name = name.toLowerCase();
-            if (name.includes('a4') || name.includes('paper')) return 'fa-file';
-            if (name.includes('banner') || name.includes('flex')) return 'fa-scroll';
-            if (name.includes('ink')) return 'fa-fill-drip';
-            return 'fa-box';
-        }
-
+        // Add Stock
         async function addStock() {
             const name = document.getElementById('stockName').value.trim();
-            const unit = document.getElementById('stockUnit').value;
-            const quantity = parseInt(document.getElementById('stockQuantity').value);
-            const alertLevel = parseInt(document.getElementById('stockAlert').value);
+            const qty = document.getElementById('stockQuantity').value;
 
-            if (!name || !quantity) {
-                showAlert("Please fill in all fields!", "warning");
+            if (!name || !qty) {
+                showAlert('Please fill fields!', 'warning');
                 return;
             }
 
-            const stockItem = {
+            const item = {
                 name: name,
-                unit: unit,
-                quantity: quantity,
-                alertLevel: alertLevel || 5,
-                maxLevel: quantity * 2,
-                lastUpdated: new Date().toISOString()
+                unit: document.getElementById('stockUnit').value,
+                quantity: parseInt(qty),
+                alertLevel: parseInt(document.getElementById('stockAlert').value) || 5,
+                maxLevel: parseInt(qty) * 2
             };
 
+            showLoading();
             try {
-                await db.collection('stock').add(stockItem);
-                showAlert("Stock added successfully!", "success");
-                
-                document.getElementById('stockName').value = "";
-                document.getElementById('stockQuantity').value = "";
-                document.getElementById('stockAlert').value = "";
-                
+                await db.collection('stock').add(item);
+                showAlert('Stock added!', 'success');
+                document.getElementById('stockName').value = '';
+                document.getElementById('stockQuantity').value = '';
                 loadStock();
-            } catch (error) {
-                console.error("Error adding stock:", error);
-                showAlert("Failed to add stock!", "error");
+            } catch (err) {
+                showAlert('Error adding stock!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        async function addToStock(itemId) {
-            const input = document.getElementById(`addStock-${itemId}`);
-            const quantity = parseInt(input.value);
+        // Add to Stock
+        async function addToStock(id) {
+            const input = document.getElementById(`addStock-${id}`);
+            const qty = parseInt(input.value);
+            if (!qty || qty <= 0) return;
 
-            if (!quantity || quantity <= 0) {
-                showAlert("Please enter a valid quantity!", "warning");
+            const item = stockItems.find(i => i.id === id);
+            if (!item) return;
+
+            showLoading();
+            try {
+                await db.collection('stock').doc(id).update({
+                    quantity: item.quantity + qty
+                });
+                showAlert('Stock updated!', 'success');
+                loadStock();
+            } catch (err) {
+                showAlert('Error updating stock!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Remove from Stock
+        async function removeFromStock(id) {
+            const input = document.getElementById(`addStock-${id}`);
+            const qty = parseInt(input.value);
+            if (!qty || qty <= 0) return;
+
+            const item = stockItems.find(i => i.id === id);
+            if (!item || item.quantity < qty) {
+                showAlert('Insufficient stock!', 'warning');
                 return;
             }
 
+            showLoading();
             try {
-                const itemRef = db.collection('stock').doc(itemId);
-                const doc = await itemRef.get();
-                const currentQty = doc.data().quantity;
-                
-                await itemRef.update({
-                    quantity: currentQty + quantity
+                await db.collection('stock').doc(id).update({
+                    quantity: item.quantity - qty
                 });
-                
-                showAlert("Stock updated successfully!", "success");
+                showAlert('Stock updated!', 'success');
                 loadStock();
-            } catch (error) {
-                console.error("Error updating stock:", error);
-                showAlert("Failed to update stock!", "error");
+            } catch (err) {
+                showAlert('Error updating stock!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        async function removeFromStock(itemId) {
-            const input = document.getElementById(`addStock-${itemId}`);
-            const quantity = parseInt(input.value);
+        // Delete Stock Item
+        async function deleteStockItem(id) {
+            if (!confirm('Delete this stock item?')) return;
 
-            if (!quantity || quantity <= 0) {
-                showAlert("Please enter a valid quantity!", "warning");
+            showLoading();
+            try {
+                await db.collection('stock').doc(id).delete();
+                showAlert('Stock deleted!', 'success');
+                loadStock();
+            } catch (err) {
+                showAlert('Error deleting stock!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display Seal Stock
+        function displaySealStock() {
+            const sealSizes = stockItems.filter(item => 
+                item.name.toLowerCase().includes('seal') || 
+                item.name.toLowerCase().includes('stamp')
+            );
+            
+            const list = document.getElementById('sealStockList');
+            if (sealSizes.length === 0) {
+                list.innerHTML = '<p>No seal sizes in stock</p>';
                 return;
             }
 
-            try {
-                const itemRef = db.collection('stock').doc(itemId);
-                const doc = await itemRef.get();
-                const currentQty = doc.data().quantity;
-                
-                if (currentQty < quantity) {
-                    showAlert("Insufficient stock!", "warning");
-                    return;
-                }
-                
-                await itemRef.update({
-                    quantity: currentQty - quantity
-                });
-                
-                showAlert("Stock updated successfully!", "success");
-                loadStock();
-            } catch (error) {
-                console.error("Error updating stock:", error);
-                showAlert("Failed to update stock!", "error");
-            }
+            list.innerHTML = sealSizes.map(item => 
+                `<p>• ${item.name}: ${item.quantity} ${item.unit} available</p>`
+            ).join('');
         }
 
-        // Auto-deduct stock when printing
-        async function updateStockOnPrint() {
-            // Example: Deduct 1 A4 paper
-            const a4Stock = stockItems.find(item => item.name.toLowerCase().includes('a4'));
-            if (a4Stock && a4Stock.quantity > 0) {
-                await db.collection('stock').doc(a4Stock.id).update({
-                    quantity: a4Stock.quantity - 1
-                });
-            }
-            loadStock();
-        }
-
-        // Check low stock and show alerts
+        // Check Low Stock
         function checkLowStock() {
-            const lowStockItems = stockItems.filter(item => item.quantity <= item.alertLevel);
-            const alertBanner = document.getElementById('stockAlert');
-            const alertList = document.getElementById('stockAlertList');
+            const low = stockItems.filter(item => item.quantity <= item.alertLevel);
+            const alert = document.getElementById('stockAlert');
+            const list = document.getElementById('stockAlertList');
 
-            if (lowStockItems.length > 0) {
-                alertBanner.style.display = 'flex';
-                alertList.innerHTML = lowStockItems.map(item => 
-                    `<li><i class="fas fa-exclamation-circle"></i> ${item.name}: Only ${item.quantity} ${item.unit} left</li>`
+            if (low.length > 0) {
+                alert.style.display = 'flex';
+                list.innerHTML = low.map(item => 
+                    `<li>${item.name}: Only ${item.quantity} ${item.unit} left</li>`
                 ).join('');
             } else {
-                alertBanner.style.display = 'none';
+                alert.style.display = 'none';
             }
         }
 
-        // Bill generation functions
-        function generateCustomerBill(orderId) {
-            const order = allOrders.find(o => o.id === orderId);
-            if (!order) return;
-            
-            document.getElementById('billCustomer').value = order.customerName || '';
-            document.getElementById('billNumber').value = `BILL-${orderId.slice(-6)}`;
-            generateBill();
-            
-            // Switch to bills tab
-            showTab('bills');
+        // Load Customers for Bill
+        function loadCustomersForBill() {
+            const customers = [...new Set(allOrders.map(o => o.customerName).filter(Boolean))];
+            const select = document.getElementById('billCustomer');
+            select.innerHTML = '<option value="">Select Customer</option>' + 
+                customers.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
+        // Load Customer Orders for Bill
+        function loadCustomerOrders() {
+            const customer = document.getElementById('billCustomer').value;
+            if (!customer) return;
+            document.getElementById('billPreview').style.display = 'none';
+        }
+
+        // Generate Bill
         function generateBill() {
-            const customer = document.getElementById('billCustomer').value.trim();
+            const customer = document.getElementById('billCustomer').value;
             const date = document.getElementById('billDate').value;
-            const billNumber = document.getElementById('billNumber').value;
-            
+
             if (!customer) {
-                showAlert("Please enter customer name!", "warning");
+                showAlert('Select customer!', 'warning');
                 return;
             }
 
-            currentBillCustomer = customer;
-
-            // Filter orders for this customer
-            const customerOrders = allOrders.filter(order => 
-                order.customerName && order.customerName.toLowerCase().includes(customer.toLowerCase())
-            );
-
-            if (customerOrders.length === 0) {
-                showAlert("No orders found for this customer!", "warning");
+            const orders = allOrders.filter(o => o.customerName === customer);
+            if (orders.length === 0) {
+                showAlert('No orders for this customer!', 'warning');
                 return;
             }
 
-            let total = 0;
-            let paid = 0;
-            
-            // Customer info
-            const customerInfo = `
-                <p><strong>Bill No:</strong> ${billNumber}</p>
-                <p><strong>Customer:</strong> ${customer}</p>
-                <p><strong>Date:</strong> ${date}</p>
-                <p><strong>Phone:</strong> ${customerOrders[0].phone || 'N/A'}</p>
-            `;
-            document.getElementById('billCustomerInfo').innerHTML = customerInfo;
+            let total = 0, paid = 0;
+            let billHTML = '<table class="bill-table"><tr><th>Service</th><th>Amount</th><th>Paid</th></tr>';
 
-            // Bill table
-            let billHTML = `
-                <table class="bill-table">
-                    <tr>
-                        <th>Description</th>
-                        <th>Service</th>
-                        <th>Amount (Rs.)</th>
-                        <th>Paid (Rs.)</th>
-                        <th>Status</th>
-                    </tr>
-            `;
-
-            customerOrders.forEach(order => {
-                const paidAmount = order.paymentStatus === 'Paid' ? order.amount :
-                                  order.paymentStatus === 'Advance' ? order.advanceAmount : 0;
-                total += order.amount;
-                paid += paidAmount;
-                
-                billHTML += `
-                    <tr>
-                        <td>${order.fileDesc || 'N/A'}</td>
-                        <td>${order.serviceType || 'Print'}</td>
-                        <td>Rs. ${order.amount.toLocaleString()}</td>
-                        <td>Rs. ${paidAmount.toLocaleString()}</td>
-                        <td>${order.paymentStatus}</td>
-                    </tr>
-                `;
+            orders.forEach(o => {
+                const paidAmt = o.paymentStatus === 'Paid' ? o.amount : 
+                               o.paymentStatus === 'Advance' ? o.advanceAmount : 0;
+                total += o.amount;
+                paid += paidAmt;
+                billHTML += `<tr><td>${o.serviceType || 'Print'}</td><td>Rs. ${o.amount}</td><td>Rs. ${paidAmt}</td></tr>`;
             });
 
-            billHTML += `
-                </table>
-                <div class="bill-totals">
-                    <p><strong>Sub Total:</strong> Rs. ${total.toLocaleString()}</p>
-                    <p><strong>Total Paid:</strong> Rs. ${paid.toLocaleString()}</p>
-                    <p><strong>Balance Due:</strong> Rs. ${(total - paid).toLocaleString()}</p>
-                    <p class="grand-total"><strong>Grand Total:</strong> Rs. ${total.toLocaleString()}</p>
-                </div>
-            `;
+            billHTML += '</table>';
+            billHTML += `<div class="bill-totals"><p>Total: Rs. ${total}</p><p>Paid: Rs. ${paid}</p><p>Balance: Rs. ${total - paid}</p></div>`;
 
+            document.getElementById('billCustomerInfo').innerHTML = `
+                <p><strong>Customer:</strong> ${customer}</p>
+                <p><strong>Date:</strong> ${date}</p>
+            `;
             document.getElementById('billContent').innerHTML = billHTML;
             document.getElementById('billPreview').style.display = 'block';
-            
-            currentBillHTML = document.getElementById('billPreview').innerHTML;
         }
 
+        // Print Bill
         function printBill() {
-            const billContent = document.getElementById('billPreview').cloneNode(true);
-            billContent.style.display = 'block';
-            billContent.style.position = 'fixed';
-            billContent.style.left = '-9999px';
-            document.body.appendChild(billContent);
-            
             window.print();
-            
-            document.body.removeChild(billContent);
         }
 
+        // Download Bill PDF
         function downloadBillPDF() {
             const element = document.getElementById('billPreview');
-            const opt = {
-                margin: 1,
-                filename: `bill-${currentBillCustomer}-${new Date().getTime()}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(element).save();
+            html2pdf().from(element).save(`bill-${Date.now()}.pdf`);
         }
 
+        // Share Bill on WhatsApp
         function shareBillWhatsApp() {
-            const customer = document.getElementById('billCustomer').value.trim();
-            const phone = allOrders.find(o => o.customerName === customer)?.phone;
-            
-            if (!phone) {
-                showAlert("Customer phone number not found!", "warning");
+            const customer = document.getElementById('billCustomer').value;
+            const order = allOrders.find(o => o.customerName === customer);
+            if (!order || !order.phone) {
+                showAlert('Phone number not found!', 'warning');
                 return;
             }
 
-            // Format phone number for WhatsApp
-            let whatsappNumber = phone.replace(/\D/g, '');
-            if (whatsappNumber.startsWith('0')) {
-                whatsappNumber = '94' + whatsappNumber.substring(1);
-            }
+            let phone = order.phone.replace(/\D/g, '');
+            if (phone.startsWith('0')) phone = '94' + phone.substring(1);
 
-            // Create message
-            const total = document.querySelector('.grand-total')?.innerText || '';
-            const message = `Hello ${customer},\n\nYour bill from 3R PRINTERS is ready.\n${total}\n\nThank you for your business!`;
-            
-            // Create WhatsApp URL
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            
-            // Open WhatsApp in new tab
-            window.open(whatsappUrl, '_blank');
+            const message = `Hello ${customer}, your bill from 3R PRINTERS is ready.`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        function selectTemplate(type) {
-            // Template selection logic
-            showAlert(`Selected ${type} bill template`, "info");
-        }
-
-        // Seal functions
-        document.getElementById('sealText').addEventListener('input', function(e) {
-            document.getElementById('sealPreviewText').textContent = e.target.value || 'Sample Text';
-        });
-
-        function loadSealTemplate(type) {
-            let text = '';
-            switch(type) {
-                case 'company':
-                    text = 'COMPANY NAME (PVT) LTD';
-                    break;
-                case 'official':
-                    text = 'OFFICIAL STAMP • AUTHORIZED';
-                    break;
-                case 'personal':
-                    text = 'JOHN DOE • MANAGER';
-                    break;
-            }
-            document.getElementById('sealText').value = text;
-            document.getElementById('sealPreviewText').textContent = text;
-        }
-
+        // Add Seal Order
         async function addSealOrder() {
             const customer = document.getElementById('sealCustomer').value.trim();
             const text = document.getElementById('sealText').value.trim();
-            const size = document.getElementById('sealSize').value;
-            const shape = document.getElementById('sealShape').value;
-            const color = document.getElementById('sealColor').value;
-            const price = document.getElementById('sealPrice').value;
-
             if (!customer || !text) {
-                showAlert("Please fill in all fields!", "warning");
+                showAlert('Fill all fields!', 'warning');
                 return;
             }
 
             const order = {
                 customerName: customer,
                 serviceType: 'Seal',
-                fileDesc: `Seal: ${text} (${size}, ${shape})`,
-                amount: parseInt(price),
+                fileDesc: `Seal: ${text} (${document.getElementById('sealSize').value})`,
+                amount: parseInt(document.getElementById('sealPrice').value),
                 paymentStatus: 'Pending',
                 status: 'Pending',
-                sealDetails: {
-                    text: text,
-                    size: size,
-                    shape: shape,
-                    color: color
-                },
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: new Date().toISOString()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
+            showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert("Seal order added successfully!", "success");
-                
-                document.getElementById('sealCustomer').value = "";
-                document.getElementById('sealText').value = "";
-                
+                showAlert('Seal order added!', 'success');
+                document.getElementById('sealCustomer').value = '';
+                document.getElementById('sealText').value = '';
                 loadOrders();
-            } catch (error) {
-                console.error("Error adding seal order:", error);
-                showAlert("Failed to add seal order!", "error");
+            } catch (err) {
+                showAlert('Error adding order!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Memento functions
-        document.getElementById('mementoText').addEventListener('input', function(e) {
-            document.getElementById('mementoPreviewText').textContent = e.target.value || 'Sample Text';
-        });
-
-        document.getElementById('mementoDate').addEventListener('input', function(e) {
-            document.getElementById('mementoPreviewDate').textContent = e.target.value || '2024-03-13';
-        });
-
-        function loadMementoTemplate(type) {
-            let text = '';
-            let date = new Date().toISOString().split('T')[0];
-            switch(type) {
-                case 'appreciation':
-                    text = 'CERTIFICATE OF APPRECIATION';
-                    break;
-                case 'retirement':
-                    text = 'RETIREMENT • 25 YEARS SERVICE';
-                    break;
-                case 'achievement':
-                    text = 'ACHIEVEMENT AWARD';
-                    break;
-            }
-            document.getElementById('mementoText').value = text;
-            document.getElementById('mementoDate').value = date;
-            document.getElementById('mementoPreviewText').textContent = text;
-            document.getElementById('mementoPreviewDate').textContent = date;
-        }
-
+        // Add Memento Order
         async function addMementoOrder() {
             const customer = document.getElementById('mementoCustomer').value.trim();
             const text = document.getElementById('mementoText').value.trim();
-            const date = document.getElementById('mementoDate').value;
-            const type = document.getElementById('mementoType').value;
-            const color = document.getElementById('mementoColor').value;
-            const price = document.getElementById('mementoPrice').value;
-
             if (!customer || !text) {
-                showAlert("Please fill in all fields!", "warning");
+                showAlert('Fill all fields!', 'warning');
                 return;
             }
 
             const order = {
                 customerName: customer,
                 serviceType: 'Memento',
-                fileDesc: `Memento: ${text} (${type}, ${color})`,
-                amount: parseInt(price),
+                fileDesc: `Memento: ${text} (${document.getElementById('mementoType').value})`,
+                amount: parseInt(document.getElementById('mementoPrice').value),
                 paymentStatus: 'Pending',
                 status: 'Pending',
-                mementoDetails: {
-                    text: text,
-                    date: date,
-                    type: type,
-                    color: color
-                },
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: new Date().toISOString()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
+            showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert("Memento order added successfully!", "success");
-                
-                document.getElementById('mementoCustomer').value = "";
-                document.getElementById('mementoText').value = "";
-                document.getElementById('mementoDate').value = "";
-                
+                showAlert('Memento order added!', 'success');
+                document.getElementById('mementoCustomer').value = '';
+                document.getElementById('mementoText').value = '';
                 loadOrders();
-            } catch (error) {
-                console.error("Error adding memento order:", error);
-                showAlert("Failed to add memento order!", "error");
+            } catch (err) {
+                showAlert('Error adding order!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Number Plate functions
-        document.getElementById('vehicleNumber').addEventListener('input', function(e) {
-            document.getElementById('platePreview').textContent = e.target.value || 'XX-XXXX';
-        });
-
-        function loadPlateTemplate(type) {
-            let number = '';
-            switch(type) {
-                case 'car':
-                    number = 'CAA-1234';
-                    break;
-                case 'bike':
-                    number = 'XX-1234';
-                    break;
-                case 'custom':
-                    number = 'CUSTOM-1';
-                    break;
-            }
-            document.getElementById('vehicleNumber').value = number;
-            document.getElementById('platePreview').textContent = number;
-        }
-
+        // Add Plate Order
         async function addPlateOrder() {
             const customer = document.getElementById('plateCustomer').value.trim();
             const vehicle = document.getElementById('vehicleNumber').value.trim();
-            const type = document.getElementById('plateType').value;
-            const size = document.getElementById('plateSize').value;
-            const border = document.getElementById('plateBorder').value.trim();
-            const price = document.getElementById('platePrice').value;
-
             if (!customer || !vehicle) {
-                showAlert("Please fill in all fields!", "warning");
+                showAlert('Fill all fields!', 'warning');
                 return;
             }
 
             const order = {
                 customerName: customer,
                 serviceType: 'NumberPlate',
-                fileDesc: `Number Plate: ${vehicle} (${type}, ${size})${border ? ' - ' + border : ''}`,
-                amount: parseInt(price),
+                fileDesc: `Plate: ${vehicle} (${document.getElementById('vehicleType').value})`,
+                amount: parseInt(document.getElementById('platePrice').value),
                 paymentStatus: 'Pending',
                 status: 'Pending',
-                plateDetails: {
-                    number: vehicle,
-                    type: type,
-                    size: size,
-                    border: border
-                },
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: new Date().toISOString()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
+            showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert("Number plate order added successfully!", "success");
-                
-                document.getElementById('plateCustomer').value = "";
-                document.getElementById('vehicleNumber').value = "";
-                document.getElementById('plateBorder').value = "";
-                
+                showAlert('Plate order added!', 'success');
+                document.getElementById('plateCustomer').value = '';
+                document.getElementById('vehicleNumber').value = '';
                 loadOrders();
-            } catch (error) {
-                console.error("Error adding plate order:", error);
-                showAlert("Failed to add number plate order!", "error");
+            } catch (err) {
+                showAlert('Error adding order!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Communication functions
+        // Send Message
         function sendMessage(type) {
-            const customer = document.getElementById('msgCustomer').value.trim();
             const phone = document.getElementById('msgPhone').value.trim();
-            const message = document.getElementById('msgContent').value.trim();
+            const msg = document.getElementById('msgContent').value.trim();
 
-            if (!customer || !phone || !message) {
-                showAlert("Please fill in all fields!", "warning");
+            if (!phone || !msg) {
+                showAlert('Fill all fields!', 'warning');
                 return;
             }
 
+            let formatted = phone.replace(/\D/g, '');
+            if (formatted.startsWith('0')) formatted = '94' + formatted.substring(1);
+
             if (type === 'whatsapp') {
-                // Format phone number for WhatsApp
-                let whatsappNumber = phone.replace(/\D/g, '');
-                if (whatsappNumber.startsWith('0')) {
-                    whatsappNumber = '94' + whatsappNumber.substring(1);
+                window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, '_blank');
+            } else {
+                window.location.href = `sms:${phone}?body=${encodeURIComponent(msg)}`;
+            }
+        }
+
+        // Set Message Template
+        function setMessageTemplate(type) {
+            const templates = {
+                ready: 'Hello {customer}, your order is ready for pickup!',
+                payment: 'Hello {customer}, this is a reminder about your pending payment.'
+            };
+            document.getElementById('msgContent').value = templates[type] || '';
+        }
+
+        // Payment Modal
+        function openPaymentModal(id, amount) {
+            currentOrderId = id;
+            document.getElementById('remainingAmount').value = amount;
+            document.getElementById('payAmount').value = amount;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            currentOrderId = null;
+        }
+
+        async function processPayment() {
+            const pay = parseInt(document.getElementById('payAmount').value);
+            const remain = parseInt(document.getElementById('remainingAmount').value);
+
+            if (!pay || pay <= 0 || pay > remain) {
+                showAlert('Invalid amount!', 'warning');
+                return;
+            }
+
+            showLoading();
+            try {
+                const doc = await db.collection('orders').doc(currentOrderId).get();
+                const data = doc.data();
+                const newAdvance = (data.advanceAmount || 0) + pay;
+
+                if (newAdvance >= data.amount) {
+                    await db.collection('orders').doc(currentOrderId).update({
+                        paymentStatus: 'Paid',
+                        advanceAmount: data.amount
+                    });
+                } else {
+                    await db.collection('orders').doc(currentOrderId).update({
+                        advanceAmount: newAdvance
+                    });
                 }
 
-                // Create WhatsApp URL
-                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-                
-                // Open WhatsApp in new tab
-                window.open(whatsappUrl, '_blank');
-            } else if (type === 'sms') {
-                // SMS (using default SMS app)
-                window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
+                showAlert('Payment processed!', 'success');
+                closeModal();
+                loadOrders();
+            } catch (err) {
+                showAlert('Error processing payment!', 'error');
+            } finally {
+                hideLoading();
             }
-
-            // Add to message history
-            addToMessageHistory(customer, phone, message, type);
-
-            // Clear inputs
-            document.getElementById('msgCustomer').value = "";
-            document.getElementById('msgPhone').value = "";
-            document.getElementById('msgContent').value = "";
-
-            showAlert(`Message sent via ${type}!`, "success");
         }
 
-        function setMessageTemplate(type) {
-            let message = '';
-            switch(type) {
-                case 'ready':
-                    message = 'Hello {customer}, your order is ready for pickup. Thank you for choosing 3R PRINTERS!';
-                    break;
-                case 'payment':
-                    message = 'Hello {customer}, this is a friendly reminder about your pending payment. Please contact us to settle the balance.';
-                    break;
-                case 'delay':
-                    message = 'Hello {customer}, we apologize for the delay. Your order is being processed and will be ready soon.';
-                    break;
-            }
-            document.getElementById('msgContent').value = message;
+        // Edit Modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentEditId = null;
         }
 
-        function addToMessageHistory(customer, phone, message, type) {
-            const messageList = document.getElementById('messageList');
-            const messageItem = document.createElement('div');
-            messageItem.className = 'message-item';
-            messageItem.innerHTML = `
-                <strong><i class="fas fa-user"></i> ${customer}</strong><br>
-                <small><i class="fas fa-phone"></i> ${phone} (${type})</small>
-                <p style="margin-top: 5px;">${message}</p>
-                <small style="color: var(--secondary);"><i class="fas fa-clock"></i> ${new Date().toLocaleString()}</small>
-            `;
-            messageList.insertBefore(messageItem, messageList.firstChild);
+        // Update Statistics
+        function updateStatistics() {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            let daily = 0, monthly = 0, todayOrders = 0, pending = 0;
+            const currentMonth = today.getMonth();
+
+            allOrders.forEach(o => {
+                const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date(o.timestamp);
+                const paid = o.paymentStatus === 'Paid' ? o.amount : 
+                            o.paymentStatus === 'Advance' ? o.advanceAmount : 0;
+
+                if (date >= today) {
+                    daily += paid;
+                    todayOrders++;
+                }
+                if (date.getMonth() === currentMonth) monthly += paid;
+                if (o.status !== 'Picked') pending++;
+            });
+
+            document.getElementById('daily-total').innerHTML = `Rs. ${daily.toLocaleString()}`;
+            document.getElementById('monthly-total').innerHTML = `Rs. ${monthly.toLocaleString()}`;
+            document.getElementById('today-orders').textContent = todayOrders;
+            document.getElementById('pending-orders').textContent = pending;
         }
 
-        // Show alert function
-        function showAlert(message, type) {
+        // Show Alert
+        function showAlert(msg, type) {
             const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            
-            const icon = type === 'success' ? 'fa-check-circle' : 
-                        type === 'warning' ? 'fa-exclamation-circle' : 
-                        type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
-            
-            alert.innerHTML = `
-                <i class="fas ${icon}"></i>
-                ${message}
-            `;
-            
             alert.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10b981' : 
-                            type === 'warning' ? '#f59e0b' : 
-                            type === 'error' ? '#ef4444' : '#3b82f6'};
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                z-index: 10000;
+                position: fixed; top: 20px; right: 20px; z-index: 20000;
+                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#ef4444'};
+                color: white; padding: 12px 20px; border-radius: 8px;
+                display: flex; align-items: center; gap: 10px;
                 animation: slideIn 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 14px;
             `;
-
+            alert.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
             document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
+        }
 
-            setTimeout(() => {
-                alert.remove();
-            }, 3000);
+        // Payment Status Change
+        document.getElementById('paymentStatus')?.addEventListener('change', function() {
+            const group = document.getElementById('advanceAmountGroup');
+            group.style.display = this.value === 'Advance' ? 'block' : 'none';
+        });
+
+        // Update File Name
+        function updateFileName() {
+            const input = document.getElementById('fileInput');
+            document.getElementById('fileName').textContent = input.files.length ? input.files[0].name : 'No file selected';
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            updateDate();
-            setTimeout(checkConnection, 1000);
-            
-            // Add keyboard shortcut (Ctrl/Cmd + Enter)
-            document.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    addOrder();
-                }
-            });
+            document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
         });
     </script>
 </body>
