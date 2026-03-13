@@ -11,7 +11,6 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <!-- html2pdf for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -87,6 +86,22 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Login Screen */
@@ -197,6 +212,7 @@
             color: var(--primary);
             text-decoration: none;
             cursor: pointer;
+            font-weight: 500;
         }
 
         .login-btn {
@@ -227,6 +243,7 @@
             color: var(--primary);
             text-decoration: none;
             cursor: pointer;
+            font-weight: 500;
         }
 
         /* Forgot Password Modal */
@@ -245,7 +262,7 @@
         }
 
         .forgot-modal.active {
-            display: flex !important;
+            display: flex;
         }
 
         .forgot-content {
@@ -278,41 +295,15 @@
             font-size: 14px;
         }
 
-        .reset-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 24px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .cancel-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--secondary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .cancel-btn:hover {
-            background: var(--dark);
+            color: var(--secondary);
         }
 
         /* Loading Overlay */
@@ -326,7 +317,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 30000;
+            z-index: 99999;
         }
 
         .loading-overlay.active {
@@ -344,26 +335,47 @@
             border-top: 5px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            margin: 0 auto 15px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 100000;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-lg);
         }
 
-        @keyframes slideUp {
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        @keyframes slideIn {
             from {
+                transform: translateX(100%);
                 opacity: 0;
-                transform: translateY(50px);
             }
             to {
+                transform: translateX(0);
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
-        /* Main Container */
+        /* Main Dashboard */
         .dashboard {
             max-width: 100%;
             margin: 0 auto;
@@ -371,6 +383,8 @@
             transform: translateY(20px);
             transition: all 0.5s ease;
             padding: 10px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .dashboard.visible {
@@ -456,6 +470,7 @@
 
         .connected .status-dot {
             background: var(--success);
+            animation: pulse 2s infinite;
         }
 
         .disconnected .status-dot {
@@ -469,6 +484,11 @@
             font-size: 18px;
             cursor: pointer;
             padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.1);
         }
 
         .date-badge {
@@ -483,7 +503,7 @@
             border: 1px solid var(--border);
         }
 
-        /* Tab Navigation - Mobile Friendly */
+        /* Tab Navigation */
         .tab-nav {
             display: flex;
             gap: 5px;
@@ -514,6 +534,7 @@
             align-items: center;
             gap: 5px;
             transition: all 0.3s ease;
+            flex: 0 0 auto;
         }
 
         .tab-btn i {
@@ -531,9 +552,18 @@
             border-radius: 16px;
             padding: 15px;
             box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
         }
 
-        /* Stats Grid - Mobile Friendly */
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -548,6 +578,17 @@
             color: white;
             position: relative;
             overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
 
         .stat-icon {
@@ -583,6 +624,7 @@
             margin-bottom: 15px;
             font-size: 16px;
             font-weight: 600;
+            color: var(--dark);
         }
 
         .section-title i {
@@ -608,6 +650,7 @@
             transform: translateY(-50%);
             color: var(--secondary);
             font-size: 14px;
+            z-index: 1;
         }
 
         .input-group input,
@@ -619,10 +662,19 @@
             border-radius: 8px;
             font-size: 13px;
             background: white;
+            font-family: 'Inter', sans-serif;
         }
 
         .input-group textarea {
             min-height: 60px;
+            resize: vertical;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
         }
 
         /* File Upload */
@@ -632,6 +684,13 @@
             padding: 15px;
             text-align: center;
             margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
         }
 
         .file-upload i {
@@ -645,7 +704,13 @@
             color: var(--secondary);
         }
 
-        /* Buttons - Mobile Friendly */
+        .file-name {
+            font-size: 11px;
+            color: var(--primary);
+            margin-top: 5px;
+        }
+
+        /* Buttons */
         .btn-primary, .btn-success, .btn-warning, .btn-danger {
             width: 100%;
             padding: 12px;
@@ -659,29 +724,34 @@
             gap: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            color: white;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
         }
 
         .btn-success {
             background: linear-gradient(135deg, var(--success), #059669);
-            color: white;
         }
 
         .btn-warning {
             background: linear-gradient(135deg, var(--warning), #d97706);
-            color: white;
         }
 
         .btn-danger {
             background: linear-gradient(135deg, var(--danger), #dc2626);
-            color: white;
         }
 
-        /* Order List - Mobile Friendly */
+        .btn-primary:hover,
+        .btn-success:hover,
+        .btn-warning:hover,
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Order List */
         .list-section {
             background: white;
             border-radius: 12px;
@@ -716,6 +786,7 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 11px;
+            background: white;
         }
 
         .badge {
@@ -724,11 +795,42 @@
             padding: 3px 6px;
             border-radius: 12px;
             font-size: 10px;
+            font-weight: 600;
         }
 
-        /* Mobile Card View for Orders */
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin: 10px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 8px 8px 35px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Mobile Cards */
         .mobile-cards {
             display: none;
+            padding: 0 10px 10px;
         }
 
         @media (max-width: 768px) {
@@ -747,6 +849,12 @@
                 padding: 12px;
                 margin-bottom: 10px;
                 box-shadow: var(--shadow);
+                transition: all 0.3s ease;
+            }
+
+            .order-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
             }
             
             .order-card-header {
@@ -761,18 +869,18 @@
                 font-size: 14px;
             }
             
-            .order-status {
-                font-size: 11px;
-                padding: 3px 8px;
-                border-radius: 12px;
-            }
-            
             .order-details {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
                 margin-bottom: 8px;
                 font-size: 12px;
+                color: var(--secondary);
+            }
+
+            .order-details i {
+                width: 16px;
+                color: var(--primary);
             }
             
             .order-actions {
@@ -786,7 +894,42 @@
             .order-actions button {
                 padding: 5px 8px;
                 font-size: 11px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 500;
             }
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: var(--light);
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--secondary);
+            font-style: italic;
         }
 
         /* Status Badges */
@@ -807,11 +950,34 @@
         .status-ready { background: rgba(16, 185, 129, 0.1); color: var(--success); }
         .status-picked { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
 
-        /* Stock Cards - Mobile */
+        /* Action Buttons */
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            color: var(--secondary);
+        }
+
+        .action-btn:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        /* Stock Grid */
         .stock-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 10px;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 640px) {
+            .stock-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .stock-card {
@@ -819,6 +985,12 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stock-card.low-stock {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
         }
 
         .stock-header {
@@ -850,77 +1022,32 @@
             color: var(--primary);
         }
 
-        /* Bill Paper - Mobile */
-        .bill-paper {
-            padding: 15px;
-            font-size: 12px;
-        }
-
-        .bill-table {
+        .stock-unit {
             font-size: 11px;
+            font-weight: 400;
+            color: var(--secondary);
         }
 
-        .bill-table th,
-        .bill-table td {
+        .stock-actions {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .stock-actions input {
+            flex: 1;
             padding: 5px;
-        }
-
-        /* Modal - Mobile */
-        .modal-content {
-            padding: 20px;
-            width: 95%;
-        }
-
-        /* Templates Grid */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .template-card {
-            padding: 10px;
-        }
-
-        .template-card i {
-            font-size: 24px;
-        }
-
-        .template-card h4 {
+            border: 1px solid var(--border);
+            border-radius: 4px;
             font-size: 12px;
         }
 
-        /* Search Box */
-        .search-box {
-            position: relative;
-            margin: 10px;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--secondary);
-            font-size: 14px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 8px 8px 8px 35px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            font-size: 13px;
-        }
-
-        /* Customer Select for Bills */
-        .customer-select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 13px;
+        .stock-actions button {
+            padding: 5px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         /* Alert Banner */
@@ -928,23 +1055,14 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 10px;
-            color: white;
-        }
-
-        .alert-banner i {
-            font-size: 20px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
         }
 
         .alert-content {
             flex: 1;
-        }
-
-        .alert-title {
-            font-weight: 600;
-            margin-bottom: 3px;
         }
 
         .alert-list {
@@ -952,32 +1070,133 @@
             font-size: 12px;
         }
 
-        /* Action Buttons */
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--secondary);
-            font-size: 14px;
-            cursor: pointer;
-            padding: 5px;
-            margin: 0 2px;
+        /* Bill Paper */
+        .bill-paper {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
         }
 
-        .action-btn:hover {
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .bill-table th,
+        .bill-table td {
+            padding: 5px;
+            border: 1px solid var(--border);
+        }
+
+        .bill-table th {
+            background: var(--light);
+        }
+
+        .bill-totals {
+            text-align: right;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+
+        /* Templates Grid */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .template-card {
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .template-card i {
+            font-size: 24px;
+            margin-bottom: 5px;
             color: var(--primary);
         }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 30px;
-            color: var(--secondary);
+        .template-card:hover i {
+            color: white;
         }
 
-        .empty-state i {
-            font-size: 48px;
+        .template-card h4 {
+            font-size: 12px;
+        }
+
+        /* Customer Select */
+        .customer-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             margin-bottom: 10px;
-            opacity: 0.5;
+            font-size: 13px;
+            background: white;
         }
     </style>
 </head>
@@ -1015,7 +1234,7 @@
                 
                 <div class="login-options">
                     <label class="remember-me">
-                        <input type="checkbox"> Remember me
+                        <input type="checkbox" id="rememberMe"> Remember me
                     </label>
                     <a class="forgot-password" onclick="showForgotPassword()">Forgot Password?</a>
                 </div>
@@ -1031,7 +1250,7 @@
         </div>
     </div>
 
-    <!-- Sign Up Screen (Initially Hidden) -->
+    <!-- Sign Up Screen -->
     <div id="signupScreen" class="login-screen" style="display: none;">
         <div class="login-card">
             <div class="login-header">
@@ -1088,11 +1307,11 @@
                 <input type="email" id="resetEmail" placeholder="Email Address">
             </div>
             
-            <button class="reset-btn" onclick="sendResetLink()">
+            <button class="login-btn" onclick="sendResetLink()" style="margin-top: 15px;">
                 <i class="fas fa-paper-plane"></i> Send Reset Link
             </button>
             
-            <button class="cancel-btn" onclick="closeForgotPassword()">
+            <button class="login-btn" style="background: var(--secondary); margin-top: 10px;" onclick="closeForgotPassword()">
                 Cancel
             </button>
         </div>
@@ -1130,32 +1349,25 @@
         <!-- Tab Navigation -->
         <div class="tab-nav">
             <button class="tab-btn active" onclick="showTab('orders')">
-                <i class="fas fa-shopping-cart"></i>
-                Orders
+                <i class="fas fa-shopping-cart"></i> Orders
             </button>
             <button class="tab-btn" onclick="showTab('stock')">
-                <i class="fas fa-boxes"></i>
-                Stock
+                <i class="fas fa-boxes"></i> Stock
             </button>
             <button class="tab-btn" onclick="showTab('bills')">
-                <i class="fas fa-file-invoice"></i>
-                Bills
+                <i class="fas fa-file-invoice"></i> Bills
             </button>
             <button class="tab-btn" onclick="showTab('seals')">
-                <i class="fas fa-stamp"></i>
-                Seals
+                <i class="fas fa-stamp"></i> Seals
             </button>
             <button class="tab-btn" onclick="showTab('mementos')">
-                <i class="fas fa-gift"></i>
-                Mementos
+                <i class="fas fa-gift"></i> Mementos
             </button>
             <button class="tab-btn" onclick="showTab('plates')">
-                <i class="fas fa-car"></i>
-                Plates
+                <i class="fas fa-car"></i> Plates
             </button>
             <button class="tab-btn" onclick="showTab('communication')">
-                <i class="fas fa-comments"></i>
-                Chat
+                <i class="fas fa-comments"></i> Chat
             </button>
         </div>
 
@@ -1199,11 +1411,11 @@
                 </div>
 
                 <!-- Low Stock Alert -->
-                <div id="stockAlert" class="alert-banner" style="display: none; background: var(--danger);">
+                <div id="stockAlert" class="alert-banner" style="display: none; background: var(--danger); color: white;">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="alert-content">
-                        <div class="alert-title">Low Stock Alert!</div>
-                        <ul class="alert-list" id="stockAlertList"></ul>
+                        <div class="alert-title" style="font-weight: 600; margin-bottom: 3px;">Low Stock Alert!</div>
+                        <ul class="alert-list" id="stockAlertList" style="font-size: 12px; margin-left: 15px;"></ul>
                     </div>
                 </div>
 
@@ -1249,7 +1461,7 @@
 
                         <div class="input-group">
                             <i class="fas fa-money-bill"></i>
-                            <select id="paymentStatus">
+                            <select id="paymentStatus" onchange="toggleAdvanceField()">
                                 <option value="Paid">Fully Paid</option>
                                 <option value="Advance">Advance</option>
                                 <option value="Pending">Pending</option>
@@ -1270,12 +1482,12 @@
                     </div>
                     <input type="file" id="fileInput" style="display: none;" onchange="updateFileName()">
 
-                    <button class="btn-primary" onclick="addOrder()" id="addOrderBtn">
+                    <button class="btn-primary" onclick="addOrder()">
                         <i class="fas fa-save"></i> Add Order
                     </button>
                 </div>
 
-                <!-- Order List - Mobile Cards -->
+                <!-- Order List -->
                 <div class="list-section">
                     <div class="list-header">
                         <h3><i class="fas fa-list"></i> All Orders</h3>
@@ -1298,7 +1510,7 @@
                     <!-- Mobile Cards View -->
                     <div class="mobile-cards" id="orderCards"></div>
 
-                    <!-- Table View (Hidden on Mobile) -->
+                    <!-- Table View -->
                     <div class="table-container">
                         <table id="orderTable">
                             <thead>
@@ -1598,11 +1810,11 @@
     </div>
 
     <!-- Payment Modal -->
-    <div id="paymentModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
-        <div class="modal-content" style="background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 400px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3>Process Payment</h3>
-                <button onclick="closeModal()" style="background: none; border: none; font-size: 20px;">&times;</button>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             <div class="form-grid">
                 <div class="input-group">
@@ -1619,11 +1831,11 @@
     </div>
 
     <!-- Edit Order Modal -->
-    <div id="editModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
-        <div class="modal-content" style="background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3>Edit Order</h3>
-                <button onclick="closeEditModal()" style="background: none; border: none; font-size: 20px;">&times;</button>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
             </div>
             <div class="form-grid">
                 <div class="input-group">
@@ -1675,14 +1887,12 @@
         // Initialize Firebase
         let db, auth;
         try {
-            const app = firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
+            firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
-            
-            db.enablePersistence().catch(err => console.log('Persistence error:', err));
+            db = firebase.firestore();
             console.log("Firebase initialized successfully");
         } catch (error) {
-            console.error("Firebase init error:", error);
+            console.error("Firebase initialization error:", error);
         }
 
         // Global Variables
@@ -1695,10 +1905,13 @@
 
         // Splash Screen
         setTimeout(() => {
-            document.getElementById('splashScreen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splashScreen').style.display = 'none';
-            }, 500);
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500);
+            }
         }, 2000);
 
         // Auth State Observer
@@ -1707,68 +1920,117 @@
                 if (user) {
                     currentUser = user;
                     document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('signupScreen').style.display = 'none';
                     document.getElementById('dashboard').classList.add('visible');
+                    document.getElementById('connectionStatus').className = 'connection-status connected';
+                    document.getElementById('statusText').textContent = 'Connected';
                     loadOrders();
                     loadStock();
                     loadCustomersForBill();
-                    updateConnectionStatus(true);
                 } else {
                     document.getElementById('loginScreen').style.display = 'flex';
                     document.getElementById('dashboard').classList.remove('visible');
-                    updateConnectionStatus(false);
+                    document.getElementById('connectionStatus').className = 'connection-status disconnected';
+                    document.getElementById('statusText').textContent = 'Disconnected';
                 }
             });
         }
 
-        // Update Connection Status
-        function updateConnectionStatus(connected) {
-            const statusDiv = document.getElementById('connectionStatus');
-            const statusText = document.getElementById('statusText');
-            
-            if (connected) {
-                statusDiv.className = 'connection-status connected';
-                statusText.textContent = 'Connected';
-            } else {
-                statusDiv.className = 'connection-status disconnected';
-                statusText.textContent = 'Disconnected';
-            }
+        // Show/Hide Functions
+        function showSignUp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('signupScreen').style.display = 'flex';
+        }
+
+        function showLogin() {
+            document.getElementById('signupScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+        }
+
+        function showForgotPassword() {
+            document.getElementById('forgotModal').classList.add('active');
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotModal').classList.remove('active');
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-exclamation-triangle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         // Login Function
         function login() {
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
+            const rememberMe = document.getElementById('rememberMe').checked;
+
             if (!email || !password) {
-                showAlert('Please enter email and password!', 'warning');
+                showNotification('Please enter email and password!', 'warning');
                 return;
             }
 
             showLoading();
-            auth.signInWithEmailAndPassword(email, password)
+            
+            const persistence = rememberMe 
+                ? firebase.auth.Auth.Persistence.LOCAL 
+                : firebase.auth.Auth.Persistence.SESSION;
+            
+            auth.setPersistence(persistence)
+                .then(() => {
+                    return auth.signInWithEmailAndPassword(email, password);
+                })
                 .then(() => {
                     hideLoading();
+                    showNotification('Login successful!', 'success');
                 })
                 .catch(error => {
                     hideLoading();
-                    showAlert(error.message, 'error');
+                    let errorMessage = 'Login failed!';
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage = 'User not found!';
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorMessage = 'Wrong password!';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email!';
+                    }
+                    showNotification(errorMessage, 'error');
                 });
         }
 
         // Sign Up Function
         function signUp() {
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirmPassword').value;
 
             if (!name || !email || !password || !confirm) {
-                showAlert('Please fill all fields!', 'warning');
+                showNotification('Please fill all fields!', 'warning');
                 return;
             }
 
             if (password !== confirm) {
-                showAlert('Passwords do not match!', 'warning');
+                showNotification('Passwords do not match!', 'warning');
+                return;
+            }
+
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters!', 'warning');
                 return;
             }
 
@@ -1781,30 +2043,27 @@
                 })
                 .then(() => {
                     hideLoading();
-                    showAlert('Account created successfully!', 'success');
+                    showNotification('Account created successfully!', 'success');
                     showLogin();
                 })
                 .catch(error => {
                     hideLoading();
-                    showAlert(error.message, 'error');
+                    let errorMessage = 'Sign up failed!';
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = 'Email already in use!';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email!';
+                    }
+                    showNotification(errorMessage, 'error');
                 });
         }
 
-        // Forgot Password Functions
-        function showForgotPassword() {
-            document.getElementById('forgotModal').classList.add('active');
-        }
-
-        function closeForgotPassword() {
-            document.getElementById('forgotModal').classList.remove('active');
-            document.getElementById('resetEmail').value = '';
-        }
-
+        // Send Reset Link
         function sendResetLink() {
-            const email = document.getElementById('resetEmail').value;
-            
+            const email = document.getElementById('resetEmail').value.trim();
+
             if (!email) {
-                showAlert('Please enter your email address!', 'warning');
+                showNotification('Please enter your email!', 'warning');
                 return;
             }
 
@@ -1812,38 +2071,31 @@
             auth.sendPasswordResetEmail(email)
                 .then(() => {
                     hideLoading();
-                    showAlert('Password reset link sent to your email!', 'success');
+                    showNotification('Password reset link sent to your email!', 'success');
                     closeForgotPassword();
+                    document.getElementById('resetEmail').value = '';
                 })
                 .catch(error => {
                     hideLoading();
-                    showAlert(error.message, 'error');
+                    let errorMessage = 'Failed to send reset link!';
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage = 'User not found!';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email!';
+                    }
+                    showNotification(errorMessage, 'error');
                 });
         }
 
         // Logout
         function logout() {
-            auth.signOut();
-        }
-
-        // Show/Hide Screens
-        function showSignUp() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('signupScreen').style.display = 'flex';
-        }
-
-        function showLogin() {
-            document.getElementById('signupScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'flex';
-        }
-
-        // Loading Functions
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.add('active');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.remove('active');
+            auth.signOut()
+                .then(() => {
+                    showNotification('Logged out successfully!', 'success');
+                })
+                .catch(error => {
+                    showNotification('Error logging out!', 'error');
+                });
         }
 
         // Tab Switching
@@ -1857,6 +2109,20 @@
             if (tabName === 'stock') loadStock();
             if (tabName === 'bills') loadCustomersForBill();
             if (tabName === 'seals') displaySealStock();
+        }
+
+        // Toggle Advance Field
+        function toggleAdvanceField() {
+            const paymentStatus = document.getElementById('paymentStatus').value;
+            const advanceGroup = document.getElementById('advanceAmountGroup');
+            advanceGroup.style.display = paymentStatus === 'Advance' ? 'block' : 'none';
+        }
+
+        // Update File Name
+        function updateFileName() {
+            const input = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
+            fileName.textContent = input.files.length ? input.files[0].name : 'No file selected';
         }
 
         // Load Orders
@@ -1873,20 +2139,26 @@
                     displayOrders();
                     updateStatistics();
                 })
-                .catch(err => console.error("Error loading orders:", err));
+                .catch(err => {
+                    console.error("Error loading orders:", err);
+                    showNotification('Error loading orders!', 'error');
+                });
         }
 
-        // Display Orders (Mobile Cards)
+        // Display Orders
         function displayOrders() {
             const tbody = document.getElementById('orderTableBody');
             const cardsDiv = document.getElementById('orderCards');
+            
+            if (!tbody || !cardsDiv) return;
             
             tbody.innerHTML = '';
             cardsDiv.innerHTML = '';
 
             if (filteredOrders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No orders</td></tr>';
-                cardsDiv.innerHTML = '<div class="empty-state">No orders</div>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No orders found</td></tr>';
+                cardsDiv.innerHTML = '<div class="empty-state">No orders found</div>';
+                document.getElementById('order-count').textContent = '0';
                 return;
             }
 
@@ -1895,13 +2167,14 @@
                 const row = tbody.insertRow();
                 row.innerHTML = `
                     <td>${order.customerName || 'N/A'}</td>
-                    <td>${order.serviceType || 'Print'}</td>
-                    <td>Rs. ${order.amount || 0}</td>
+                    <td>${order.serviceType || 'Printing'}</td>
+                    <td>Rs. ${(order.amount || 0).toLocaleString()}</td>
                     <td><span class="status-badge status-${(order.paymentStatus || 'pending').toLowerCase()}">${order.paymentStatus || 'Pending'}</span></td>
                     <td><span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span></td>
                     <td>
-                        <button class="action-btn" onclick="editOrder('${order.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn" onclick="editOrder('${order.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" onclick="deleteOrder('${order.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                        ${order.paymentStatus === 'Advance' ? `<button class="action-btn" onclick="openPaymentModal('${order.id}', ${order.amount - (order.advanceAmount || 0)})" title="Pay"><i class="fas fa-money-bill"></i></button>` : ''}
                     </td>
                 `;
 
@@ -1911,16 +2184,16 @@
                 card.innerHTML = `
                     <div class="order-card-header">
                         <span class="order-customer">${order.customerName || 'N/A'}</span>
-                        <span class="order-status status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
+                        <span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
                     </div>
                     <div class="order-details">
                         <div><i class="fas fa-phone"></i> ${order.phone || 'N/A'}</div>
-                        <div><i class="fas fa-file"></i> ${order.serviceType || 'Print'}</div>
-                        <div><i class="fas fa-rupee-sign"></i> Rs. ${order.amount || 0}</div>
+                        <div><i class="fas fa-file"></i> ${order.serviceType || 'Printing'}</div>
+                        <div><i class="fas fa-rupee-sign"></i> Rs. ${(order.amount || 0).toLocaleString()}</div>
                         <div><i class="fas fa-money-bill"></i> <span class="status-badge status-${(order.paymentStatus || 'pending').toLowerCase()}">${order.paymentStatus || 'Pending'}</span></div>
                     </div>
                     <div class="order-actions">
-                        <button class="btn-primary" onclick="updateOrderStatus('${order.id}', 'Printing')">Print</button>
+                        <button class="btn-primary" onclick="updateOrderStatus('${order.id}', 'Printing')" style="background: var(--warning);">Print</button>
                         <button class="btn-success" onclick="updateOrderStatus('${order.id}', 'Ready')">Ready</button>
                         <button class="btn-warning" onclick="updateOrderStatus('${order.id}', 'Picked')">Pick</button>
                         <button class="btn-danger" onclick="deleteOrder('${order.id}')">Del</button>
@@ -1934,13 +2207,16 @@
 
         // Add Order
         async function addOrder() {
-            if (!db) return;
+            if (!db) {
+                showNotification('Database not initialized!', 'error');
+                return;
+            }
 
             const name = document.getElementById('custName').value.trim();
             const amount = document.getElementById('totalAmount').value;
 
             if (!name || !amount) {
-                showAlert('Please fill required fields!', 'warning');
+                showNotification('Please fill required fields!', 'warning');
                 return;
             }
 
@@ -1960,17 +2236,18 @@
             showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert('Order added!', 'success');
+                showNotification('Order added successfully!', 'success');
                 document.getElementById('custName').value = '';
                 document.getElementById('phone').value = '';
                 document.getElementById('fileDesc').value = '';
                 document.getElementById('totalAmount').value = '';
                 document.getElementById('advanceAmount').value = '';
-                document.getElementById('fileName').textContent = 'No file selected';
                 document.getElementById('fileInput').value = '';
+                document.getElementById('fileName').textContent = 'No file selected';
                 loadOrders();
             } catch (err) {
-                showAlert('Error adding order!', 'error');
+                console.error("Error adding order:", err);
+                showNotification('Error adding order!', 'error');
             } finally {
                 hideLoading();
             }
@@ -1987,7 +2264,7 @@
             document.getElementById('editAmount').value = order.amount || '';
             document.getElementById('editPayment').value = order.paymentStatus || 'Pending';
             document.getElementById('editStatus').value = order.status || 'Pending';
-            document.getElementById('editModal').style.display = 'flex';
+            document.getElementById('editModal').classList.add('active');
         }
 
         // Update Order
@@ -2005,11 +2282,12 @@
             showLoading();
             try {
                 await db.collection('orders').doc(currentEditId).update(updates);
-                showAlert('Order updated!', 'success');
+                showNotification('Order updated successfully!', 'success');
                 closeEditModal();
                 loadOrders();
             } catch (err) {
-                showAlert('Error updating order!', 'error');
+                console.error("Error updating order:", err);
+                showNotification('Error updating order!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2017,15 +2295,16 @@
 
         // Delete Order
         async function deleteOrder(id) {
-            if (!confirm('Delete this order?')) return;
+            if (!confirm('Are you sure you want to delete this order?')) return;
 
             showLoading();
             try {
                 await db.collection('orders').doc(id).delete();
-                showAlert('Order deleted!', 'success');
+                showNotification('Order deleted successfully!', 'success');
                 loadOrders();
             } catch (err) {
-                showAlert('Error deleting order!', 'error');
+                console.error("Error deleting order:", err);
+                showNotification('Error deleting order!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2036,10 +2315,11 @@
             showLoading();
             try {
                 await db.collection('orders').doc(id).update({ status });
-                showAlert(`Status updated to ${status}!`, 'success');
+                showNotification(`Status updated to ${status}!`, 'success');
                 loadOrders();
             } catch (err) {
-                showAlert('Error updating status!', 'error');
+                console.error("Error updating status:", err);
+                showNotification('Error updating status!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2077,16 +2357,22 @@
                         stockItems.push({ id: doc.id, ...doc.data() });
                     });
                     displayStock();
+                })
+                .catch(err => {
+                    console.error("Error loading stock:", err);
+                    showNotification('Error loading stock!', 'error');
                 });
         }
 
         // Display Stock
         function displayStock() {
             const grid = document.getElementById('stockGrid');
+            if (!grid) return;
+            
             grid.innerHTML = '';
 
             if (stockItems.length === 0) {
-                grid.innerHTML = '<div class="empty-state">No stock</div>';
+                grid.innerHTML = '<div class="empty-state">No stock items found</div>';
                 return;
             }
 
@@ -2103,10 +2389,10 @@
                         </div>
                     </div>
                     <div class="stock-actions">
-                        <input type="number" id="addStock-${item.id}" placeholder="Qty" min="1">
-                        <button class="btn-success" onclick="addToStock('${item.id}')">+</button>
-                        <button class="btn-danger" onclick="removeFromStock('${item.id}')">-</button>
-                        <button class="btn-danger" onclick="deleteStockItem('${item.id}')"><i class="fas fa-trash"></i></button>
+                        <input type="number" id="addStock-${item.id}" placeholder="Qty" min="1" value="1">
+                        <button class="btn-success" onclick="addToStock('${item.id}')" style="padding: 5px 10px;">+</button>
+                        <button class="btn-danger" onclick="removeFromStock('${item.id}')" style="padding: 5px 10px;">-</button>
+                        <button class="btn-danger" onclick="deleteStockItem('${item.id}')" style="padding: 5px 10px;"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -2122,7 +2408,7 @@
             const qty = document.getElementById('stockQuantity').value;
 
             if (!name || !qty) {
-                showAlert('Please fill fields!', 'warning');
+                showNotification('Please fill all fields!', 'warning');
                 return;
             }
 
@@ -2130,19 +2416,20 @@
                 name: name,
                 unit: document.getElementById('stockUnit').value,
                 quantity: parseInt(qty),
-                alertLevel: parseInt(document.getElementById('stockAlert').value) || 5,
-                maxLevel: parseInt(qty) * 2
+                alertLevel: parseInt(document.getElementById('stockAlert').value) || 5
             };
 
             showLoading();
             try {
                 await db.collection('stock').add(item);
-                showAlert('Stock added!', 'success');
+                showNotification('Stock added successfully!', 'success');
                 document.getElementById('stockName').value = '';
                 document.getElementById('stockQuantity').value = '';
+                document.getElementById('stockAlert').value = '';
                 loadStock();
             } catch (err) {
-                showAlert('Error adding stock!', 'error');
+                console.error("Error adding stock:", err);
+                showNotification('Error adding stock!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2152,7 +2439,10 @@
         async function addToStock(id) {
             const input = document.getElementById(`addStock-${id}`);
             const qty = parseInt(input.value);
-            if (!qty || qty <= 0) return;
+            if (!qty || qty <= 0) {
+                showNotification('Please enter valid quantity!', 'warning');
+                return;
+            }
 
             const item = stockItems.find(i => i.id === id);
             if (!item) return;
@@ -2162,10 +2452,11 @@
                 await db.collection('stock').doc(id).update({
                     quantity: item.quantity + qty
                 });
-                showAlert('Stock updated!', 'success');
+                showNotification('Stock updated successfully!', 'success');
                 loadStock();
             } catch (err) {
-                showAlert('Error updating stock!', 'error');
+                console.error("Error updating stock:", err);
+                showNotification('Error updating stock!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2175,11 +2466,14 @@
         async function removeFromStock(id) {
             const input = document.getElementById(`addStock-${id}`);
             const qty = parseInt(input.value);
-            if (!qty || qty <= 0) return;
+            if (!qty || qty <= 0) {
+                showNotification('Please enter valid quantity!', 'warning');
+                return;
+            }
 
             const item = stockItems.find(i => i.id === id);
             if (!item || item.quantity < qty) {
-                showAlert('Insufficient stock!', 'warning');
+                showNotification('Insufficient stock!', 'warning');
                 return;
             }
 
@@ -2188,10 +2482,11 @@
                 await db.collection('stock').doc(id).update({
                     quantity: item.quantity - qty
                 });
-                showAlert('Stock updated!', 'success');
+                showNotification('Stock updated successfully!', 'success');
                 loadStock();
             } catch (err) {
-                showAlert('Error updating stock!', 'error');
+                console.error("Error updating stock:", err);
+                showNotification('Error updating stock!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2199,36 +2494,19 @@
 
         // Delete Stock Item
         async function deleteStockItem(id) {
-            if (!confirm('Delete this stock item?')) return;
+            if (!confirm('Are you sure you want to delete this stock item?')) return;
 
             showLoading();
             try {
                 await db.collection('stock').doc(id).delete();
-                showAlert('Stock deleted!', 'success');
+                showNotification('Stock deleted successfully!', 'success');
                 loadStock();
             } catch (err) {
-                showAlert('Error deleting stock!', 'error');
+                console.error("Error deleting stock:", err);
+                showNotification('Error deleting stock!', 'error');
             } finally {
                 hideLoading();
             }
-        }
-
-        // Display Seal Stock
-        function displaySealStock() {
-            const sealSizes = stockItems.filter(item => 
-                item.name.toLowerCase().includes('seal') || 
-                item.name.toLowerCase().includes('stamp')
-            );
-            
-            const list = document.getElementById('sealStockList');
-            if (sealSizes.length === 0) {
-                list.innerHTML = '<p>No seal sizes in stock</p>';
-                return;
-            }
-
-            list.innerHTML = sealSizes.map(item => 
-                `<p>• ${item.name}: ${item.quantity} ${item.unit} available</p>`
-            ).join('');
         }
 
         // Check Low Stock
@@ -2236,6 +2514,8 @@
             const low = stockItems.filter(item => item.quantity <= item.alertLevel);
             const alert = document.getElementById('stockAlert');
             const list = document.getElementById('stockAlertList');
+
+            if (!alert || !list) return;
 
             if (low.length > 0) {
                 alert.style.display = 'flex';
@@ -2247,10 +2527,32 @@
             }
         }
 
+        // Display Seal Stock
+        function displaySealStock() {
+            const sealSizes = stockItems.filter(item => 
+                item.name.toLowerCase().includes('seal') || 
+                item.name.toLowerCase().includes('stamp')
+            );
+            
+            const list = document.getElementById('sealStockList');
+            if (!list) return;
+            
+            if (sealSizes.length === 0) {
+                list.innerHTML = '<p>No seal sizes in stock</p>';
+                return;
+            }
+
+            list.innerHTML = sealSizes.map(item => 
+                `<p>• ${item.name}: ${item.quantity} ${item.unit} available</p>`
+            ).join('');
+        }
+
         // Load Customers for Bill
         function loadCustomersForBill() {
             const customers = [...new Set(allOrders.map(o => o.customerName).filter(Boolean))];
             const select = document.getElementById('billCustomer');
+            if (!select) return;
+            
             select.innerHTML = '<option value="">Select Customer</option>' + 
                 customers.map(c => `<option value="${c}">${c}</option>`).join('');
         }
@@ -2258,8 +2560,10 @@
         // Load Customer Orders for Bill
         function loadCustomerOrders() {
             const customer = document.getElementById('billCustomer').value;
-            if (!customer) return;
-            document.getElementById('billPreview').style.display = 'none';
+            if (!customer) {
+                document.getElementById('billPreview').style.display = 'none';
+                return;
+            }
         }
 
         // Generate Bill
@@ -2268,13 +2572,13 @@
             const date = document.getElementById('billDate').value;
 
             if (!customer) {
-                showAlert('Select customer!', 'warning');
+                showNotification('Please select a customer!', 'warning');
                 return;
             }
 
             const orders = allOrders.filter(o => o.customerName === customer);
             if (orders.length === 0) {
-                showAlert('No orders for this customer!', 'warning');
+                showNotification('No orders found for this customer!', 'warning');
                 return;
             }
 
@@ -2283,18 +2587,18 @@
 
             orders.forEach(o => {
                 const paidAmt = o.paymentStatus === 'Paid' ? o.amount : 
-                               o.paymentStatus === 'Advance' ? o.advanceAmount : 0;
-                total += o.amount;
+                               o.paymentStatus === 'Advance' ? (o.advanceAmount || 0) : 0;
+                total += o.amount || 0;
                 paid += paidAmt;
-                billHTML += `<tr><td>${o.serviceType || 'Print'}</td><td>Rs. ${o.amount}</td><td>Rs. ${paidAmt}</td></tr>`;
+                billHTML += `<tr><td>${o.serviceType || 'Printing'}</td><td>Rs. ${(o.amount || 0).toLocaleString()}</td><td>Rs. ${paidAmt.toLocaleString()}</td></tr>`;
             });
 
             billHTML += '</table>';
-            billHTML += `<div class="bill-totals"><p>Total: Rs. ${total}</p><p>Paid: Rs. ${paid}</p><p>Balance: Rs. ${total - paid}</p></div>`;
+            billHTML += `<div class="bill-totals"><p><strong>Total:</strong> Rs. ${total.toLocaleString()}</p><p><strong>Paid:</strong> Rs. ${paid.toLocaleString()}</p><p><strong>Balance:</strong> Rs. ${(total - paid).toLocaleString()}</p></div>`;
 
             document.getElementById('billCustomerInfo').innerHTML = `
                 <p><strong>Customer:</strong> ${customer}</p>
-                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Date:</strong> ${date || new Date().toLocaleDateString()}</p>
             `;
             document.getElementById('billContent').innerHTML = billHTML;
             document.getElementById('billPreview').style.display = 'block';
@@ -2308,6 +2612,8 @@
         // Download Bill PDF
         function downloadBillPDF() {
             const element = document.getElementById('billPreview');
+            if (!element) return;
+            
             html2pdf().from(element).save(`bill-${Date.now()}.pdf`);
         }
 
@@ -2316,14 +2622,14 @@
             const customer = document.getElementById('billCustomer').value;
             const order = allOrders.find(o => o.customerName === customer);
             if (!order || !order.phone) {
-                showAlert('Phone number not found!', 'warning');
+                showNotification('Phone number not found!', 'warning');
                 return;
             }
 
             let phone = order.phone.replace(/\D/g, '');
             if (phone.startsWith('0')) phone = '94' + phone.substring(1);
 
-            const message = `Hello ${customer}, your bill from 3R PRINTERS is ready.`;
+            const message = `Hello ${customer}, your bill from 3R PRINTERS is ready. Total amount: Rs. ${order.amount || 0}`;
             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
@@ -2332,29 +2638,33 @@
             const customer = document.getElementById('sealCustomer').value.trim();
             const text = document.getElementById('sealText').value.trim();
             if (!customer || !text) {
-                showAlert('Fill all fields!', 'warning');
+                showNotification('Please fill all fields!', 'warning');
                 return;
             }
 
             const order = {
                 customerName: customer,
+                phone: '',
                 serviceType: 'Seal',
                 fileDesc: `Seal: ${text} (${document.getElementById('sealSize').value})`,
-                amount: parseInt(document.getElementById('sealPrice').value),
+                amount: parseInt(document.getElementById('sealPrice').value) || 500,
                 paymentStatus: 'Pending',
+                advanceAmount: 0,
                 status: 'Pending',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: new Date().toISOString()
             };
 
             showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert('Seal order added!', 'success');
+                showNotification('Seal order added successfully!', 'success');
                 document.getElementById('sealCustomer').value = '';
                 document.getElementById('sealText').value = '';
                 loadOrders();
             } catch (err) {
-                showAlert('Error adding order!', 'error');
+                console.error("Error adding seal order:", err);
+                showNotification('Error adding order!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2365,29 +2675,33 @@
             const customer = document.getElementById('mementoCustomer').value.trim();
             const text = document.getElementById('mementoText').value.trim();
             if (!customer || !text) {
-                showAlert('Fill all fields!', 'warning');
+                showNotification('Please fill all fields!', 'warning');
                 return;
             }
 
             const order = {
                 customerName: customer,
+                phone: '',
                 serviceType: 'Memento',
                 fileDesc: `Memento: ${text} (${document.getElementById('mementoType').value})`,
-                amount: parseInt(document.getElementById('mementoPrice').value),
+                amount: parseInt(document.getElementById('mementoPrice').value) || 2500,
                 paymentStatus: 'Pending',
+                advanceAmount: 0,
                 status: 'Pending',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: new Date().toISOString()
             };
 
             showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert('Memento order added!', 'success');
+                showNotification('Memento order added successfully!', 'success');
                 document.getElementById('mementoCustomer').value = '';
                 document.getElementById('mementoText').value = '';
                 loadOrders();
             } catch (err) {
-                showAlert('Error adding order!', 'error');
+                console.error("Error adding memento order:", err);
+                showNotification('Error adding order!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2398,29 +2712,33 @@
             const customer = document.getElementById('plateCustomer').value.trim();
             const vehicle = document.getElementById('vehicleNumber').value.trim();
             if (!customer || !vehicle) {
-                showAlert('Fill all fields!', 'warning');
+                showNotification('Please fill all fields!', 'warning');
                 return;
             }
 
             const order = {
                 customerName: customer,
+                phone: '',
                 serviceType: 'NumberPlate',
                 fileDesc: `Plate: ${vehicle} (${document.getElementById('vehicleType').value})`,
-                amount: parseInt(document.getElementById('platePrice').value),
+                amount: parseInt(document.getElementById('platePrice').value) || 1500,
                 paymentStatus: 'Pending',
+                advanceAmount: 0,
                 status: 'Pending',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: new Date().toISOString()
             };
 
             showLoading();
             try {
                 await db.collection('orders').add(order);
-                showAlert('Plate order added!', 'success');
+                showNotification('Number plate order added successfully!', 'success');
                 document.getElementById('plateCustomer').value = '';
                 document.getElementById('vehicleNumber').value = '';
                 loadOrders();
             } catch (err) {
-                showAlert('Error adding order!', 'error');
+                console.error("Error adding plate order:", err);
+                showNotification('Error adding order!', 'error');
             } finally {
                 hideLoading();
             }
@@ -2432,7 +2750,7 @@
             const msg = document.getElementById('msgContent').value.trim();
 
             if (!phone || !msg) {
-                showAlert('Fill all fields!', 'warning');
+                showNotification('Please fill all fields!', 'warning');
                 return;
             }
 
@@ -2455,16 +2773,16 @@
             document.getElementById('msgContent').value = templates[type] || '';
         }
 
-        // Payment Modal
+        // Payment Modal Functions
         function openPaymentModal(id, amount) {
             currentOrderId = id;
             document.getElementById('remainingAmount').value = amount;
             document.getElementById('payAmount').value = amount;
-            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('paymentModal').classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('paymentModal').classList.remove('active');
             currentOrderId = null;
         }
 
@@ -2473,7 +2791,7 @@
             const remain = parseInt(document.getElementById('remainingAmount').value);
 
             if (!pay || pay <= 0 || pay > remain) {
-                showAlert('Invalid amount!', 'warning');
+                showNotification('Please enter a valid amount!', 'warning');
                 return;
             }
 
@@ -2494,34 +2812,43 @@
                     });
                 }
 
-                showAlert('Payment processed!', 'success');
+                showNotification('Payment processed successfully!', 'success');
                 closeModal();
                 loadOrders();
             } catch (err) {
-                showAlert('Error processing payment!', 'error');
+                console.error("Error processing payment:", err);
+                showNotification('Error processing payment!', 'error');
             } finally {
                 hideLoading();
             }
         }
 
-        // Edit Modal
+        // Edit Modal Functions
         function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editModal').classList.remove('active');
             currentEditId = null;
         }
 
         // Update Statistics
         function updateStatistics() {
             const today = new Date();
-            today.setHours(0,0,0,0);
+            today.setHours(0, 0, 0, 0);
 
             let daily = 0, monthly = 0, todayOrders = 0, pending = 0;
             const currentMonth = today.getMonth();
 
             allOrders.forEach(o => {
-                const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date(o.timestamp);
-                const paid = o.paymentStatus === 'Paid' ? o.amount : 
-                            o.paymentStatus === 'Advance' ? o.advanceAmount : 0;
+                let date;
+                if (o.timestamp && o.timestamp.toDate) {
+                    date = o.timestamp.toDate();
+                } else if (o.createdAt) {
+                    date = new Date(o.createdAt);
+                } else {
+                    date = new Date();
+                }
+
+                const paid = o.paymentStatus === 'Paid' ? (o.amount || 0) : 
+                            o.paymentStatus === 'Advance' ? (o.advanceAmount || 0) : 0;
 
                 if (date >= today) {
                     daily += paid;
@@ -2537,36 +2864,12 @@
             document.getElementById('pending-orders').textContent = pending;
         }
 
-        // Update File Name
-        function updateFileName() {
-            const input = document.getElementById('fileInput');
-            document.getElementById('fileName').textContent = input.files.length ? input.files[0].name : 'No file selected';
-        }
-
-        // Show Alert
-        function showAlert(msg, type) {
-            const alert = document.createElement('div');
-            alert.style.cssText = `
-                position: fixed; top: 20px; right: 20px; z-index: 35000;
-                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#ef4444'};
-                color: white; padding: 12px 20px; border-radius: 8px;
-                display: flex; align-items: center; gap: 10px; max-width: 90%;
-                animation: slideIn 0.3s ease; box-shadow: var(--shadow-lg);
-            `;
-            alert.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.remove(), 3000);
-        }
-
-        // Payment Status Change
-        document.getElementById('paymentStatus')?.addEventListener('change', function() {
-            const group = document.getElementById('advanceAmountGroup');
-            group.style.display = this.value === 'Advance' ? 'block' : 'none';
-        });
-
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+            // Set today's date for bill
+            const today = new Date().toISOString().split('T')[0];
+            const billDate = document.getElementById('billDate');
+            if (billDate) billDate.value = today;
         });
     </script>
 </body>
