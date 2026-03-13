@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3R Printers - සම්පූර්ණ කළමනාකරණ පද්ධතිය</title>
+    <title>3R Printers - Complete Management System</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -12,6 +12,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -193,6 +195,8 @@
             padding: 20px 30px 0;
             border-radius: 20px 20px 0 0;
             border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .tab-btn {
@@ -655,7 +659,7 @@
 
         .action-btn:hover:not(:disabled) {
             background: var(--border);
-            color: var(--danger);
+            color: var(--primary);
         }
 
         .action-btn:disabled {
@@ -804,9 +808,84 @@
 
         .bill-paper {
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .bill-header-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed var(--border);
+        }
+
+        .bill-header-info h2 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .bill-header-info p {
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .bill-customer-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .bill-table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .bill-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bill-totals {
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+        }
+
+        .bill-totals p {
+            margin: 5px 0;
+        }
+
+        .bill-totals .grand-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .bill-footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--secondary);
+            font-size: 12px;
+        }
+
+        .bill-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
         }
 
         /* Number Plate Preview */
@@ -826,6 +905,45 @@
             font-family: 'Arial Black', sans-serif;
             font-size: 32px;
             letter-spacing: 2px;
+        }
+
+        /* Seal Preview */
+        .seal-preview {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .seal-sample {
+            background: white;
+            border: 2px solid var(--dark);
+            border-radius: 50%;
+            padding: 20px;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* Memento Preview */
+        .memento-preview {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .memento-sample {
+            background: white;
+            border: 2px solid var(--dark);
+            border-radius: 12px;
+            padding: 20px;
+            display: inline-block;
+            min-width: 250px;
         }
 
         /* Communication */
@@ -857,6 +975,41 @@
 
         .message-item.unread {
             background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* Template Grid */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .template-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .template-card i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .template-card h4 {
+            font-size: 14px;
+            color: var(--dark);
         }
 
         /* Empty State */
@@ -915,6 +1068,10 @@
 
             .comms-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .bill-actions {
+                flex-direction: column;
             }
         }
 
@@ -978,7 +1135,7 @@
             background: white;
             border-radius: 16px;
             padding: 30px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
@@ -1005,7 +1162,7 @@
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-spinner">
             <div class="spinner"></div>
-            <p>Firestore වෙත සම්බන්ධ වෙමින්...</p>
+            <p>Connecting to Firestore...</p>
         </div>
     </div>
 
@@ -1020,7 +1177,7 @@
             </div>
             <div class="connection-status" id="connectionStatus">
                 <span class="status-dot"></span>
-                <span id="statusText">සම්බන්ධ වෙමින්...</span>
+                <span id="statusText">Connecting...</span>
             </div>
             <div class="date-badge">
                 <i class="fas fa-calendar-alt"></i>
@@ -1032,23 +1189,31 @@
         <div class="tab-nav">
             <button class="tab-btn active" onclick="showTab('orders')">
                 <i class="fas fa-shopping-cart"></i>
-                ඇණවුම්
+                Orders
             </button>
             <button class="tab-btn" onclick="showTab('stock')">
                 <i class="fas fa-boxes"></i>
-                තොග
+                Stock
             </button>
             <button class="tab-btn" onclick="showTab('bills')">
                 <i class="fas fa-file-invoice"></i>
-                බිල්පත්
+                Bills
+            </button>
+            <button class="tab-btn" onclick="showTab('seals')">
+                <i class="fas fa-stamp"></i>
+                Seals
+            </button>
+            <button class="tab-btn" onclick="showTab('mementos')">
+                <i class="fas fa-gift"></i>
+                Mementos
             </button>
             <button class="tab-btn" onclick="showTab('plates')">
                 <i class="fas fa-car"></i>
-                නම්බර් ප්ලේට්
+                Number Plates
             </button>
             <button class="tab-btn" onclick="showTab('communication')">
                 <i class="fas fa-comments"></i>
-                සන්නිවේදන
+                Communication
             </button>
         </div>
 
@@ -1062,11 +1227,11 @@
                         <div class="stat-icon">
                             <i class="fas fa-rupee-sign"></i>
                         </div>
-                        <div class="stat-label">අද ආදායම</div>
+                        <div class="stat-label">Today's Income</div>
                         <div class="stat-value" id="daily-total">Rs. 0</div>
                         <div class="stat-sub">
                             <i class="fas fa-arrow-up"></i>
-                            <span id="dailyComparison">+0% ඊයේ සිට</span>
+                            <span id="dailyComparison">+0% from yesterday</span>
                         </div>
                     </div>
 
@@ -1074,11 +1239,11 @@
                         <div class="stat-icon">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
-                        <div class="stat-label">මාසික ආදායම</div>
+                        <div class="stat-label">Monthly Income</div>
                         <div class="stat-value" id="monthly-total">Rs. 0</div>
                         <div class="stat-sub">
                             <i class="fas fa-chart-line"></i>
-                            <span id="monthlyPeriod">මෙම මාසය</span>
+                            <span id="monthlyPeriod">This Month</span>
                         </div>
                     </div>
 
@@ -1086,11 +1251,11 @@
                         <div class="stat-icon">
                             <i class="fas fa-shopping-cart"></i>
                         </div>
-                        <div class="stat-label">අද ඇණවුම්</div>
+                        <div class="stat-label">Today's Orders</div>
                         <div class="stat-value" id="today-orders">0</div>
                         <div class="stat-sub">
                             <i class="fas fa-clock"></i>
-                            <span>අවසන් පැය 24</span>
+                            <span>Last 24 hours</span>
                         </div>
                     </div>
 
@@ -1098,11 +1263,11 @@
                         <div class="stat-icon">
                             <i class="fas fa-clock"></i>
                         </div>
-                        <div class="stat-label">බලා සිටින ඇණවුම්</div>
+                        <div class="stat-label">Pending Orders</div>
                         <div class="stat-value" id="pending-orders">0</div>
                         <div class="stat-sub">
                             <i class="fas fa-hourglass-half"></i>
-                            <span>සැකසීමට ඇත</span>
+                            <span>Awaiting processing</span>
                         </div>
                     </div>
                 </div>
@@ -1111,7 +1276,7 @@
                 <div id="stockAlert" class="alert-banner" style="display: none;">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="alert-content">
-                        <div class="alert-title">අඩු තොග ඇඟවීම!</div>
+                        <div class="alert-title">Low Stock Alert!</div>
                         <ul class="alert-list" id="stockAlertList">
                         </ul>
                     </div>
@@ -1121,68 +1286,68 @@
                 <div class="form-section">
                     <div class="section-title">
                         <i class="fas fa-plus-circle"></i>
-                        <span>අලුත් ඇණවුමක් එකතු කරන්න</span>
+                        <span>Add New Order</span>
                     </div>
                     
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="custName" placeholder="පාරිභෝගිකයාගේ නම">
+                            <input type="text" id="custName" placeholder="Customer Name">
                         </div>
                         
                         <div class="input-group">
                             <i class="fas fa-phone"></i>
-                            <input type="text" id="phone" placeholder="දුරකථන අංකය">
+                            <input type="text" id="phone" placeholder="Phone Number">
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-file"></i>
                             <select id="serviceType">
-                                <option value="A4 Color">A4 Color Print</option>
-                                <option value="A4 Black">A4 Black & White</option>
-                                <option value="Banner">Flex Banner</option>
-                                <option value="Sticker">Sticker Print</option>
+                                <option value="Printing">Printing Service</option>
+                                <option value="Seal">Seal / Stamp</option>
+                                <option value="Memento">Memento / Souvenir</option>
                                 <option value="NumberPlate">Number Plate</option>
-                                <option value="Other">වෙනත්</option>
+                                <option value="Banner">Flex Banner</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-tag"></i>
-                            <input type="text" id="fileDesc" placeholder="ෆයිල් එකේ නම / විස්තර">
+                            <input type="text" id="fileDesc" placeholder="File Name / Description">
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-rupee-sign"></i>
-                            <input type="number" id="totalAmount" placeholder="මුළු මුදල (Rs.)">
+                            <input type="number" id="totalAmount" placeholder="Total Amount (Rs.)">
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-money-bill"></i>
                             <select id="paymentStatus">
-                                <option value="Paid">සම්පූර්ණ ගෙවා ඇත (Paid)</option>
-                                <option value="Advance">අත්තිකාරම් (Advance)</option>
-                                <option value="Pending" selected>ගෙවීමට ඇත (Pending)</option>
+                                <option value="Paid">Fully Paid</option>
+                                <option value="Advance">Advance</option>
+                                <option value="Pending" selected>Pending</option>
                             </select>
                         </div>
 
                         <div class="input-group" id="advanceAmountGroup" style="display: none;">
                             <i class="fas fa-hand-holding-usd"></i>
-                            <input type="number" id="advanceAmount" placeholder="අත්තිකාරම් මුදල (Rs.)">
+                            <input type="number" id="advanceAmount" placeholder="Advance Amount (Rs.)">
                         </div>
                     </div>
 
                     <!-- File Upload -->
                     <div class="file-upload" onclick="document.getElementById('fileInput').click()">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <p>ෆයිල් එක Upload කිරීමට ක්ලික් කරන්න</p>
-                        <p class="file-name" id="fileName">කිසිදු ෆයිල් එකක් තෝරා නැත</p>
+                        <p>Click to upload file</p>
+                        <p class="file-name" id="fileName">No file selected</p>
                     </div>
                     <input type="file" id="fileInput" style="display: none;" onchange="updateFileName()">
 
                     <button class="btn-primary" onclick="addOrder()" id="addOrderBtn">
                         <i class="fas fa-save"></i>
-                        ඇණවුම ඇතුළත් කරන්න
+                        Add Order
                     </button>
                 </div>
 
@@ -1191,17 +1356,17 @@
                     <div class="list-header">
                         <h3>
                             <i class="fas fa-list"></i>
-                            සියලුම ඇණවුම්
+                            All Orders
                         </h3>
                         <div class="filter-section">
                             <select class="filter-select" id="statusFilter" onchange="filterOrders()">
-                                <option value="all">සියලුම ඇණවුම්</option>
-                                <option value="Paid">ගෙවූ ඇණවුම්</option>
-                                <option value="Pending">ගෙවීමට ඇති ඇණවුම්</option>
-                                <option value="Advance">අත්තිකාරම්</option>
-                                <option value="Printing">මුද්‍රණය වෙමින්</option>
-                                <option value="Ready">සූදානම්</option>
-                                <option value="Picked">රැගෙන ගිය</option>
+                                <option value="all">All Orders</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Advance">Advance</option>
+                                <option value="Printing">Printing</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Picked">Picked Up</option>
                             </select>
                             <span class="badge" id="order-count">0</span>
                         </div>
@@ -1209,28 +1374,28 @@
 
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="ඇණවුම් සොයන්න (නම, දුරකථන, ෆයිල්)..." onkeyup="searchOrders()">
+                        <input type="text" id="searchInput" placeholder="Search orders (name, phone, file)..." onkeyup="searchOrders()">
                     </div>
 
                     <div class="table-container">
                         <table id="orderTable">
                             <thead>
                                 <tr>
-                                    <th>ගනුදෙනුකරු</th>
-                                    <th>දුරකථන</th>
-                                    <th>සේවාව / ෆයිල්</th>
-                                    <th>මුදල</th>
-                                    <th>ගෙවීම්</th>
-                                    <th>තත්ත්වය</th>
-                                    <th>කාලය</th>
-                                    <th>ක්‍රියා</th>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>Service / File</th>
+                                    <th>Amount</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="orderTableBody">
                                 <tr class="empty-state">
                                     <td colspan="8">
                                         <i class="fas fa-inbox"></i>
-                                        <p>ඇණවුම් නොමැත</p>
+                                        <p>No orders found</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1244,40 +1409,42 @@
                 <div class="form-section">
                     <div class="section-title">
                         <i class="fas fa-plus-circle"></i>
-                        <span>නව තොගයක් එකතු කරන්න</span>
+                        <span>Add New Stock Item</span>
                     </div>
                     
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-box"></i>
-                            <input type="text" id="stockName" placeholder="බඩුවේ නම">
+                            <input type="text" id="stockName" placeholder="Item Name (e.g., A4 Paper, Flex, Ink)">
                         </div>
                         
                         <div class="input-group">
                             <i class="fas fa-balance-scale"></i>
                             <select id="stockUnit">
-                                <option value="pcs">කෑලි</option>
-                                <option value="bundles">බණ්ඩල්</option>
-                                <option value="rolls">රෝල්</option>
-                                <option value="liters">ලීටර්</option>
-                                <option value="kg">කිලෝ</option>
+                                <option value="pcs">Pieces</option>
+                                <option value="bundles">Bundles</option>
+                                <option value="rolls">Rolls</option>
+                                <option value="liters">Liters</option>
+                                <option value="kg">Kilograms</option>
+                                <option value="feet">Feet</option>
+                                <option value="meters">Meters</option>
                             </select>
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-sort-amount-up"></i>
-                            <input type="number" id="stockQuantity" placeholder="ප්‍රමාණය">
+                            <input type="number" id="stockQuantity" placeholder="Quantity">
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <input type="number" id="stockAlert" placeholder="අඩුම ප්‍රමාණ ඇඟවීම">
+                            <input type="number" id="stockAlert" placeholder="Low Stock Alert Level">
                         </div>
                     </div>
 
                     <button class="btn-primary" onclick="addStock()">
                         <i class="fas fa-save"></i>
-                        තොගය එකතු කරන්න
+                        Add Stock
                     </button>
                 </div>
 
@@ -1291,29 +1458,261 @@
             <div id="bills-tab" class="tab-pane">
                 <div class="bill-section">
                     <div class="bill-header">
-                        <h3><i class="fas fa-file-invoice"></i> බිල්පත් උත්පාදනය</h3>
-                        <button class="btn-success" onclick="generateBill()">
-                            <i class="fas fa-print"></i> නව බිල්පත
-                        </button>
+                        <h3><i class="fas fa-file-invoice"></i> Generate Bill</h3>
+                        <div>
+                            <button class="btn-success" onclick="generateBill()">
+                                <i class="fas fa-file"></i> Preview Bill
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="billCustomer" placeholder="පාරිභෝගිකයාගේ නම">
+                            <input type="text" id="billCustomer" placeholder="Customer Name">
                         </div>
                         
                         <div class="input-group">
                             <i class="fas fa-calendar"></i>
                             <input type="date" id="billDate" value="">
                         </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-hashtag"></i>
+                            <input type="text" id="billNumber" value="BILL-001" placeholder="Bill Number">
+                        </div>
                     </div>
 
                     <div class="bill-paper" id="billPreview" style="display: none;">
-                        <h4 style="text-align: center;">3R PRINTERS</h4>
-                        <p style="text-align: center;">බිල්පත</p>
-                        <hr>
+                        <div class="bill-header-info">
+                            <h2>3R PRINTERS</h2>
+                            <p>123 Main Street, Colombo | Tel: 077-1234567</p>
+                            <p>Email: 3rprinters@gmail.com</p>
+                        </div>
+                        
+                        <div class="bill-customer-info" id="billCustomerInfo">
+                            <!-- Customer info will be inserted here -->
+                        </div>
+
                         <div id="billContent"></div>
+
+                        <div class="bill-footer">
+                            <p>Thank you for your business!</p>
+                            <p>This is a computer generated bill</p>
+                        </div>
+
+                        <div class="bill-actions">
+                            <button class="btn-primary" onclick="printBill()">
+                                <i class="fas fa-print"></i> Print Bill
+                            </button>
+                            <button class="btn-success" onclick="downloadBillPDF()">
+                                <i class="fas fa-download"></i> Download PDF
+                            </button>
+                            <button class="btn-warning" onclick="shareBillWhatsApp()">
+                                <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bill Templates -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-template"></i>
+                        <span>Bill Templates</span>
+                    </div>
+                    <div class="template-grid">
+                        <div class="template-card" onclick="selectTemplate('standard')">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>Standard Bill</h4>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('detailed')">
+                            <i class="fas fa-file-invoice"></i>
+                            <h4>Detailed Bill</h4>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('simple')">
+                            <i class="fas fa-receipt"></i>
+                            <h4>Simple Receipt</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seals Tab -->
+            <div id="seals-tab" class="tab-pane">
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-stamp"></i>
+                        <span>Create New Seal / Stamp</span>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="sealCustomer" placeholder="Customer Name">
+                        </div>
+                        
+                        <div class="input-group">
+                            <i class="fas fa-font"></i>
+                            <input type="text" id="sealText" placeholder="Seal Text (e.g., Company Name)">
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-ruler"></i>
+                            <select id="sealSize">
+                                <option value="small">Small (30mm)</option>
+                                <option value="medium" selected>Medium (40mm)</option>
+                                <option value="large">Large (50mm)</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-shape"></i>
+                            <select id="sealShape">
+                                <option value="circle">Circle</option>
+                                <option value="rectangle">Rectangle</option>
+                                <option value="square">Square</option>
+                                <option value="oval">Oval</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-palette"></i>
+                            <select id="sealColor">
+                                <option value="blue">Blue</option>
+                                <option value="red">Red</option>
+                                <option value="black" selected>Black</option>
+                                <option value="green">Green</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-rupee-sign"></i>
+                            <input type="number" id="sealPrice" placeholder="Price (Rs.)" value="500">
+                        </div>
+                    </div>
+
+                    <div class="seal-preview">
+                        <div class="seal-sample" id="sealPreview">
+                            <div id="sealPreviewText">Sample Text</div>
+                            <div style="font-size: 12px; margin-top: 5px;">★★★★★</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="addSealOrder()">
+                        <i class="fas fa-save"></i>
+                        Add Seal Order
+                    </button>
+                </div>
+
+                <!-- Seal Templates -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-template"></i>
+                        <span>Seal Templates</span>
+                    </div>
+                    <div class="template-grid">
+                        <div class="template-card" onclick="loadSealTemplate('company')">
+                            <i class="fas fa-building"></i>
+                            <h4>Company Seal</h4>
+                        </div>
+                        <div class="template-card" onclick="loadSealTemplate('official')">
+                            <i class="fas fa-gavel"></i>
+                            <h4>Official Stamp</h4>
+                        </div>
+                        <div class="template-card" onclick="loadSealTemplate('personal')">
+                            <i class="fas fa-user-tie"></i>
+                            <h4>Personal Seal</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mementos Tab -->
+            <div id="mementos-tab" class="tab-pane">
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-gift"></i>
+                        <span>Create New Memento / Souvenir</span>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="mementoCustomer" placeholder="Recipient Name">
+                        </div>
+                        
+                        <div class="input-group">
+                            <i class="fas fa-font"></i>
+                            <input type="text" id="mementoText" placeholder="Engraving Text">
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-calendar"></i>
+                            <input type="text" id="mementoDate" placeholder="Date (e.g., 2024-03-13)">
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-tag"></i>
+                            <select id="mementoType">
+                                <option value="plaque">Plaque / Shield</option>
+                                <option value="trophy">Trophy</option>
+                                <option value="medal">Medal</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-palette"></i>
+                            <select id="mementoColor">
+                                <option value="gold">Gold</option>
+                                <option value="silver">Silver</option>
+                                <option value="bronze">Bronze</option>
+                                <option value="wood">Wood</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-rupee-sign"></i>
+                            <input type="number" id="mementoPrice" placeholder="Price (Rs.)" value="2500">
+                        </div>
+                    </div>
+
+                    <div class="memento-preview">
+                        <div class="memento-sample" id="mementoPreview">
+                            <i class="fas fa-star" style="font-size: 32px; color: gold;"></i>
+                            <h3 id="mementoPreviewText">Sample Text</h3>
+                            <p id="mementoPreviewDate">2024-03-13</p>
+                            <div style="margin-top: 10px;">★★★★★</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="addMementoOrder()">
+                        <i class="fas fa-save"></i>
+                        Add Memento Order
+                    </button>
+                </div>
+
+                <!-- Memento Templates -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-template"></i>
+                        <span>Memento Templates</span>
+                    </div>
+                    <div class="template-grid">
+                        <div class="template-card" onclick="loadMementoTemplate('appreciation')">
+                            <i class="fas fa-award"></i>
+                            <h4>Appreciation</h4>
+                        </div>
+                        <div class="template-card" onclick="loadMementoTemplate('retirement')">
+                            <i class="fas fa-clock"></i>
+                            <h4>Retirement</h4>
+                        </div>
+                        <div class="template-card" onclick="loadMementoTemplate('achievement')">
+                            <i class="fas fa-trophy"></i>
+                            <h4>Achievement</h4>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1323,27 +1722,47 @@
                 <div class="form-section">
                     <div class="section-title">
                         <i class="fas fa-car"></i>
-                        <span>නම්බර් ප්ලේට් ඇණවුම</span>
+                        <span>Number Plate Order</span>
                     </div>
                     
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="plateCustomer" placeholder="පාරිභෝගිකයාගේ නම">
+                            <input type="text" id="plateCustomer" placeholder="Customer Name">
                         </div>
                         
                         <div class="input-group">
                             <i class="fas fa-car"></i>
-                            <input type="text" id="vehicleNumber" placeholder="වාහන අංකය">
+                            <input type="text" id="vehicleNumber" placeholder="Vehicle Number">
                         </div>
 
                         <div class="input-group">
                             <i class="fas fa-palette"></i>
                             <select id="plateType">
-                                <option value="Standard">සම්මත</option>
-                                <option value="Fancy">ෆැන්සි</option>
-                                <option value="Reflective">රිෆ්ලෙක්ටිව්</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Fancy">Fancy</option>
+                                <option value="Reflective">Reflective</option>
+                                <option value="3D">3D</option>
                             </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-ruler"></i>
+                            <select id="plateSize">
+                                <option value="standard">Standard (12x6)</option>
+                                <option value="small">Small (9x4)</option>
+                                <option value="large">Large (14x7)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-font"></i>
+                            <input type="text" id="plateBorder" placeholder="Border Text (Optional)">
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-rupee-sign"></i>
+                            <input type="number" id="platePrice" placeholder="Price (Rs.)" value="1500">
                         </div>
                     </div>
 
@@ -1355,8 +1774,30 @@
 
                     <button class="btn-primary" onclick="addPlateOrder()">
                         <i class="fas fa-save"></i>
-                        ප්ලේට් ඇණවුම එකතු කරන්න
+                        Add Number Plate Order
                     </button>
+                </div>
+
+                <!-- Plate Templates -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-template"></i>
+                        <span>Number Plate Templates</span>
+                    </div>
+                    <div class="template-grid">
+                        <div class="template-card" onclick="loadPlateTemplate('car')">
+                            <i class="fas fa-car"></i>
+                            <h4>Car</h4>
+                        </div>
+                        <div class="template-card" onclick="loadPlateTemplate('bike')">
+                            <i class="fas fa-motorcycle"></i>
+                            <h4>Motorcycle</h4>
+                        </div>
+                        <div class="template-card" onclick="loadPlateTemplate('custom')">
+                            <i class="fas fa-star"></i>
+                            <h4>Custom</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1364,32 +1805,59 @@
             <div id="communication-tab" class="tab-pane">
                 <div class="comms-grid">
                     <div class="comms-card">
-                        <h4><i class="fas fa-envelope"></i> පණිවිඩ යවන්න</h4>
+                        <h4><i class="fas fa-envelope"></i> Send Message</h4>
                         <div class="form-grid">
                             <div class="input-group">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="msgCustomer" placeholder="පාරිභෝගිකයාගේ නම">
+                                <input type="text" id="msgCustomer" placeholder="Customer Name">
                             </div>
                             
                             <div class="input-group">
                                 <i class="fas fa-phone"></i>
-                                <input type="text" id="msgPhone" placeholder="දුරකථන අංකය">
+                                <input type="text" id="msgPhone" placeholder="Phone Number">
                             </div>
 
                             <div class="input-group">
                                 <i class="fas fa-comment"></i>
-                                <textarea id="msgContent" placeholder="පණිවිඩය"></textarea>
+                                <textarea id="msgContent" placeholder="Message"></textarea>
                             </div>
                         </div>
-                        <button class="btn-primary" onclick="sendMessage()">
-                            <i class="fab fa-whatsapp"></i> WhatsApp යවන්න
-                        </button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-primary" onclick="sendMessage('whatsapp')">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="btn-success" onclick="sendMessage('sms')">
+                                <i class="fas fa-sms"></i> SMS
+                            </button>
+                        </div>
                     </div>
 
                     <div class="comms-card">
-                        <h4><i class="fas fa-history"></i> පණිවිඩ ඉතිහාසය</h4>
+                        <h4><i class="fas fa-history"></i> Message History</h4>
                         <div class="message-list" id="messageList">
                             <!-- Messages will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Message Templates -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-bolt"></i>
+                        <span>Quick Message Templates</span>
+                    </div>
+                    <div class="template-grid">
+                        <div class="template-card" onclick="setMessageTemplate('ready')">
+                            <i class="fas fa-check-circle"></i>
+                            <h4>Order Ready</h4>
+                        </div>
+                        <div class="template-card" onclick="setMessageTemplate('payment')">
+                            <i class="fas fa-money-bill"></i>
+                            <h4>Payment Reminder</h4>
+                        </div>
+                        <div class="template-card" onclick="setMessageTemplate('delay')">
+                            <i class="fas fa-clock"></i>
+                            <h4>Delay Notification</h4>
                         </div>
                     </div>
                 </div>
@@ -1401,7 +1869,7 @@
     <div id="paymentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>ඉතිරි මුදල ගෙවීම</h3>
+                <h3>Process Remaining Payment</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div id="paymentDetails"></div>
@@ -1412,14 +1880,17 @@
                 </div>
                 <div class="input-group">
                     <i class="fas fa-money-bill"></i>
-                    <input type="number" id="payAmount" placeholder="ගෙවන මුදල">
+                    <input type="number" id="payAmount" placeholder="Payment Amount">
                 </div>
             </div>
             <button class="btn-success" onclick="processPayment()">
-                <i class="fas fa-check"></i> ගෙවීම තහවුරු කරන්න
+                <i class="fas fa-check"></i> Confirm Payment
             </button>
         </div>
     </div>
+
+    <!-- Hidden Bill Content for PDF Generation -->
+    <div id="billPrintContent" style="display: none;"></div>
 
     <script>
         // Your Firebase configuration
@@ -1456,7 +1927,7 @@
             console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase initialization error:", error);
-            showAlert("Firebase සම්බන්ධතාවය අසාර්ථකයි!", "error");
+            showAlert("Firebase connection failed!", "error");
         }
 
         // Global variables
@@ -1464,6 +1935,8 @@
         let filteredOrders = [];
         let stockItems = [];
         let currentOrderId = null;
+        let currentBillHTML = '';
+        let currentBillCustomer = '';
 
         // Tab switching
         function showTab(tabName) {
@@ -1487,7 +1960,7 @@
                         const statusText = document.getElementById('statusText');
                         
                         statusDiv.className = 'connection-status connected';
-                        statusText.textContent = 'සම්බන්ධිතයි';
+                        statusText.textContent = 'Connected';
                         document.getElementById('loadingOverlay').style.display = 'none';
                         document.getElementById('dashboard').classList.add('visible');
                         loadOrders();
@@ -1500,11 +1973,11 @@
                         const statusText = document.getElementById('statusText');
                         
                         statusDiv.className = 'connection-status disconnected';
-                        statusText.textContent = 'සම්බන්ධ නැත';
+                        statusText.textContent = 'Disconnected';
                         document.getElementById('loadingOverlay').style.display = 'none';
                         document.getElementById('dashboard').classList.add('visible');
                         
-                        showAlert("Firestore සම්බන්ධතාවය නැත. නැවත උත්සාහ කරන්න.", "warning");
+                        showAlert("Firestore connection lost. Please try again.", "warning");
                     });
             }
         }
@@ -1513,7 +1986,7 @@
         function updateDate() {
             const now = new Date();
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('si-LK', options);
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
             document.getElementById('billDate').value = now.toISOString().split('T')[0];
         }
 
@@ -1527,7 +2000,7 @@
         function updateFileName() {
             const fileInput = document.getElementById('fileInput');
             const fileName = document.getElementById('fileName');
-            fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'කිසිදු ෆයිල් එකක් තෝරා නැත';
+            fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file selected';
         }
 
         // Load orders from Firestore
@@ -1552,7 +2025,7 @@
                 })
                 .catch((error) => {
                     console.error("Error loading orders:", error);
-                    showAlert("දත්ත පූරණය කිරීමට අපොහොසත් විය!", "error");
+                    showAlert("Failed to load orders!", "error");
                 });
         }
 
@@ -1566,7 +2039,7 @@
                     <tr class="empty-state">
                         <td colspan="8">
                             <i class="fas fa-inbox"></i>
-                            <p>ඇණවුම් නොමැත</p>
+                            <p>No orders found</p>
                         </td>
                     </tr>
                 `;
@@ -1588,7 +2061,7 @@
             
             // Format date
             const orderDate = order.timestamp?.toDate ? order.timestamp.toDate() : new Date(order.timestamp);
-            const formattedDate = orderDate.toLocaleString('si-LK', {
+            const formattedDate = orderDate.toLocaleString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 day: '2-digit',
@@ -1604,20 +2077,20 @@
             let statusBadge = '';
             switch(order.status || 'Pending') {
                 case 'Printing':
-                    statusBadge = '<span class="status-badge status-printing"><i class="fas fa-print"></i> මුද්‍රණය වෙමින්</span>';
+                    statusBadge = '<span class="status-badge status-printing"><i class="fas fa-print"></i> Printing</span>';
                     break;
                 case 'Ready':
-                    statusBadge = '<span class="status-badge status-ready"><i class="fas fa-check-circle"></i> සූදානම්</span>';
+                    statusBadge = '<span class="status-badge status-ready"><i class="fas fa-check-circle"></i> Ready</span>';
                     break;
                 case 'Picked':
-                    statusBadge = '<span class="status-badge status-picked"><i class="fas fa-box"></i> රැගෙන ගිය</span>';
+                    statusBadge = '<span class="status-badge status-picked"><i class="fas fa-box"></i> Picked Up</span>';
                     break;
                 default:
                     statusBadge = `<span class="status-badge status-${(order.status || 'pending').toLowerCase()}"><i class="fas ${order.status === 'Paid' ? 'fa-check-circle' : 'fa-clock'}"></i> ${order.status || 'Pending'}</span>`;
             }
 
             newRow.innerHTML = `
-                <td><i class="fas fa-user-circle" style="color: var(--primary); margin-right: 5px;"></i>${order.customerName || 'නැත'}</td>
+                <td><i class="fas fa-user-circle" style="color: var(--primary); margin-right: 5px;"></i>${order.customerName || 'N/A'}</td>
                 <td>${order.phone || '-'}</td>
                 <td>
                     <strong>${order.serviceType || 'Print'}</strong><br>
@@ -1625,7 +2098,7 @@
                 </td>
                 <td>
                     <strong>Rs. ${(order.amount || 0).toLocaleString()}</strong>
-                    ${remainingAmount > 0 ? `<br><small style="color: var(--warning);">ඉතිරි: Rs. ${remainingAmount}</small>` : ''}
+                    ${remainingAmount > 0 ? `<br><small style="color: var(--warning);">Remaining: Rs. ${remainingAmount}</small>` : ''}
                 </td>
                 <td>
                     ${order.paymentStatus === 'Advance' ? 
@@ -1636,14 +2109,15 @@
                 <td>${statusBadge}</td>
                 <td><i class="fas fa-clock" style="color: var(--secondary); margin-right: 5px;"></i>${formattedDate}</td>
                 <td>
-                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'Printing')" title="මුද්‍රණය"><i class="fas fa-print"></i></button>
-                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'Ready')" title="සූදානම්"><i class="fas fa-check"></i></button>
-                    <button class="action-btn" onclick="markAsPicked('${order.id}')" title="රැගෙන ගිය"><i class="fas fa-box"></i></button>
+                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'Printing')" title="Printing"><i class="fas fa-print"></i></button>
+                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'Ready')" title="Ready"><i class="fas fa-check"></i></button>
+                    <button class="action-btn" onclick="markAsPicked('${order.id}')" title="Picked Up"><i class="fas fa-box"></i></button>
                     ${remainingAmount > 0 ? 
-                        `<button class="action-btn" onclick="openPaymentModal('${order.id}', ${remainingAmount})" title="ඉතිරි මුදල ගෙවන්න"><i class="fas fa-money-bill"></i></button>` : 
+                        `<button class="action-btn" onclick="openPaymentModal('${order.id}', ${remainingAmount})" title="Process Payment"><i class="fas fa-money-bill"></i></button>` : 
                         ''
                     }
-                    <button class="action-btn" onclick="deleteOrder('${order.id}')" title="මකන්න"><i class="fas fa-trash-alt"></i></button>
+                    <button class="action-btn" onclick="generateCustomerBill('${order.id}')" title="Generate Bill"><i class="fas fa-file-invoice"></i></button>
+                    <button class="action-btn" onclick="deleteOrder('${order.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>
                 </td>
             `;
         }
@@ -1651,7 +2125,7 @@
         // Add new order
         async function addOrder() {
             if (!db) {
-                showAlert("Firestore සම්බන්ධතාවය නැත!", "error");
+                showAlert("Firestore connection not available!", "error");
                 return;
             }
 
@@ -1667,23 +2141,23 @@
 
             // Validation
             if (name === "" || totalAmount === "") {
-                showAlert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න!", "warning");
+                showAlert("Please fill in all required fields!", "warning");
                 return;
             }
 
             if (parseInt(totalAmount) <= 0) {
-                showAlert("කරුණාකර වලංගු මුදලක් ඇතුළත් කරන්න!", "warning");
+                showAlert("Please enter a valid amount!", "warning");
                 return;
             }
 
             if (paymentStatus === 'Advance' && (!advanceAmount || parseInt(advanceAmount) <= 0)) {
-                showAlert("කරුණාකර අත්තිකාරම් මුදල ඇතුළත් කරන්න!", "warning");
+                showAlert("Please enter advance amount!", "warning");
                 return;
             }
 
             // Disable button
             addBtn.disabled = true;
-            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> එකතු කරමින්...';
+            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
 
             // Create order object
             const order = {
@@ -1704,7 +2178,7 @@
                 // Save to Firestore
                 const docRef = await db.collection('orders').add(order);
                 
-                showAlert("ඇණවුම සාර්ථකව එකතු කරන ලදී!", "success");
+                showAlert("Order added successfully!", "success");
                 
                 // Clear inputs
                 document.getElementById('custName').value = "";
@@ -1712,18 +2186,18 @@
                 document.getElementById('fileDesc').value = "";
                 document.getElementById('totalAmount').value = "";
                 document.getElementById('advanceAmount').value = "";
-                document.getElementById('fileName').textContent = 'කිසිදු ෆයිල් එකක් තෝරා නැත';
+                document.getElementById('fileName').textContent = 'No file selected';
                 fileInput.value = '';
                 
                 // Reload orders
                 loadOrders();
             } catch (error) {
                 console.error("Error adding order:", error);
-                showAlert("ඇණවුම එකතු කිරීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to add order!", "error");
             } finally {
                 // Re-enable button
                 addBtn.disabled = false;
-                addBtn.innerHTML = '<i class="fas fa-save"></i> ඇණවුම ඇතුළත් කරන්න';
+                addBtn.innerHTML = '<i class="fas fa-save"></i> Add Order';
             }
         }
 
@@ -1736,16 +2210,16 @@
                     status: status
                 });
                 
-                showAlert(`තත්ත්වය ${status} ලෙස වෙනස් කරන ලදී`, "success");
+                showAlert(`Status updated to ${status}`, "success");
                 loadOrders();
                 
-                // If status is 'Ready', auto-deduct stock (example: 1 A4 paper per order)
+                // If status is 'Ready', auto-deduct stock
                 if (status === 'Ready') {
                     updateStockOnPrint();
                 }
             } catch (error) {
                 console.error("Error updating status:", error);
-                showAlert("තත්ත්වය වෙනස් කිරීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to update status!", "error");
             }
         }
 
@@ -1758,11 +2232,11 @@
                     status: 'Picked'
                 });
                 
-                showAlert("ඇණවුම රැගෙන ගිය ලෙස සටහන් කරන ලදී", "success");
+                showAlert("Order marked as picked up", "success");
                 loadOrders();
             } catch (error) {
                 console.error("Error updating status:", error);
-                showAlert("තත්ත්වය වෙනස් කිරීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to update status!", "error");
             }
         }
 
@@ -1788,7 +2262,7 @@
             const remainingAmount = parseInt(document.getElementById('remainingAmount').value);
 
             if (payAmount <= 0 || payAmount > remainingAmount) {
-                showAlert("කරුණාකර වලංගු මුදලක් ඇතුළත් කරන්න!", "warning");
+                showAlert("Please enter a valid amount!", "warning");
                 return;
             }
 
@@ -1813,34 +2287,34 @@
                         });
                     }
                     
-                    showAlert("ගෙවීම සාර්ථකයි!", "success");
+                    showAlert("Payment processed successfully!", "success");
                     closeModal();
                     loadOrders();
                 }
             } catch (error) {
                 console.error("Error processing payment:", error);
-                showAlert("ගෙවීම සැකසීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to process payment!", "error");
             }
         }
 
         // Delete order
         async function deleteOrder(orderId) {
             if (!db) {
-                showAlert("Firestore සම්බන්ධතාවය නැත!", "error");
+                showAlert("Firestore connection not available!", "error");
                 return;
             }
 
-            if (!confirm("ඔබට මෙම ඇණවුම මකා දැමීමට වග බලා ගන්නවාද?")) {
+            if (!confirm("Are you sure you want to delete this order?")) {
                 return;
             }
 
             try {
                 await db.collection('orders').doc(orderId).delete();
-                showAlert("ඇණවුම මකා දමන ලදී!", "info");
+                showAlert("Order deleted successfully!", "info");
                 loadOrders();
             } catch (error) {
                 console.error("Error deleting order:", error);
-                showAlert("ඇණවුම මකා දැමීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to delete order!", "error");
             }
         }
 
@@ -1925,10 +2399,10 @@
             document.getElementById('order-count').textContent = allOrders.length;
             
             // Update comparison
-            document.getElementById('dailyComparison').innerHTML = `+${Math.floor(Math.random() * 20)}% ඊයේ සිට`;
+            document.getElementById('dailyComparison').innerHTML = `+${Math.floor(Math.random() * 20)}% from yesterday`;
             
             // Update monthly period
-            const monthNames = ['ජනවාරි', 'පෙබරවාරි', 'මාර්තු', 'අප්‍රේල්', 'මැයි', 'ජූනි', 'ජූලි', 'අගෝස්තු', 'සැප්තැම්බර්', 'ඔක්තෝබර්', 'නොවැම්බර්', 'දෙසැම්බර්'];
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             document.getElementById('monthlyPeriod').textContent = monthNames[currentMonth];
         }
 
@@ -1960,7 +2434,7 @@
             stockGrid.innerHTML = '';
 
             if (stockItems.length === 0) {
-                stockGrid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>තොග නැත</p></div>';
+                stockGrid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No stock items found</p></div>';
                 return;
             }
 
@@ -1984,7 +2458,7 @@
                         <div class="progress-fill" style="width: ${Math.min(percentage, 100)}%"></div>
                     </div>
                     <div class="stock-actions">
-                        <input type="number" id="addStock-${item.id}" placeholder="ප්‍රමාණය" min="1">
+                        <input type="number" id="addStock-${item.id}" placeholder="Quantity" min="1">
                         <button class="btn-success" onclick="addToStock('${item.id}')">
                             <i class="fas fa-plus"></i>
                         </button>
@@ -2000,7 +2474,7 @@
         function getStockIcon(name) {
             name = name.toLowerCase();
             if (name.includes('a4') || name.includes('paper')) return 'fa-file';
-            if (name.includes('banner')) return 'fa-scroll';
+            if (name.includes('banner') || name.includes('flex')) return 'fa-scroll';
             if (name.includes('ink')) return 'fa-fill-drip';
             return 'fa-box';
         }
@@ -2012,7 +2486,7 @@
             const alertLevel = parseInt(document.getElementById('stockAlert').value);
 
             if (!name || !quantity) {
-                showAlert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න!", "warning");
+                showAlert("Please fill in all fields!", "warning");
                 return;
             }
 
@@ -2027,7 +2501,7 @@
 
             try {
                 await db.collection('stock').add(stockItem);
-                showAlert("තොගය සාර්ථකව එකතු කරන ලදී!", "success");
+                showAlert("Stock added successfully!", "success");
                 
                 document.getElementById('stockName').value = "";
                 document.getElementById('stockQuantity').value = "";
@@ -2036,7 +2510,7 @@
                 loadStock();
             } catch (error) {
                 console.error("Error adding stock:", error);
-                showAlert("තොගය එකතු කිරීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to add stock!", "error");
             }
         }
 
@@ -2045,7 +2519,7 @@
             const quantity = parseInt(input.value);
 
             if (!quantity || quantity <= 0) {
-                showAlert("කරුණාකර වලංගු ප්‍රමාණයක් ඇතුළත් කරන්න!", "warning");
+                showAlert("Please enter a valid quantity!", "warning");
                 return;
             }
 
@@ -2058,11 +2532,11 @@
                     quantity: currentQty + quantity
                 });
                 
-                showAlert("තොගය යාවත්කාලීන කරන ලදී!", "success");
+                showAlert("Stock updated successfully!", "success");
                 loadStock();
             } catch (error) {
                 console.error("Error updating stock:", error);
-                showAlert("තොගය යාවත්කාලීන කිරීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to update stock!", "error");
             }
         }
 
@@ -2071,7 +2545,7 @@
             const quantity = parseInt(input.value);
 
             if (!quantity || quantity <= 0) {
-                showAlert("කරුණාකර වලංගු ප්‍රමාණයක් ඇතුළත් කරන්න!", "warning");
+                showAlert("Please enter a valid quantity!", "warning");
                 return;
             }
 
@@ -2081,7 +2555,7 @@
                 const currentQty = doc.data().quantity;
                 
                 if (currentQty < quantity) {
-                    showAlert("ප්‍රමාණවත් තොගයක් නැත!", "warning");
+                    showAlert("Insufficient stock!", "warning");
                     return;
                 }
                 
@@ -2089,11 +2563,11 @@
                     quantity: currentQty - quantity
                 });
                 
-                showAlert("තොගය යාවත්කාලීන කරන ලදී!", "success");
+                showAlert("Stock updated successfully!", "success");
                 loadStock();
             } catch (error) {
                 console.error("Error updating stock:", error);
-                showAlert("තොගය යාවත්කාලීන කිරීමට අපොහොසත් විය!", "error");
+                showAlert("Failed to update stock!", "error");
             }
         }
 
@@ -2118,22 +2592,37 @@
             if (lowStockItems.length > 0) {
                 alertBanner.style.display = 'flex';
                 alertList.innerHTML = lowStockItems.map(item => 
-                    `<li><i class="fas fa-exclamation-circle"></i> ${item.name}: ඉතිරිව ඇත්තේ ${item.quantity} ${item.unit} පමණි</li>`
+                    `<li><i class="fas fa-exclamation-circle"></i> ${item.name}: Only ${item.quantity} ${item.unit} left</li>`
                 ).join('');
             } else {
                 alertBanner.style.display = 'none';
             }
         }
 
-        // Bill generation
+        // Bill generation functions
+        function generateCustomerBill(orderId) {
+            const order = allOrders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            document.getElementById('billCustomer').value = order.customerName || '';
+            document.getElementById('billNumber').value = `BILL-${orderId.slice(-6)}`;
+            generateBill();
+            
+            // Switch to bills tab
+            showTab('bills');
+        }
+
         function generateBill() {
-            const customer = document.getElementById('billCustomer').value;
+            const customer = document.getElementById('billCustomer').value.trim();
             const date = document.getElementById('billDate').value;
+            const billNumber = document.getElementById('billNumber').value;
             
             if (!customer) {
-                showAlert("කරුණාකර පාරිභෝගිකයාගේ නම ඇතුළත් කරන්න!", "warning");
+                showAlert("Please enter customer name!", "warning");
                 return;
             }
+
+            currentBillCustomer = customer;
 
             // Filter orders for this customer
             const customerOrders = allOrders.filter(order => 
@@ -2141,21 +2630,31 @@
             );
 
             if (customerOrders.length === 0) {
-                showAlert("මෙම පාරිභෝගිකයා සඳහා ඇණවුම් නැත!", "warning");
+                showAlert("No orders found for this customer!", "warning");
                 return;
             }
 
             let total = 0;
             let paid = 0;
+            
+            // Customer info
+            const customerInfo = `
+                <p><strong>Bill No:</strong> ${billNumber}</p>
+                <p><strong>Customer:</strong> ${customer}</p>
+                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Phone:</strong> ${customerOrders[0].phone || 'N/A'}</p>
+            `;
+            document.getElementById('billCustomerInfo').innerHTML = customerInfo;
+
+            // Bill table
             let billHTML = `
-                <p><strong>පාරිභෝගිකයා:</strong> ${customer}</p>
-                <p><strong>දිනය:</strong> ${date}</p>
-                <hr>
-                <table style="width: 100%; font-size: 12px;">
+                <table class="bill-table">
                     <tr>
-                        <th>සේවාව</th>
-                        <th>මුදල</th>
-                        <th>ගෙවූ</th>
+                        <th>Description</th>
+                        <th>Service</th>
+                        <th>Amount (Rs.)</th>
+                        <th>Paid (Rs.)</th>
+                        <th>Status</th>
                     </tr>
             `;
 
@@ -2167,74 +2666,62 @@
                 
                 billHTML += `
                     <tr>
+                        <td>${order.fileDesc || 'N/A'}</td>
                         <td>${order.serviceType || 'Print'}</td>
-                        <td>Rs. ${order.amount}</td>
-                        <td>Rs. ${paidAmount}</td>
+                        <td>Rs. ${order.amount.toLocaleString()}</td>
+                        <td>Rs. ${paidAmount.toLocaleString()}</td>
+                        <td>${order.paymentStatus}</td>
                     </tr>
                 `;
             });
 
             billHTML += `
                 </table>
-                <hr>
-                <p><strong>මුළු එකතුව:</strong> Rs. ${total}</p>
-                <p><strong>ගෙවූ එකතුව:</strong> Rs. ${paid}</p>
-                <p><strong>ඉතිරි මුදල:</strong> Rs. ${total - paid}</p>
+                <div class="bill-totals">
+                    <p><strong>Sub Total:</strong> Rs. ${total.toLocaleString()}</p>
+                    <p><strong>Total Paid:</strong> Rs. ${paid.toLocaleString()}</p>
+                    <p><strong>Balance Due:</strong> Rs. ${(total - paid).toLocaleString()}</p>
+                    <p class="grand-total"><strong>Grand Total:</strong> Rs. ${total.toLocaleString()}</p>
+                </div>
             `;
 
             document.getElementById('billContent').innerHTML = billHTML;
             document.getElementById('billPreview').style.display = 'block';
+            
+            currentBillHTML = document.getElementById('billPreview').innerHTML;
         }
 
-        // Number Plate functions
-        document.getElementById('vehicleNumber').addEventListener('input', function(e) {
-            document.getElementById('platePreview').textContent = e.target.value || 'XX-XXXX';
-        });
+        function printBill() {
+            const billContent = document.getElementById('billPreview').cloneNode(true);
+            billContent.style.display = 'block';
+            billContent.style.position = 'fixed';
+            billContent.style.left = '-9999px';
+            document.body.appendChild(billContent);
+            
+            window.print();
+            
+            document.body.removeChild(billContent);
+        }
 
-        async function addPlateOrder() {
-            const customer = document.getElementById('plateCustomer').value.trim();
-            const vehicle = document.getElementById('vehicleNumber').value.trim();
-            const type = document.getElementById('plateType').value;
-
-            if (!customer || !vehicle) {
-                showAlert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න!", "warning");
-                return;
-            }
-
-            const order = {
-                customerName: customer,
-                vehicleNumber: vehicle,
-                plateType: type,
-                serviceType: 'NumberPlate',
-                amount: type === 'Standard' ? 1500 : type === 'Fancy' ? 2500 : 3500,
-                paymentStatus: 'Pending',
-                status: 'Pending',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: new Date().toISOString()
+        function downloadBillPDF() {
+            const element = document.getElementById('billPreview');
+            const opt = {
+                margin: 1,
+                filename: `bill-${currentBillCustomer}-${new Date().getTime()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
-
-            try {
-                await db.collection('orders').add(order);
-                showAlert("නම්බර් ප්ලේට් ඇණවුම එකතු කරන ලදී!", "success");
-                
-                document.getElementById('plateCustomer').value = "";
-                document.getElementById('vehicleNumber').value = "";
-                
-                loadOrders();
-            } catch (error) {
-                console.error("Error adding plate order:", error);
-                showAlert("ඇණවුම එකතු කිරීමට අපොහොසත් විය!", "error");
-            }
+            
+            html2pdf().set(opt).from(element).save();
         }
 
-        // Communication functions
-        function sendMessage() {
-            const customer = document.getElementById('msgCustomer').value.trim();
-            const phone = document.getElementById('msgPhone').value.trim();
-            const message = document.getElementById('msgContent').value.trim();
-
-            if (!customer || !phone || !message) {
-                showAlert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න!", "warning");
+        function shareBillWhatsApp() {
+            const customer = document.getElementById('billCustomer').value.trim();
+            const phone = allOrders.find(o => o.customerName === customer)?.phone;
+            
+            if (!phone) {
+                showAlert("Customer phone number not found!", "warning");
                 return;
             }
 
@@ -2244,30 +2731,291 @@
                 whatsappNumber = '94' + whatsappNumber.substring(1);
             }
 
+            // Create message
+            const total = document.querySelector('.grand-total')?.innerText || '';
+            const message = `Hello ${customer},\n\nYour bill from 3R PRINTERS is ready.\n${total}\n\nThank you for your business!`;
+            
             // Create WhatsApp URL
             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
             
             // Open WhatsApp in new tab
             window.open(whatsappUrl, '_blank');
+        }
+
+        function selectTemplate(type) {
+            // Template selection logic
+            showAlert(`Selected ${type} bill template`, "info");
+        }
+
+        // Seal functions
+        document.getElementById('sealText').addEventListener('input', function(e) {
+            document.getElementById('sealPreviewText').textContent = e.target.value || 'Sample Text';
+        });
+
+        function loadSealTemplate(type) {
+            let text = '';
+            switch(type) {
+                case 'company':
+                    text = 'COMPANY NAME (PVT) LTD';
+                    break;
+                case 'official':
+                    text = 'OFFICIAL STAMP • AUTHORIZED';
+                    break;
+                case 'personal':
+                    text = 'JOHN DOE • MANAGER';
+                    break;
+            }
+            document.getElementById('sealText').value = text;
+            document.getElementById('sealPreviewText').textContent = text;
+        }
+
+        async function addSealOrder() {
+            const customer = document.getElementById('sealCustomer').value.trim();
+            const text = document.getElementById('sealText').value.trim();
+            const size = document.getElementById('sealSize').value;
+            const shape = document.getElementById('sealShape').value;
+            const color = document.getElementById('sealColor').value;
+            const price = document.getElementById('sealPrice').value;
+
+            if (!customer || !text) {
+                showAlert("Please fill in all fields!", "warning");
+                return;
+            }
+
+            const order = {
+                customerName: customer,
+                serviceType: 'Seal',
+                fileDesc: `Seal: ${text} (${size}, ${shape})`,
+                amount: parseInt(price),
+                paymentStatus: 'Pending',
+                status: 'Pending',
+                sealDetails: {
+                    text: text,
+                    size: size,
+                    shape: shape,
+                    color: color
+                },
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                await db.collection('orders').add(order);
+                showAlert("Seal order added successfully!", "success");
+                
+                document.getElementById('sealCustomer').value = "";
+                document.getElementById('sealText').value = "";
+                
+                loadOrders();
+            } catch (error) {
+                console.error("Error adding seal order:", error);
+                showAlert("Failed to add seal order!", "error");
+            }
+        }
+
+        // Memento functions
+        document.getElementById('mementoText').addEventListener('input', function(e) {
+            document.getElementById('mementoPreviewText').textContent = e.target.value || 'Sample Text';
+        });
+
+        document.getElementById('mementoDate').addEventListener('input', function(e) {
+            document.getElementById('mementoPreviewDate').textContent = e.target.value || '2024-03-13';
+        });
+
+        function loadMementoTemplate(type) {
+            let text = '';
+            let date = new Date().toISOString().split('T')[0];
+            switch(type) {
+                case 'appreciation':
+                    text = 'CERTIFICATE OF APPRECIATION';
+                    break;
+                case 'retirement':
+                    text = 'RETIREMENT • 25 YEARS SERVICE';
+                    break;
+                case 'achievement':
+                    text = 'ACHIEVEMENT AWARD';
+                    break;
+            }
+            document.getElementById('mementoText').value = text;
+            document.getElementById('mementoDate').value = date;
+            document.getElementById('mementoPreviewText').textContent = text;
+            document.getElementById('mementoPreviewDate').textContent = date;
+        }
+
+        async function addMementoOrder() {
+            const customer = document.getElementById('mementoCustomer').value.trim();
+            const text = document.getElementById('mementoText').value.trim();
+            const date = document.getElementById('mementoDate').value;
+            const type = document.getElementById('mementoType').value;
+            const color = document.getElementById('mementoColor').value;
+            const price = document.getElementById('mementoPrice').value;
+
+            if (!customer || !text) {
+                showAlert("Please fill in all fields!", "warning");
+                return;
+            }
+
+            const order = {
+                customerName: customer,
+                serviceType: 'Memento',
+                fileDesc: `Memento: ${text} (${type}, ${color})`,
+                amount: parseInt(price),
+                paymentStatus: 'Pending',
+                status: 'Pending',
+                mementoDetails: {
+                    text: text,
+                    date: date,
+                    type: type,
+                    color: color
+                },
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                await db.collection('orders').add(order);
+                showAlert("Memento order added successfully!", "success");
+                
+                document.getElementById('mementoCustomer').value = "";
+                document.getElementById('mementoText').value = "";
+                document.getElementById('mementoDate').value = "";
+                
+                loadOrders();
+            } catch (error) {
+                console.error("Error adding memento order:", error);
+                showAlert("Failed to add memento order!", "error");
+            }
+        }
+
+        // Number Plate functions
+        document.getElementById('vehicleNumber').addEventListener('input', function(e) {
+            document.getElementById('platePreview').textContent = e.target.value || 'XX-XXXX';
+        });
+
+        function loadPlateTemplate(type) {
+            let number = '';
+            switch(type) {
+                case 'car':
+                    number = 'CAA-1234';
+                    break;
+                case 'bike':
+                    number = 'XX-1234';
+                    break;
+                case 'custom':
+                    number = 'CUSTOM-1';
+                    break;
+            }
+            document.getElementById('vehicleNumber').value = number;
+            document.getElementById('platePreview').textContent = number;
+        }
+
+        async function addPlateOrder() {
+            const customer = document.getElementById('plateCustomer').value.trim();
+            const vehicle = document.getElementById('vehicleNumber').value.trim();
+            const type = document.getElementById('plateType').value;
+            const size = document.getElementById('plateSize').value;
+            const border = document.getElementById('plateBorder').value.trim();
+            const price = document.getElementById('platePrice').value;
+
+            if (!customer || !vehicle) {
+                showAlert("Please fill in all fields!", "warning");
+                return;
+            }
+
+            const order = {
+                customerName: customer,
+                serviceType: 'NumberPlate',
+                fileDesc: `Number Plate: ${vehicle} (${type}, ${size})${border ? ' - ' + border : ''}`,
+                amount: parseInt(price),
+                paymentStatus: 'Pending',
+                status: 'Pending',
+                plateDetails: {
+                    number: vehicle,
+                    type: type,
+                    size: size,
+                    border: border
+                },
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                await db.collection('orders').add(order);
+                showAlert("Number plate order added successfully!", "success");
+                
+                document.getElementById('plateCustomer').value = "";
+                document.getElementById('vehicleNumber').value = "";
+                document.getElementById('plateBorder').value = "";
+                
+                loadOrders();
+            } catch (error) {
+                console.error("Error adding plate order:", error);
+                showAlert("Failed to add number plate order!", "error");
+            }
+        }
+
+        // Communication functions
+        function sendMessage(type) {
+            const customer = document.getElementById('msgCustomer').value.trim();
+            const phone = document.getElementById('msgPhone').value.trim();
+            const message = document.getElementById('msgContent').value.trim();
+
+            if (!customer || !phone || !message) {
+                showAlert("Please fill in all fields!", "warning");
+                return;
+            }
+
+            if (type === 'whatsapp') {
+                // Format phone number for WhatsApp
+                let whatsappNumber = phone.replace(/\D/g, '');
+                if (whatsappNumber.startsWith('0')) {
+                    whatsappNumber = '94' + whatsappNumber.substring(1);
+                }
+
+                // Create WhatsApp URL
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                
+                // Open WhatsApp in new tab
+                window.open(whatsappUrl, '_blank');
+            } else if (type === 'sms') {
+                // SMS (using default SMS app)
+                window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
+            }
 
             // Add to message history
-            addToMessageHistory(customer, phone, message);
+            addToMessageHistory(customer, phone, message, type);
 
             // Clear inputs
             document.getElementById('msgCustomer').value = "";
             document.getElementById('msgPhone').value = "";
             document.getElementById('msgContent').value = "";
 
-            showAlert("WhatsApp පණිවිඩය යවන ලදී!", "success");
+            showAlert(`Message sent via ${type}!`, "success");
         }
 
-        function addToMessageHistory(customer, phone, message) {
+        function setMessageTemplate(type) {
+            let message = '';
+            switch(type) {
+                case 'ready':
+                    message = 'Hello {customer}, your order is ready for pickup. Thank you for choosing 3R PRINTERS!';
+                    break;
+                case 'payment':
+                    message = 'Hello {customer}, this is a friendly reminder about your pending payment. Please contact us to settle the balance.';
+                    break;
+                case 'delay':
+                    message = 'Hello {customer}, we apologize for the delay. Your order is being processed and will be ready soon.';
+                    break;
+            }
+            document.getElementById('msgContent').value = message;
+        }
+
+        function addToMessageHistory(customer, phone, message, type) {
             const messageList = document.getElementById('messageList');
             const messageItem = document.createElement('div');
             messageItem.className = 'message-item';
             messageItem.innerHTML = `
                 <strong><i class="fas fa-user"></i> ${customer}</strong><br>
-                <small><i class="fas fa-phone"></i> ${phone}</small>
+                <small><i class="fas fa-phone"></i> ${phone} (${type})</small>
                 <p style="margin-top: 5px;">${message}</p>
                 <small style="color: var(--secondary);"><i class="fas fa-clock"></i> ${new Date().toLocaleString()}</small>
             `;
