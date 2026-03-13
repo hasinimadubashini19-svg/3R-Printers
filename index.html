@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -38,10 +42,52 @@
             color: var(--dark);
         }
 
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-spinner {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--light);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Main Container */
         .dashboard {
             max-width: 1200px;
             margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .dashboard.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Header */
@@ -84,6 +130,41 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .connection-status.connected {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .connection-status.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .connected .status-dot {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .disconnected .status-dot {
+            background: var(--danger);
         }
 
         .date-badge {
@@ -263,9 +344,14 @@
             min-width: 200px;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .btn-primary i {
@@ -365,9 +451,14 @@
             transition: all 0.3s ease;
         }
 
-        .action-btn:hover {
+        .action-btn:hover:not(:disabled) {
             background: var(--border);
             color: var(--danger);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         /* Empty State */
@@ -385,7 +476,7 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .dashboard {
+            body {
                 padding: 10px;
             }
             
@@ -426,7 +517,15 @@
     </style>
 </head>
 <body>
-    <div class="dashboard">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Firebase වෙත සම්බන්ධ වෙමින්...</p>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
         <!-- Header -->
         <div class="header">
             <div class="logo-area">
@@ -434,6 +533,10 @@
                     <i class="fas fa-print"></i>
                 </div>
                 <h1>3R PRINTERS</h1>
+            </div>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot"></span>
+                <span id="statusText">සම්බන්ධ වෙමින්...</span>
             </div>
             <div class="date-badge">
                 <i class="fas fa-calendar-alt"></i>
@@ -453,7 +556,7 @@
                     <div class="stat-value" id="daily-total">Rs. 0</div>
                     <div class="stat-sub">
                         <i class="fas fa-arrow-up"></i>
-                        <span>+12.5% ඊයේ සිට</span>
+                        <span id="dailyComparison">+0% ඊයේ සිට</span>
                     </div>
                 </div>
 
@@ -462,10 +565,10 @@
                         <i class="fas fa-calendar-alt"></i>
                     </div>
                     <div class="stat-label">මාසික ආදායම</div>
-                    <div class="stat-value" id="monthly-total">Rs. 45,500</div>
+                    <div class="stat-value" id="monthly-total">Rs. 0</div>
                     <div class="stat-sub">
                         <i class="fas fa-chart-line"></i>
-                        <span>මෙම මාසය</span>
+                        <span id="monthlyPeriod">මෙම මාසය</span>
                     </div>
                 </div>
 
@@ -489,7 +592,7 @@
                     <div class="stat-value" id="total-customers">0</div>
                     <div class="stat-sub">
                         <i class="fas fa-user-plus"></i>
-                        <span>අද +3</span>
+                        <span id="newCustomers">අද +0</span>
                     </div>
                 </div>
             </div>
@@ -521,7 +624,7 @@
                     </div>
                 </div>
 
-                <button class="btn-primary" onclick="addOrder()">
+                <button class="btn-primary" onclick="addOrder()" id="addOrderBtn">
                     <i class="fas fa-save"></i>
                     ඇණවුම ඇතුළත් කරන්න
                 </button>
@@ -544,12 +647,13 @@
                                 <th>ගනුදෙනුකරු</th>
                                 <th>මුදල</th>
                                 <th>තත්ත්වය</th>
+                                <th>කාලය</th>
                                 <th>ක්‍රියා</th>
                             </tr>
                         </thead>
                         <tbody id="orderTableBody">
                             <tr class="empty-state">
-                                <td colspan="4">
+                                <td colspan="5">
                                     <i class="fas fa-inbox"></i>
                                     <p>ඇණවුම් නොමැත</p>
                                 </td>
@@ -562,11 +666,62 @@
     </div>
 
     <script>
-        // Initialize data
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3vQpgWQS58wBO21HxuceanaLvgVLuTl4",
+            authDomain: "r-printers.firebaseapp.com",
+            databaseURL: "https://r-printers-default-rtdb.firebaseio.com",
+            projectId: "r-printers",
+            storageBucket: "r-printers.firebasestorage.app",
+            messagingSenderId: "214748828845",
+            appId: "1:214748828845:web:492e26a3549f92610b6224",
+            measurementId: "G-GC6Z763YRJ"
+        };
+
+        // Initialize Firebase
+        let database;
+        let analytics;
+        let app;
+
+        try {
+            app = firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            analytics = firebase.analytics();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            showAlert("Firebase සම්බන්ධතාවය අසාර්ථකයි!", "error");
+        }
+
+        // Global variables
         let dailyTotal = 0;
-        let monthlyTotal = 45500;
+        let monthlyTotal = 0;
         let orderCount = 0;
         let customers = new Set();
+        let todayOrders = 0;
+        let todayCustomers = 0;
+
+        // Check Firebase connection
+        function checkConnection() {
+            if (database) {
+                const connectedRef = database.ref('.info/connected');
+                connectedRef.on('value', (snap) => {
+                    const statusDiv = document.getElementById('connectionStatus');
+                    const statusText = document.getElementById('statusText');
+                    
+                    if (snap.val() === true) {
+                        statusDiv.className = 'connection-status connected';
+                        statusText.textContent = 'සම්බන්ධිතයි';
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        document.getElementById('dashboard').classList.add('visible');
+                        loadOrders(); // Load orders when connected
+                    } else {
+                        statusDiv.className = 'connection-status disconnected';
+                        statusText.textContent = 'සම්බන්ධ නැත';
+                    }
+                });
+            }
+        }
 
         // Set current date
         function updateDate() {
@@ -575,176 +730,258 @@
             document.getElementById('currentDate').textContent = now.toLocaleDateString('si-LK', options);
         }
 
-        // Add order function
+        // Load orders from Firebase
+        function loadOrders() {
+            if (!database) return;
+
+            const ordersRef = database.ref('orders');
+            ordersRef.orderByChild('timestamp').once('value', (snapshot) => {
+                const orders = [];
+                snapshot.forEach((childSnapshot) => {
+                    orders.push({
+                        id: childSnapshot.key,
+                        ...childSnapshot.val()
+                    });
+                });
+
+                // Clear existing table
+                const tbody = document.getElementById('orderTableBody');
+                tbody.innerHTML = '';
+
+                if (orders.length === 0) {
+                    tbody.innerHTML = `
+                        <tr class="empty-state">
+                            <td colspan="5">
+                                <i class="fas fa-inbox"></i>
+                                <p>ඇණවුම් නොමැත</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                // Reset counters
+                dailyTotal = 0;
+                monthlyTotal = 0;
+                todayOrders = 0;
+                customers.clear();
+                todayCustomers = 0;
+
+                const today = new Date().toDateString();
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+
+                // Add orders to table (most recent first)
+                orders.reverse().forEach(order => {
+                    addOrderToTable(order);
+                    
+                    // Update statistics
+                    const orderDate = new Date(order.timestamp);
+                    
+                    if (orderDate.toDateString() === today) {
+                        if (order.status === 'Paid') {
+                            dailyTotal += order.amount;
+                        }
+                        todayOrders++;
+                    }
+                    
+                    if (orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear) {
+                        if (order.status === 'Paid') {
+                            monthlyTotal += order.amount;
+                        }
+                    }
+                    
+                    customers.add(order.customerName);
+                });
+
+                // Update UI
+                updateStatistics();
+            });
+        }
+
+        // Add order to table
+        function addOrderToTable(order) {
+            const tbody = document.getElementById('orderTableBody');
+            
+            // Remove empty state if exists
+            if (tbody.children.length === 1 && tbody.children[0].classList.contains('empty-state')) {
+                tbody.innerHTML = '';
+            }
+
+            const newRow = tbody.insertRow(0);
+            newRow.style.animation = "slideIn 0.3s ease";
+            newRow.setAttribute('data-order-id', order.id);
+            
+            // Format date
+            const orderDate = new Date(order.timestamp);
+            const formattedDate = orderDate.toLocaleString('si-LK', {
+                hour: '2-digit',
+                minute: '2-digit',
+                day: '2-digit',
+                month: '2-digit'
+            });
+
+            newRow.innerHTML = `
+                <td><i class="fas fa-user-circle" style="color: var(--primary); margin-right: 5px;"></i>${order.customerName}</td>
+                <td><strong>Rs. ${order.amount.toLocaleString()}</strong></td>
+                <td><span class="status-badge status-${order.status.toLowerCase()}"><i class="fas ${order.status === 'Paid' ? 'fa-check-circle' : 'fa-clock'}"></i> ${order.status}</span></td>
+                <td><i class="fas fa-clock" style="color: var(--secondary); margin-right: 5px;"></i>${formattedDate}</td>
+                <td><button class="action-btn" onclick="deleteOrder('${order.id}')" title="මකන්න"><i class="fas fa-trash-alt"></i></button></td>
+            `;
+        }
+
+        // Add new order
         function addOrder() {
-            let name = document.getElementById('custName').value.trim();
-            let amount = document.getElementById('amount').value;
-            let status = document.getElementById('status').value;
+            if (!database) {
+                showAlert("Firebase සම්බන්ධතාවය නැත!", "error");
+                return;
+            }
+
+            const name = document.getElementById('custName').value.trim();
+            const amount = document.getElementById('amount').value;
+            const status = document.getElementById('status').value;
+            const addBtn = document.getElementById('addOrderBtn');
 
             // Validation
-            if(name === "" || amount === "") {
+            if (name === "" || amount === "") {
                 showAlert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න!", "warning");
                 return;
             }
 
-            if(parseInt(amount) <= 0) {
+            if (parseInt(amount) <= 0) {
                 showAlert("කරුණාකර වලංගු මුදලක් ඇතුළත් කරන්න!", "warning");
                 return;
             }
 
-            // Get table body
-            let tbody = document.getElementById('orderTableBody');
-            
-            // Remove empty state if exists
-            if(tbody.children.length === 1 && tbody.children[0].classList.contains('empty-state')) {
-                tbody.innerHTML = '';
-            }
+            // Disable button
+            addBtn.disabled = true;
+            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> එකතු කරමින්...';
 
-            // Create new row
-            let newRow = tbody.insertRow(0);
-            newRow.style.animation = "slideIn 0.3s ease";
-            
-            // Add cells
-            let cell1 = newRow.insertCell(0);
-            let cell2 = newRow.insertCell(1);
-            let cell3 = newRow.insertCell(2);
-            let cell4 = newRow.insertCell(3);
+            // Create order object
+            const order = {
+                customerName: name,
+                amount: parseInt(amount),
+                status: status,
+                timestamp: new Date().toISOString()
+            };
 
-            // Set cell values
-            cell1.innerHTML = `<i class="fas fa-user-circle" style="color: var(--primary); margin-right: 5px;"></i>${name}`;
-            cell2.innerHTML = `<strong>Rs. ${parseInt(amount).toLocaleString()}</strong>`;
-            
-            let statusClass = status === "Paid" ? "status-paid" : "status-pending";
-            let statusIcon = status === "Paid" ? "fa-check-circle" : "fa-clock";
-            cell3.innerHTML = `<span class="status-badge ${statusClass}"><i class="fas ${statusIcon}"></i> ${status}</span>`;
-            
-            cell4.innerHTML = `<button class="action-btn" onclick="deleteOrder(this)" title="මකන්න"><i class="fas fa-trash-alt"></i></button>`;
-
-            // Update counters
-            orderCount++;
-            document.getElementById('order-count').textContent = orderCount;
-            
-            // Add to customers set
-            customers.add(name);
-            document.getElementById('total-customers').textContent = customers.size;
-
-            // Update daily income
-            if(status === "Paid") {
-                dailyTotal += parseInt(amount);
-                document.getElementById('daily-total').innerHTML = `Rs. ${dailyTotal.toLocaleString()}`;
-            }
-
-            // Update today's orders count
-            document.getElementById('today-orders').textContent = orderCount;
-
-            // Clear inputs
-            document.getElementById('custName').value = "";
-            document.getElementById('amount').value = "";
-
-            // Show success message
-            showAlert("ඇණවුම සාර්ථකව එකතු කරන ලදී!", "success");
+            // Save to Firebase
+            const ordersRef = database.ref('orders');
+            ordersRef.push(order)
+                .then(() => {
+                    showAlert("ඇණවුම සාර්ථකව එකතු කරන ලදී!", "success");
+                    
+                    // Clear inputs
+                    document.getElementById('custName').value = "";
+                    document.getElementById('amount').value = "";
+                    
+                    // Reload orders
+                    loadOrders();
+                })
+                .catch((error) => {
+                    console.error("Error adding order:", error);
+                    showAlert("ඇණවුම එකතු කිරීමට අපොහොසත් විය!", "error");
+                })
+                .finally(() => {
+                    // Re-enable button
+                    addBtn.disabled = false;
+                    addBtn.innerHTML = '<i class="fas fa-save"></i> ඇණවුම ඇතුළත් කරන්න';
+                });
         }
 
-        // Delete order function
-        function deleteOrder(button) {
-            let row = button.closest('tr');
-            let amount = parseInt(row.cells[1].innerText.replace(/[^0-9]/g, ''));
-            let status = row.cells[2].innerText.includes('Paid') ? 'Paid' : 'Pending';
-            
-            // Update daily total if order was paid
-            if(status === 'Paid') {
-                dailyTotal -= amount;
-                document.getElementById('daily-total').innerHTML = `Rs. ${dailyTotal.toLocaleString()}`;
+        // Delete order
+        function deleteOrder(orderId) {
+            if (!database) {
+                showAlert("Firebase සම්බන්ධතාවය නැත!", "error");
+                return;
             }
 
-            // Remove row
-            row.remove();
-            
-            // Update counters
-            orderCount--;
-            document.getElementById('order-count').textContent = orderCount;
-            document.getElementById('today-orders').textContent = orderCount;
-
-            // Check if table is empty
-            let tbody = document.getElementById('orderTableBody');
-            if(tbody.children.length === 0) {
-                tbody.innerHTML = `
-                    <tr class="empty-state">
-                        <td colspan="4">
-                            <i class="fas fa-inbox"></i>
-                            <p>ඇණවුම් නොමැත</p>
-                        </td>
-                    </tr>
-                `;
+            if (!confirm("ඔබට මෙම ඇණවුම මකා දැමීමට වග බලා ගන්නවාද?")) {
+                return;
             }
 
-            showAlert("ඇණවුම මකා දමන ලදී!", "info");
+            const orderRef = database.ref('orders/' + orderId);
+            orderRef.remove()
+                .then(() => {
+                    showAlert("ඇණවුම මකා දමන ලදී!", "info");
+                    loadOrders(); // Reload orders
+                })
+                .catch((error) => {
+                    console.error("Error deleting order:", error);
+                    showAlert("ඇණවුම මකා දැමීමට අපොහොසත් විය!", "error");
+                });
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            document.getElementById('daily-total').innerHTML = `Rs. ${dailyTotal.toLocaleString()}`;
+            document.getElementById('monthly-total').innerHTML = `Rs. ${monthlyTotal.toLocaleString()}`;
+            document.getElementById('today-orders').textContent = todayOrders;
+            document.getElementById('total-customers').textContent = customers.size;
+            document.getElementById('order-count').textContent = customers.size;
+            
+            // Update comparison (mock data for now)
+            document.getElementById('dailyComparison').innerHTML = `+${Math.floor(Math.random() * 20)}% ඊයේ සිට`;
+            document.getElementById('newCustomers').innerHTML = `අද +${todayCustomers}`;
+            
+            // Update monthly period
+            const monthNames = ['ජනවාරි', 'පෙබරවාරි', 'මාර්තු', 'අප්‍රේල්', 'මැයි', 'ජූනි', 'ජූලි', 'අගෝස්තු', 'සැප්තැම්බර්', 'ඔක්තෝබර්', 'නොවැම්බර්', 'දෙසැම්බර්'];
+            const currentMonth = monthNames[new Date().getMonth()];
+            document.getElementById('monthlyPeriod').textContent = currentMonth;
         }
 
         // Show alert function
         function showAlert(message, type) {
-            // Create alert element
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'warning' ? 'fa-exclamation-circle' : 
+                        type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
+            
             alert.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <i class="fas ${icon}"></i>
                 ${message}
             `;
             
-            // Style alert
             alert.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+                background: ${type === 'success' ? '#10b981' : 
+                            type === 'warning' ? '#f59e0b' : 
+                            type === 'error' ? '#ef4444' : '#3b82f6'};
                 color: white;
                 padding: 15px 25px;
                 border-radius: 10px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                z-index: 1000;
+                z-index: 10000;
                 animation: slideIn 0.3s ease;
                 display: flex;
                 align-items: center;
                 gap: 10px;
+                font-size: 14px;
             `;
 
             document.body.appendChild(alert);
 
-            // Remove alert after 3 seconds
             setTimeout(() => {
                 alert.remove();
             }, 3000);
         }
 
-        // Initialize demo data
-        function initializeDemoData() {
-            // Add sample orders
-            const demoOrders = [
-                { name: "කමල් පෙරේරා", amount: "25000", status: "Paid" },
-                { name: "නිමල් සිල්වා", amount: "15000", status: "Pending" },
-                { name: "සුනිල් ගුණවර්ධන", amount: "32000", status: "Paid" }
-            ];
-
-            demoOrders.forEach(order => {
-                document.getElementById('custName').value = order.name;
-                document.getElementById('amount').value = order.amount;
-                document.getElementById('status').value = order.status;
-                addOrder();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDate();
+            checkConnection();
+            
+            // Add keyboard shortcut (Ctrl/Cmd + Enter)
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    addOrder();
+                }
             });
-        }
-
-        // Update date on load
-        updateDate();
-
-        // Initialize demo data (comment this out if you don't want demo data)
-        // initializeDemoData();
-
-        // Add keyboard shortcut (Ctrl/Cmd + Enter) to submit form
-        document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                addOrder();
-            }
         });
     </script>
 </body>
