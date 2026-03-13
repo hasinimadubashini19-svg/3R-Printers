@@ -245,7 +245,7 @@
         }
 
         .forgot-modal.active {
-            display: flex;
+            display: flex !important;
         }
 
         .forgot-content {
@@ -254,6 +254,7 @@
             padding: 30px 20px;
             width: 100%;
             max-width: 400px;
+            animation: slideUp 0.3s ease;
         }
 
         .forgot-header {
@@ -277,6 +278,43 @@
             font-size: 14px;
         }
 
+        .reset-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cancel-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .cancel-btn:hover {
+            background: var(--dark);
+        }
+
         /* Loading Overlay */
         .loading-overlay {
             position: fixed;
@@ -288,7 +326,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 30000;
         }
 
         .loading-overlay.active {
@@ -884,6 +922,63 @@
             margin-bottom: 10px;
             font-size: 13px;
         }
+
+        /* Alert Banner */
+        .alert-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .alert-banner i {
+            font-size: 20px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .alert-list {
+            margin-left: 15px;
+            font-size: 12px;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px;
+            margin: 0 2px;
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--secondary);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
@@ -910,12 +1005,12 @@
             <div class="login-form">
                 <div class="login-input-group">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="loginEmail" placeholder="Email Address" value="admin@3rprinters.com">
+                    <input type="email" id="loginEmail" placeholder="Email Address">
                 </div>
                 
                 <div class="login-input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPassword" placeholder="Password" value="password123">
+                    <input type="password" id="loginPassword" placeholder="Password">
                 </div>
                 
                 <div class="login-options">
@@ -993,11 +1088,11 @@
                 <input type="email" id="resetEmail" placeholder="Email Address">
             </div>
             
-            <button class="login-btn" onclick="sendResetLink()" style="margin-top: 15px;">
+            <button class="reset-btn" onclick="sendResetLink()">
                 <i class="fas fa-paper-plane"></i> Send Reset Link
             </button>
             
-            <button class="login-btn" style="background: var(--secondary); margin-top: 10px;" onclick="closeForgotPassword()">
+            <button class="cancel-btn" onclick="closeForgotPassword()">
                 Cancel
             </button>
         </div>
@@ -1104,11 +1199,11 @@
                 </div>
 
                 <!-- Low Stock Alert -->
-                <div id="stockAlert" class="alert-banner" style="display: none; background: var(--danger); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                <div id="stockAlert" class="alert-banner" style="display: none; background: var(--danger);">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="alert-content">
-                        <div class="alert-title" style="font-weight: 600; margin-bottom: 3px;">Low Stock Alert!</div>
-                        <ul class="alert-list" id="stockAlertList" style="font-size: 12px; margin-left: 15px;"></ul>
+                        <div class="alert-title">Low Stock Alert!</div>
+                        <ul class="alert-list" id="stockAlertList"></ul>
                     </div>
                 </div>
 
@@ -1201,9 +1296,7 @@
                     </div>
 
                     <!-- Mobile Cards View -->
-                    <div class="mobile-cards" id="orderCards">
-                        <!-- Cards will be inserted here -->
-                    </div>
+                    <div class="mobile-cards" id="orderCards"></div>
 
                     <!-- Table View (Hidden on Mobile) -->
                     <div class="table-container">
@@ -1587,6 +1680,7 @@
             auth = firebase.auth();
             
             db.enablePersistence().catch(err => console.log('Persistence error:', err));
+            console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase init error:", error);
         }
@@ -1608,19 +1702,37 @@
         }, 2000);
 
         // Auth State Observer
-        auth?.onAuthStateChanged(user => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboard').classList.add('visible');
-                loadOrders();
-                loadStock();
-                loadCustomersForBill();
+        if (auth) {
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboard').classList.add('visible');
+                    loadOrders();
+                    loadStock();
+                    loadCustomersForBill();
+                    updateConnectionStatus(true);
+                } else {
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    document.getElementById('dashboard').classList.remove('visible');
+                    updateConnectionStatus(false);
+                }
+            });
+        }
+
+        // Update Connection Status
+        function updateConnectionStatus(connected) {
+            const statusDiv = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            
+            if (connected) {
+                statusDiv.className = 'connection-status connected';
+                statusText.textContent = 'Connected';
             } else {
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('dashboard').classList.remove('visible');
+                statusDiv.className = 'connection-status disconnected';
+                statusText.textContent = 'Disconnected';
             }
-        });
+        }
 
         // Login Function
         function login() {
@@ -1678,12 +1790,21 @@
                 });
         }
 
-        // Forgot Password
+        // Forgot Password Functions
+        function showForgotPassword() {
+            document.getElementById('forgotModal').classList.add('active');
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotModal').classList.remove('active');
+            document.getElementById('resetEmail').value = '';
+        }
+
         function sendResetLink() {
             const email = document.getElementById('resetEmail').value;
             
             if (!email) {
-                showAlert('Please enter your email!', 'warning');
+                showAlert('Please enter your email address!', 'warning');
                 return;
             }
 
@@ -1714,14 +1835,6 @@
         function showLogin() {
             document.getElementById('signupScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
-        }
-
-        function showForgotPassword() {
-            document.getElementById('forgotModal').classList.add('active');
-        }
-
-        function closeForgotPassword() {
-            document.getElementById('forgotModal').classList.remove('active');
         }
 
         // Loading Functions
@@ -1853,6 +1966,8 @@
                 document.getElementById('fileDesc').value = '';
                 document.getElementById('totalAmount').value = '';
                 document.getElementById('advanceAmount').value = '';
+                document.getElementById('fileName').textContent = 'No file selected';
+                document.getElementById('fileInput').value = '';
                 loadOrders();
             } catch (err) {
                 showAlert('Error adding order!', 'error');
@@ -2422,15 +2537,21 @@
             document.getElementById('pending-orders').textContent = pending;
         }
 
+        // Update File Name
+        function updateFileName() {
+            const input = document.getElementById('fileInput');
+            document.getElementById('fileName').textContent = input.files.length ? input.files[0].name : 'No file selected';
+        }
+
         // Show Alert
         function showAlert(msg, type) {
             const alert = document.createElement('div');
             alert.style.cssText = `
-                position: fixed; top: 20px; right: 20px; z-index: 20000;
+                position: fixed; top: 20px; right: 20px; z-index: 35000;
                 background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#ef4444'};
                 color: white; padding: 12px 20px; border-radius: 8px;
-                display: flex; align-items: center; gap: 10px;
-                animation: slideIn 0.3s ease;
+                display: flex; align-items: center; gap: 10px; max-width: 90%;
+                animation: slideIn 0.3s ease; box-shadow: var(--shadow-lg);
             `;
             alert.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
             document.body.appendChild(alert);
@@ -2442,12 +2563,6 @@
             const group = document.getElementById('advanceAmountGroup');
             group.style.display = this.value === 'Advance' ? 'block' : 'none';
         });
-
-        // Update File Name
-        function updateFileName() {
-            const input = document.getElementById('fileInput');
-            document.getElementById('fileName').textContent = input.files.length ? input.files[0].name : 'No file selected';
-        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
