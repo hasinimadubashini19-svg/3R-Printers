@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>3R Printers - Complete Management System</title>
+    <title>3R Printers - Premium Management System</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         * {
@@ -23,20 +25,25 @@
         }
 
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
+            --primary: #1e3a8a;
+            --primary-dark: #0f2b63;
+            --primary-light: #3b5fb0;
             --secondary: #64748b;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --light: #f8fafc;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --light: #f1f5f9;
             --dark: #020617;
             --border: #e2e8f0;
+            --gradient-1: linear-gradient(135deg, #1e3a8a 0%, #3b5fb0 100%);
+            --gradient-2: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+            --gradient-3: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            --gradient-4: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-1);
             min-height: 100vh;
         }
 
@@ -47,7 +54,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-1);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -71,7 +78,7 @@
         .login-header .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient-1);
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -101,7 +108,7 @@
         .login-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient-1);
             color: white;
             border: none;
             border-radius: 10px;
@@ -117,6 +124,32 @@
             text-align: center;
             display: block;
             margin-top: 10px;
+        }
+
+        /* Forgot Password Modal */
+        .forgot-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .forgot-modal.active {
+            display: flex;
+        }
+
+        .forgot-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
         }
 
         /* Main Container */
@@ -158,7 +191,7 @@
         }
 
         .nav-item.active {
-            background: var(--primary);
+            background: var(--gradient-1);
             color: white;
         }
 
@@ -215,7 +248,7 @@
         }
 
         .connection-status.connected {
-            background: rgba(34, 197, 94, 0.1);
+            background: rgba(5, 150, 105, 0.1);
             color: var(--success);
         }
 
@@ -254,11 +287,15 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-1);
             border-radius: 12px;
             padding: 15px;
             color: white;
         }
+
+        .stat-card:nth-child(2) { background: var(--gradient-2); }
+        .stat-card:nth-child(3) { background: var(--gradient-3); }
+        .stat-card:nth-child(4) { background: var(--gradient-4); }
 
         .stat-icon {
             font-size: 24px;
@@ -290,6 +327,17 @@
             padding: 12px 5px;
             text-align: center;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            background: var(--gradient-1);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .action-card:hover i {
+            color: white;
         }
 
         .action-card i {
@@ -317,6 +365,7 @@
             gap: 8px;
             margin-bottom: 15px;
             font-weight: 600;
+            color: var(--primary);
         }
 
         .form-grid {
@@ -345,13 +394,14 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             font-size: 14px;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Buttons */
         .btn-primary {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient-1);
             color: white;
             border: none;
             border-radius: 8px;
@@ -456,6 +506,7 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 12px;
+            position: relative;
         }
 
         .stock-card.low-stock {
@@ -472,7 +523,7 @@
         .stock-icon {
             width: 40px;
             height: 40px;
-            background: var(--primary);
+            background: var(--gradient-1);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -513,9 +564,18 @@
             border-radius: 4px;
         }
 
+        .delete-stock {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 5px;
+        }
+
         /* Seal Preview */
         .seal-preview {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-1);
             border-radius: 15px;
             padding: 20px;
             margin: 15px 0;
@@ -551,6 +611,26 @@
 
         #sealPreview.oval {
             border-radius: 50% / 40%;
+        }
+
+        /* Number Plate Preview */
+        .plate-preview {
+            background: var(--gradient-1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .plate-sample {
+            background: #FCD34D;
+            border: 3px solid var(--dark);
+            border-radius: 8px;
+            padding: 20px 30px;
+            display: inline-block;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 28px;
+            letter-spacing: 2px;
+            color: var(--dark);
         }
 
         /* Bill */
@@ -593,7 +673,7 @@
         }
 
         .bill-table th {
-            background: var(--primary);
+            background: var(--gradient-1);
             color: white;
             font-size: 11px;
         }
@@ -636,6 +716,36 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            color: var(--primary);
+        }
+
+        /* Reports */
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            height: 250px;
+        }
+
+        .report-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .report-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .report-btn.active {
+            background: var(--gradient-1);
+            color: white;
         }
 
         /* Modal */
@@ -733,27 +843,27 @@
 
         /* Status Badges */
         .status-paid {
-            background: rgba(34, 197, 94, 0.1);
+            background: rgba(5, 150, 105, 0.1);
             color: var(--success);
         }
 
         .status-pending {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(217, 119, 6, 0.1);
             color: var(--warning);
         }
 
         .status-advance {
-            background: rgba(37, 99, 235, 0.1);
+            background: rgba(30, 58, 138, 0.1);
             color: var(--primary);
         }
 
         .status-printing {
             background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
+            color: #2563eb;
         }
 
         .status-ready {
-            background: rgba(34, 197, 94, 0.1);
+            background: rgba(5, 150, 105, 0.1);
             color: var(--success);
         }
 
@@ -780,7 +890,7 @@
         }
 
         .chat-message.sent {
-            background: var(--primary);
+            background: var(--gradient-1);
             color: white;
             margin-left: 20%;
         }
@@ -806,6 +916,30 @@
             border: 1px solid var(--border);
             border-radius: 5px;
         }
+
+        .chat-type {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .chat-type button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chat-type .whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .chat-type .sms {
+            background: var(--primary);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -819,11 +953,12 @@
                 <h2>Welcome to 3R PRINTERS</h2>
                 <p>Sign in to continue</p>
             </div>
-            <input type="email" id="loginEmail" class="login-input" placeholder="Email" value="admin@3rprinters.com">
-            <input type="password" id="loginPassword" class="login-input" placeholder="Password" value="password123">
+            <input type="email" id="loginEmail" class="login-input" placeholder="Email">
+            <input type="password" id="loginPassword" class="login-input" placeholder="Password">
             <button class="login-btn" onclick="login()">
                 <i class="fas fa-sign-in-alt"></i> Sign In
             </button>
+            <a class="login-link" onclick="showForgotPassword()">Forgot Password?</a>
             <a class="login-link" onclick="showSignUp()">Create new account</a>
         </div>
     </div>
@@ -849,13 +984,28 @@
         </div>
     </div>
 
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" class="forgot-modal">
+        <div class="forgot-content">
+            <h3 style="margin-bottom: 15px;">Reset Password</h3>
+            <p style="margin-bottom: 15px;">Enter your email to receive reset link</p>
+            <input type="email" id="resetEmail" class="login-input" placeholder="Email">
+            <button class="login-btn" onclick="sendResetLink()">
+                <i class="fas fa-paper-plane"></i> Send Reset Link
+            </button>
+            <button class="login-btn" style="background: var(--secondary);" onclick="closeForgotPassword()">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <!-- Main Dashboard -->
     <div id="dashboard" class="dashboard">
         <!-- Header -->
         <div class="header">
             <div class="header-left">
                 <i class="fas fa-print"></i>
-                <h1>3R PRINTERS</h1>
+                <h1 id="shopNameHeader">3R PRINTERS</h1>
             </div>
             <div class="header-right">
                 <div id="connectionStatus" class="connection-status">
@@ -881,18 +1031,18 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-calendar-week"></i></div>
-                        <div class="stat-label">Week</div>
+                        <div class="stat-label">This Week</div>
                         <div class="stat-value" id="weekRevenue">Rs. 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="stat-label">This Month</div>
+                        <div class="stat-value" id="monthRevenue">Rs. 0</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-clock"></i></div>
                         <div class="stat-label">Pending</div>
                         <div class="stat-value" id="pendingOrders">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-label">Completed</div>
-                        <div class="stat-value" id="completedOrders">0</div>
                     </div>
                 </div>
 
@@ -919,7 +1069,7 @@
                 <!-- Add Order Form -->
                 <div class="form-section">
                     <div class="section-title">
-                        <i class="fas fa-plus-circle" style="color: var(--primary);"></i>
+                        <i class="fas fa-plus-circle"></i>
                         Add New Order
                     </div>
                     <div class="form-grid">
@@ -934,11 +1084,11 @@
                         <div class="input-group">
                             <i class="fas fa-tag"></i>
                             <select id="orderService">
-                                <option value="Printing">Printing</option>
-                                <option value="Seal">Seal</option>
-                                <option value="Memento">Memento</option>
-                                <option value="NumberPlate">Number Plate</option>
-                                <option value="Banner">Banner</option>
+                                <option value="Printing">📄 Printing</option>
+                                <option value="Seal">🖍️ Seal</option>
+                                <option value="Memento">🏆 Memento</option>
+                                <option value="NumberPlate">🚗 Number Plate</option>
+                                <option value="Banner">🎯 Banner</option>
                             </select>
                         </div>
                         <div class="input-group">
@@ -952,9 +1102,9 @@
                         <div class="input-group">
                             <i class="fas fa-credit-card"></i>
                             <select id="orderPayment" onchange="toggleAdvanceField()">
-                                <option value="Pending">Pending</option>
-                                <option value="Advance">Advance</option>
-                                <option value="Paid">Paid</option>
+                                <option value="Pending">⏳ Pending</option>
+                                <option value="Advance">💰 Advance</option>
+                                <option value="Paid">✅ Paid</option>
                             </select>
                         </div>
                     </div>
@@ -983,11 +1133,11 @@
                     <div class="form-grid">
                         <div class="input-group">
                             <i class="fas fa-box"></i>
-                            <input type="text" id="stockName" placeholder="Item Name (e.g., Seal 40mm)">
+                            <input type="text" id="stockName" placeholder="Item Name">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-ruler"></i>
-                            <input type="text" id="stockSize" placeholder="Size (e.g., 40mm)">
+                            <input type="text" id="stockSize" placeholder="Size (e.g., 40mm, Standard)">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-balance-scale"></i>
@@ -996,6 +1146,7 @@
                                 <option value="rolls">Rolls</option>
                                 <option value="liters">Liters</option>
                                 <option value="kg">Kg</option>
+                                <option value="feet">Feet</option>
                             </select>
                         </div>
                         <div class="input-group">
@@ -1080,7 +1231,7 @@
                         <div class="input-group">
                             <i class="fas fa-ruler"></i>
                             <select id="sealSize" onchange="updateSealPreview()">
-                                <option value="">Select Size from Stock</option>
+                                <option value="">Select Seal Size</option>
                             </select>
                         </div>
                         <div class="input-group">
@@ -1096,6 +1247,10 @@
                             <i class="fas fa-rupee-sign"></i>
                             <input type="number" id="sealPrice" placeholder="Price">
                         </div>
+                        <div class="input-group">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <input type="number" id="sealAdvance" placeholder="Advance Received">
+                        </div>
                     </div>
                     
                     <div class="seal-preview">
@@ -1107,6 +1262,95 @@
                     <button class="btn-primary" onclick="addSealOrder()">
                         <i class="fas fa-save"></i> Add Seal Order
                     </button>
+                </div>
+            </div>
+
+            <!-- Number Plates Tab -->
+            <div id="platesTab" class="tab-pane">
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-car"></i>
+                        Create Number Plate
+                    </div>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="plateCustomer" placeholder="Customer Name">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-car"></i>
+                            <input type="text" id="plateNumber" placeholder="Vehicle Number" oninput="updatePlatePreview()">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-ruler"></i>
+                            <select id="plateSize" onchange="updatePlatePreview()">
+                                <option value="">Select Plate Size</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-palette"></i>
+                            <select id="plateType">
+                                <option value="Standard">Standard</option>
+                                <option value="Fancy">Fancy</option>
+                                <option value="3D">3D</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-rupee-sign"></i>
+                            <input type="number" id="platePrice" placeholder="Price">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <input type="number" id="plateAdvance" placeholder="Advance Received">
+                        </div>
+                    </div>
+                    
+                    <div class="plate-preview">
+                        <div class="plate-sample" id="platePreview">
+                            CAA-1234
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="addPlateOrder()">
+                        <i class="fas fa-save"></i> Add Plate Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reportsTab" class="tab-pane">
+                <div class="report-filters">
+                    <button class="report-btn active" onclick="loadReport('daily')">Daily</button>
+                    <button class="report-btn" onclick="loadReport('weekly')">Weekly</button>
+                    <button class="report-btn" onclick="loadReport('monthly')">Monthly</button>
+                    <button class="report-btn" onclick="loadReport('yearly')">Yearly</button>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="reportChart"></canvas>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-label">Customers</div>
+                        <div class="stat-value" id="totalCustomers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                        <div class="stat-label">Revenue</div>
+                        <div class="stat-value" id="totalRevenue">Rs. 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-percent"></i></div>
+                        <div class="stat-label">Completion</div>
+                        <div class="stat-value" id="completionRate">0%</div>
+                    </div>
                 </div>
             </div>
 
@@ -1122,19 +1366,19 @@
                             <h3><i class="fas fa-store"></i> Shop Information</h3>
                             <div class="input-group" style="margin-bottom: 10px;">
                                 <i class="fas fa-tag"></i>
-                                <input type="text" id="shopNameInput" placeholder="Shop Name" value="3R PRINTERS">
+                                <input type="text" id="shopNameInput" placeholder="Shop Name">
                             </div>
                             <div class="input-group" style="margin-bottom: 10px;">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" id="shopAddressInput" placeholder="Shop Address" value="123 Main Street, Colombo">
+                                <input type="text" id="shopAddressInput" placeholder="Shop Address">
                             </div>
                             <div class="input-group" style="margin-bottom: 10px;">
                                 <i class="fas fa-phone"></i>
-                                <input type="text" id="shopPhoneInput" placeholder="Phone Number" value="077-1234567">
+                                <input type="text" id="shopPhoneInput" placeholder="Phone Number">
                             </div>
                             <div class="input-group">
                                 <i class="fas fa-envelope"></i>
-                                <input type="email" id="shopEmailInput" placeholder="Email" value="3rprinters@gmail.com">
+                                <input type="email" id="shopEmailInput" placeholder="Email">
                             </div>
                         </div>
                         <button class="btn-primary" onclick="saveSettings()">
@@ -1162,8 +1406,16 @@
                     <div id="chatMessages" class="chat-messages"></div>
                     <div class="chat-input">
                         <input type="text" id="chatInput" placeholder="Type a message...">
-                        <button class="btn-primary" onclick="sendChatMessage()" style="width: auto; padding: 8px 15px;">
+                        <button class="btn-primary" onclick="prepareChatMessage()" style="width: auto; padding: 8px 15px;">
                             <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="chat-type">
+                        <button class="whatsapp" onclick="sendChatMessage('whatsapp')">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="sms" onclick="sendChatMessage('sms')">
+                            <i class="fas fa-sms"></i> SMS
                         </button>
                     </div>
                 </div>
@@ -1187,6 +1439,14 @@
             <div class="nav-item" onclick="switchTab('seals')">
                 <i class="fas fa-stamp"></i>
                 <span>Seals</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('plates')">
+                <i class="fas fa-car"></i>
+                <span>Plates</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('reports')">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
             </div>
             <div class="nav-item" onclick="switchTab('settings')">
                 <i class="fas fa-cog"></i>
@@ -1229,6 +1489,18 @@
         </div>
     </div>
 
+    <!-- Stock Delete Confirmation Modal -->
+    <div id="stockDeleteModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px;">Delete Stock Item</h3>
+            <p style="margin-bottom: 20px;">Are you sure you want to delete this stock item?</p>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-danger" onclick="confirmStockDelete()" style="flex: 1;">Delete</button>
+                <button class="btn-primary" onclick="closeStockDeleteModal()" style="flex: 1;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
@@ -1261,7 +1533,10 @@
         let stockItems = [];
         let currentOrderId = null;
         let deleteOrderId = null;
+        let deleteStockId = null;
         let currentUser = null;
+        let reportChart = null;
+        let pendingMessage = '';
 
         // Auth State
         auth?.onAuthStateChanged(user => {
@@ -1275,7 +1550,6 @@
                 loadOrders();
                 loadStock();
                 loadCustomers();
-                loadSealSizes();
                 loadSettings();
                 updateDate();
             } else {
@@ -1291,6 +1565,11 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
+            if (!email || !password) {
+                showNotification('Please enter email and password!', 'warning');
+                return;
+            }
+
             showLoading();
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
@@ -1310,6 +1589,11 @@
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
 
+            if (!name || !email || !password || !confirm) {
+                showNotification('Please fill all fields!', 'warning');
+                return;
+            }
+
             if (password !== confirm) {
                 showNotification('Passwords do not match!', 'error');
                 return;
@@ -1325,6 +1609,36 @@
                 .then(() => {
                     hideLoading();
                     showNotification('Account created!');
+                })
+                .catch(error => {
+                    hideLoading();
+                    showNotification(error.message, 'error');
+                });
+        }
+
+        // Forgot Password
+        function showForgotPassword() {
+            document.getElementById('forgotModal').classList.add('active');
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotModal').classList.remove('active');
+        }
+
+        function sendResetLink() {
+            const email = document.getElementById('resetEmail').value;
+            
+            if (!email) {
+                showNotification('Please enter email!', 'warning');
+                return;
+            }
+
+            showLoading();
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    hideLoading();
+                    showNotification('Password reset link sent!');
+                    closeForgotPassword();
                 })
                 .catch(error => {
                     hideLoading();
@@ -1354,13 +1668,20 @@
             
             event.currentTarget.classList.add('active');
             document.getElementById(tab + 'Tab').classList.add('active');
+            
+            if (tab === 'reports') {
+                loadReport('daily');
+            }
+            if (tab === 'seals' || tab === 'plates') {
+                loadStockItemsForSelect();
+            }
         }
 
         // Quick Actions
         function quickAction(action) {
             switch(action) {
                 case 'scanQR':
-                    showNotification('QR Scanner opening...');
+                    showNotification('QR Scanner would open here');
                     break;
                 case 'printLabel':
                     showNotification('Label printer ready');
@@ -1420,6 +1741,7 @@
                 card.className = 'order-card';
                 
                 const date = order.timestamp?.toDate ? order.timestamp.toDate() : new Date();
+                const remaining = order.amount - (order.advanceAmount || 0);
                 
                 card.innerHTML = `
                     <div class="order-header">
@@ -1431,11 +1753,13 @@
                         <div><i class="fas fa-tag"></i> ${order.serviceType || 'Printing'}</div>
                         <div><i class="fas fa-rupee-sign"></i> Rs. ${(order.amount || 0).toLocaleString()}</div>
                         <div><i class="fas fa-credit-card"></i> ${order.paymentStatus || 'Pending'}</div>
+                        ${remaining > 0 ? `<div><i class="fas fa-hourglass-half"></i> Balance: Rs. ${remaining.toLocaleString()}</div>` : ''}
                     </div>
                     <div class="order-actions">
                         <button class="btn-success" onclick="updateOrderStatus('${order.id}', 'Printing')">Print</button>
                         <button class="btn-warning" onclick="updateOrderStatus('${order.id}', 'Ready')">Ready</button>
                         <button class="btn-primary" onclick="updateOrderStatus('${order.id}', 'Picked')">Pick</button>
+                        ${remaining > 0 ? `<button class="btn-success" onclick="openPaymentModal('${order.id}', ${remaining})">Pay</button>` : ''}
                         <button class="btn-danger" onclick="openDeleteModal('${order.id}')">Delete</button>
                     </div>
                 `;
@@ -1453,17 +1777,10 @@
                 return;
             }
 
-            const serviceType = document.getElementById('orderService').value;
-            
-            // Update stock if it's a seal
-            if (serviceType === 'Seal') {
-                await updateStockOnOrder(serviceType);
-            }
-
             const order = {
                 customerName: name,
                 phone: document.getElementById('custPhone').value.trim(),
-                serviceType: serviceType,
+                serviceType: document.getElementById('orderService').value,
                 fileDesc: document.getElementById('orderDesc').value.trim(),
                 amount: parseInt(amount),
                 paymentStatus: document.getElementById('orderPayment').value,
@@ -1537,6 +1854,7 @@
                         stockItems.push({ id: doc.id, ...doc.data() });
                     });
                     displayStock();
+                    loadStockItemsForSelect();
                 })
                 .catch(error => {
                     console.error("Error loading stock:", error);
@@ -1558,6 +1876,9 @@
                 const card = document.createElement('div');
                 card.className = `stock-card ${lowStock ? 'low-stock' : ''}`;
                 card.innerHTML = `
+                    <div class="delete-stock" onclick="openStockDeleteModal('${item.id}')">
+                        <i class="fas fa-times"></i>
+                    </div>
                     <div class="stock-header">
                         <div class="stock-icon"><i class="fas fa-box"></i></div>
                         <div class="stock-info">
@@ -1602,7 +1923,6 @@
                 document.getElementById('stockQty').value = '';
                 document.getElementById('stockAlert').value = '';
                 loadStock();
-                loadSealSizes();
             } catch (error) {
                 showNotification('Error adding stock!', 'error');
             } finally {
@@ -1639,38 +1959,57 @@
             }
         }
 
-        // Update Stock on Order
-        async function updateStockOnOrder(serviceType) {
-            if (serviceType === 'Seal') {
-                const sealSize = document.getElementById('sealSize').value;
-                const stockItem = stockItems.find(item => 
-                    item.name.toLowerCase().includes('seal') && 
-                    item.size === sealSize
-                );
-                
-                if (stockItem) {
-                    await db.collection('stock').doc(stockItem.id).update({
-                        quantity: stockItem.quantity - 1
-                    });
-                }
+        // Delete Stock
+        function openStockDeleteModal(stockId) {
+            deleteStockId = stockId;
+            document.getElementById('stockDeleteModal').classList.add('active');
+        }
+
+        function closeStockDeleteModal() {
+            document.getElementById('stockDeleteModal').classList.remove('active');
+            deleteStockId = null;
+        }
+
+        async function confirmStockDelete() {
+            if (!deleteStockId) return;
+
+            showLoading();
+            try {
+                await db.collection('stock').doc(deleteStockId).delete();
+                showNotification('Stock item deleted');
+                closeStockDeleteModal();
+                loadStock();
+            } catch (error) {
+                showNotification('Error deleting stock!', 'error');
+            } finally {
+                hideLoading();
             }
         }
 
-        // Load Seal Sizes
-        function loadSealSizes() {
-            const sealSizes = stockItems.filter(item => 
-                item.name.toLowerCase().includes('seal')
-            );
+        // Load Stock Items for Select
+        function loadStockItemsForSelect() {
+            const sealSelect = document.getElementById('sealSize');
+            const plateSelect = document.getElementById('plateSize');
             
-            const select = document.getElementById('sealSize');
-            select.innerHTML = '<option value="">Select Size</option>';
-            
-            sealSizes.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.size || item.name;
-                option.textContent = `${item.name} ${item.size || ''} (${item.quantity} available)`;
-                select.appendChild(option);
-            });
+            if (sealSelect) {
+                sealSelect.innerHTML = '<option value="">Select Seal Size</option>';
+                stockItems.filter(item => item.name.toLowerCase().includes('seal')).forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.size || item.name;
+                    option.textContent = `${item.name} ${item.size || ''} (${item.quantity} available)`;
+                    sealSelect.appendChild(option);
+                });
+            }
+
+            if (plateSelect) {
+                plateSelect.innerHTML = '<option value="">Select Plate Size</option>';
+                stockItems.filter(item => item.name.toLowerCase().includes('plate')).forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.size || item.name;
+                    option.textContent = `${item.name} ${item.size || ''} (${item.quantity} available)`;
+                    plateSelect.appendChild(option);
+                });
+            }
         }
 
         // Update Seal Preview
@@ -1681,7 +2020,6 @@
             
             preview.className = shape;
             
-            // Split text by lines
             const lines = text.split('\n');
             document.getElementById('sealPreviewText').innerHTML = lines.map(line => 
                 `<div>${line}</div>`
@@ -1693,8 +2031,10 @@
             const customer = document.getElementById('sealCustomer').value.trim();
             const text = document.getElementById('sealText').value.trim();
             const size = document.getElementById('sealSize').value;
+            const price = document.getElementById('sealPrice').value;
+            const advance = document.getElementById('sealAdvance').value || 0;
 
-            if (!customer || !text || !size) {
+            if (!customer || !text || !size || !price) {
                 showNotification('Please fill all fields!', 'warning');
                 return;
             }
@@ -1715,8 +2055,9 @@
                 customerName: customer,
                 serviceType: 'Seal',
                 fileDesc: `Seal: ${text} (${size})`,
-                amount: parseInt(document.getElementById('sealPrice').value) || 500,
-                paymentStatus: 'Pending',
+                amount: parseInt(price),
+                advanceAmount: parseInt(advance),
+                paymentStatus: parseInt(advance) >= parseInt(price) ? 'Paid' : (parseInt(advance) > 0 ? 'Advance' : 'Pending'),
                 status: 'Pending',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -1727,6 +2068,67 @@
                 showNotification('Seal order added');
                 document.getElementById('sealCustomer').value = '';
                 document.getElementById('sealText').value = '';
+                document.getElementById('sealPrice').value = '';
+                document.getElementById('sealAdvance').value = '';
+                loadOrders();
+                loadStock();
+            } catch (error) {
+                showNotification('Error adding order!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Update Plate Preview
+        function updatePlatePreview() {
+            const number = document.getElementById('plateNumber').value || 'CAA-1234';
+            document.getElementById('platePreview').textContent = number;
+        }
+
+        // Add Plate Order
+        async function addPlateOrder() {
+            const customer = document.getElementById('plateCustomer').value.trim();
+            const number = document.getElementById('plateNumber').value.trim();
+            const size = document.getElementById('plateSize').value;
+            const price = document.getElementById('platePrice').value;
+            const advance = document.getElementById('plateAdvance').value || 0;
+
+            if (!customer || !number || !size || !price) {
+                showNotification('Please fill all fields!', 'warning');
+                return;
+            }
+
+            // Update stock
+            const stockItem = stockItems.find(item => 
+                item.name.toLowerCase().includes('plate') && 
+                (item.size === size || item.name.includes(size))
+            );
+
+            if (stockItem) {
+                await db.collection('stock').doc(stockItem.id).update({
+                    quantity: stockItem.quantity - 1
+                });
+            }
+
+            const order = {
+                customerName: customer,
+                serviceType: 'NumberPlate',
+                fileDesc: `Number Plate: ${number} (${size})`,
+                amount: parseInt(price),
+                advanceAmount: parseInt(advance),
+                paymentStatus: parseInt(advance) >= parseInt(price) ? 'Paid' : (parseInt(advance) > 0 ? 'Advance' : 'Pending'),
+                status: 'Pending',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            showLoading();
+            try {
+                await db.collection('orders').add(order);
+                showNotification('Number plate order added');
+                document.getElementById('plateCustomer').value = '';
+                document.getElementById('plateNumber').value = '';
+                document.getElementById('platePrice').value = '';
+                document.getElementById('plateAdvance').value = '';
                 loadOrders();
                 loadStock();
             } catch (error) {
@@ -1751,9 +2153,9 @@
                 return;
             }
 
-            const orders = allOrders.filter(o => o.customerName === customer);
+            const orders = allOrders.filter(o => o.customerName === customer && o.status !== 'Picked');
             if (orders.length === 0) {
-                showNotification('No orders found!', 'warning');
+                showNotification('No pending orders found!', 'warning');
                 return;
             }
 
@@ -1764,6 +2166,7 @@
             document.getElementById('billInfo').innerHTML = `
                 <p><strong>Customer:</strong> ${customer}</p>
                 <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Phone:</strong> ${orders[0].phone || 'N/A'}</p>
             `;
 
             let billHTML = `
@@ -1801,7 +2204,7 @@
                 <div class="bill-totals">
                     <p>Total: Rs. ${total.toLocaleString()}</p>
                     <p>Paid: Rs. ${paid.toLocaleString()}</p>
-                    <p>Balance: Rs. ${(total - paid).toLocaleString()}</p>
+                    <p><strong>Balance Due: Rs. ${(total - paid).toLocaleString()}</strong></p>
                 </div>
             `;
 
@@ -1829,7 +2232,8 @@
                 let phone = order.phone.replace(/\D/g, '');
                 if (phone.startsWith('0')) phone = '94' + phone.substring(1);
                 
-                const message = `Hello ${customer}, your bill from 3R PRINTERS is ready.`;
+                const total = document.querySelector('.bill-totals')?.innerText || '';
+                const message = `Hello ${customer},\n\nYour bill from 3R PRINTERS:\n${total}\n\nThank you for your business!`;
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
             } else {
                 showNotification('Phone number not found!', 'warning');
@@ -1897,6 +2301,7 @@
             document.getElementById('shopPhoneInput').value = shopPhone;
             document.getElementById('shopEmailInput').value = shopEmail;
 
+            document.getElementById('shopNameHeader').textContent = shopName;
             document.getElementById('shopName').textContent = shopName;
             document.getElementById('shopAddress').textContent = shopAddress;
             document.getElementById('shopPhone').textContent = `Tel: ${shopPhone}`;
@@ -1913,6 +2318,7 @@
             localStorage.setItem('shopPhone', shopPhone);
             localStorage.setItem('shopEmail', shopEmail);
 
+            document.getElementById('shopNameHeader').textContent = shopName;
             document.getElementById('shopName').textContent = shopName;
             document.getElementById('shopAddress').textContent = shopAddress;
             document.getElementById('shopPhone').textContent = `Tel: ${shopPhone}`;
@@ -1920,11 +2326,141 @@
             showNotification('Settings saved!');
         }
 
+        // Reports
+        function loadReport(period) {
+            document.querySelectorAll('.report-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const labels = [];
+            const data = [];
+
+            const now = new Date();
+            
+            if (period === 'daily') {
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(now);
+                    d.setDate(d.getDate() - i);
+                    labels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+                    
+                    const dayStart = new Date(d.setHours(0,0,0,0));
+                    const dayEnd = new Date(d.setHours(23,59,59,999));
+                    
+                    const dayRevenue = allOrders
+                        .filter(o => {
+                            const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
+                            return date >= dayStart && date <= dayEnd;
+                        })
+                        .reduce((sum, o) => {
+                            const paid = o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0;
+                            return sum + paid;
+                        }, 0);
+                    
+                    data.push(dayRevenue);
+                }
+            } else if (period === 'weekly') {
+                for (let i = 3; i >= 0; i--) {
+                    const weekStart = new Date(now);
+                    weekStart.setDate(weekStart.getDate() - (weekStart.getDay() + 7 * i));
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekEnd.getDate() + 6);
+                    
+                    labels.push(`Week ${4-i}`);
+                    
+                    const weekRevenue = allOrders
+                        .filter(o => {
+                            const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
+                            return date >= weekStart && date <= weekEnd;
+                        })
+                        .reduce((sum, o) => {
+                            const paid = o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0;
+                            return sum + paid;
+                        }, 0);
+                    
+                    data.push(weekRevenue);
+                }
+            } else if (period === 'monthly') {
+                for (let i = 5; i >= 0; i--) {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    labels.push(d.toLocaleDateString('en-US', { month: 'short' }));
+                    
+                    const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
+                    const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+                    
+                    const monthRevenue = allOrders
+                        .filter(o => {
+                            const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
+                            return date >= monthStart && date <= monthEnd;
+                        })
+                        .reduce((sum, o) => {
+                            const paid = o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0;
+                            return sum + paid;
+                        }, 0);
+                    
+                    data.push(monthRevenue);
+                }
+            }
+
+            updateChart(labels, data);
+            updateReportStats();
+        }
+
+        function updateChart(labels, data) {
+            const ctx = document.getElementById('reportChart').getContext('2d');
+            
+            if (reportChart) {
+                reportChart.destroy();
+            }
+
+            reportChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Revenue (Rs.)',
+                        data: data,
+                        borderColor: '#1e3a8a',
+                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateReportStats() {
+            document.getElementById('totalOrders').textContent = allOrders.length;
+            document.getElementById('totalCustomers').textContent = [...new Set(allOrders.map(o => o.customerName))].length;
+            
+            const totalRevenue = allOrders.reduce((sum, o) => {
+                const paid = o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0;
+                return sum + paid;
+            }, 0);
+            document.getElementById('totalRevenue').textContent = `Rs. ${totalRevenue.toLocaleString()}`;
+            
+            const completed = allOrders.filter(o => o.status === 'Picked').length;
+            const rate = allOrders.length ? Math.round((completed / allOrders.length) * 100) : 0;
+            document.getElementById('completionRate').textContent = `${rate}%`;
+        }
+
         // Chat
-        function sendChatMessage() {
+        function prepareChatMessage() {
+            pendingMessage = document.getElementById('chatInput').value.trim();
+        }
+
+        function sendChatMessage(type) {
             const customer = document.getElementById('chatCustomer').value.trim();
             const phone = document.getElementById('chatPhone').value.trim();
-            const message = document.getElementById('chatInput').value.trim();
+            const message = document.getElementById('chatInput').value.trim() || pendingMessage;
 
             if (!customer || !phone || !message) {
                 showNotification('Please fill all fields!', 'warning');
@@ -1942,13 +2478,18 @@
             chatDiv.appendChild(msgDiv);
             chatDiv.scrollTop = chatDiv.scrollHeight;
 
-            // Send via WhatsApp
-            let whatsappNumber = phone.replace(/\D/g, '');
-            if (whatsappNumber.startsWith('0')) whatsappNumber = '94' + whatsappNumber.substring(1);
-            
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            // Send message
+            let formattedPhone = phone.replace(/\D/g, '');
+            if (formattedPhone.startsWith('0')) formattedPhone = '94' + formattedPhone.substring(1);
+
+            if (type === 'whatsapp') {
+                window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+            } else {
+                window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
+            }
 
             document.getElementById('chatInput').value = '';
+            pendingMessage = '';
         }
 
         // Update Stats
@@ -1958,11 +2499,14 @@
             
             const weekAgo = new Date(today);
             weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            const monthAgo = new Date(today);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
 
             let todayRevenue = 0;
             let weekRevenue = 0;
+            let monthRevenue = 0;
             let pending = 0;
-            let completed = 0;
 
             allOrders.forEach(order => {
                 const orderDate = order.timestamp?.toDate ? order.timestamp.toDate() : new Date();
@@ -1975,17 +2519,18 @@
                 if (orderDate >= weekAgo) {
                     weekRevenue += paidAmount;
                 }
+                if (orderDate >= monthAgo) {
+                    monthRevenue += paidAmount;
+                }
                 if (order.status !== 'Picked' && order.status !== 'Ready') {
                     pending++;
-                } else {
-                    completed++;
                 }
             });
 
             document.getElementById('todayRevenue').textContent = `Rs. ${todayRevenue.toLocaleString()}`;
             document.getElementById('weekRevenue').textContent = `Rs. ${weekRevenue.toLocaleString()}`;
+            document.getElementById('monthRevenue').textContent = `Rs. ${monthRevenue.toLocaleString()}`;
             document.getElementById('pendingOrders').textContent = pending;
-            document.getElementById('completedOrders').textContent = completed;
         }
 
         // Clear Order Form
