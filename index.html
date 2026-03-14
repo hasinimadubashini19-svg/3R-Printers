@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>InkMaster</title>
+    <title>InkMaster - 3R PRINTERS</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -18,7 +18,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Mobile First Design */
         * {
             margin: 0;
             padding: 0;
@@ -27,83 +26,55 @@
         }
 
         :root {
-            --primary: #1e3a8a;
-            --primary-dark: #0f2b63;
-            --primary-light: #3b5fb0;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
             --secondary: #64748b;
-            --success: #059669;
+            --success: #16a34a;
             --warning: #d97706;
             --danger: #dc2626;
             --light: #f8fafc;
-            --dark: #020617;
+            --dark: #0f172a;
             --border: #e2e8f0;
-            --gradient-1: linear-gradient(135deg, #1e3a8a 0%, #3b5fb0 100%);
-            --gradient-2: linear-gradient(135deg, #b45309 0%, #d97706 100%);
-            --gradient-3: linear-gradient(135deg, #065f46 0%, #059669 100%);
-            --gradient-4: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+            --gradient-1: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--gradient-1);
+            background: var(--light);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
         }
 
-        /* App Container - Mobile Size */
-        .app-container {
-            width: 100%;
-            max-width: 390px;
-            height: 100vh;
-            max-height: 844px;
-            background: var(--gradient-1);
+        /* Mobile Container */
+        .mobile-container {
+            max-width: 428px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
             position: relative;
-            overflow: hidden;
-            border-radius: 0;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
         }
 
-        @media (min-width: 768px) {
-            .app-container {
-                border-radius: 40px;
-                height: 844px;
-                margin: 20px auto;
-            }
-        }
-
-        /* Status Bar */
-        .status-bar {
-            background: var(--primary-dark);
-            padding: 12px 20px 8px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* App Header */
-        .app-header {
+        /* Header */
+        .header {
             background: var(--gradient-1);
-            padding: 16px 20px;
             color: white;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .app-header-left {
+        .header-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .app-logo {
+        .logo {
             width: 40px;
             height: 40px;
             background: white;
@@ -112,204 +83,149 @@
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 22px;
             font-weight: 800;
+            font-size: 20px;
         }
 
-        .app-title h1 {
+        .header-title h1 {
             font-size: 18px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
 
-        .app-title p {
+        .header-title p {
             font-size: 11px;
-            opacity: 0.8;
-            margin-top: 2px;
+            opacity: 0.9;
         }
 
-        .app-header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .connection-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
+        .connection-status {
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--success);
+            box-shadow: 0 0 10px #4ade80;
         }
 
-        .logout-icon {
-            background: rgba(255, 255, 255, 0.2);
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* Main Content Area - Scrollable */
+        /* Main Content */
         .main-content {
-            height: calc(100% - 130px);
-            overflow-y: auto;
             padding: 16px;
             padding-bottom: 80px;
-            background: var(--light);
-            scrollbar-width: none;
         }
 
-        .main-content::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Stats Cards - Horizontal Scroll */
-        .stats-horizontal {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 4px 0 12px;
-            scrollbar-width: none;
-        }
-
-        .stats-horizontal::-webkit-scrollbar {
-            display: none;
-        }
-
-        .stat-chip {
-            background: white;
-            border-radius: 20px;
-            padding: 12px 20px;
-            min-width: 140px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border);
-        }
-
-        .stat-chip-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .stat-chip-icon.today { background: var(--gradient-1); color: white; }
-        .stat-chip-icon.week { background: var(--gradient-2); color: white; }
-        .stat-chip-icon.month { background: var(--gradient-3); color: white; }
-        .stat-chip-icon.pending { background: var(--gradient-4); color: white; }
-
-        .stat-chip-info h4 {
-            font-size: 12px;
-            color: var(--secondary);
-            font-weight: 500;
-        }
-
-        .stat-chip-info p {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-top: 2px;
-        }
-
-        /* Quick Action Grid */
-        .quick-grid {
+        /* Stats Cards */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin: 20px 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .quick-item {
+        .stat-card {
             background: white;
             border-radius: 16px;
-            padding: 12px 4px;
-            text-align: center;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             border: 1px solid var(--border);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        .quick-item i {
-            font-size: 20px;
-            color: var(--primary);
+        .stat-card.today { border-left: 4px solid var(--primary); }
+        .stat-card.week { border-left: 4px solid var(--warning); }
+        .stat-card.month { border-left: 4px solid var(--success); }
+        .stat-card.pending { border-left: 4px solid var(--danger); }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--secondary);
             margin-bottom: 4px;
         }
 
-        .quick-item span {
-            font-size: 10px;
-            font-weight: 500;
-            display: block;
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
             color: var(--dark);
         }
 
-        /* Section Title */
+        .stat-icon {
+            float: right;
+            font-size: 24px;
+            opacity: 0.2;
+        }
+
+        /* Quick Actions */
         .section-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 20px 0 12px;
+            margin: 24px 0 12px;
         }
 
         .section-title h3 {
             font-size: 16px;
             font-weight: 700;
-            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .section-title h3 i {
-            color: var(--primary);
-            font-size: 18px;
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
         }
 
-        .section-title span {
-            font-size: 12px;
+        .quick-btn {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 4px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .quick-btn i {
+            font-size: 20px;
             color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .quick-btn span {
+            font-size: 11px;
             font-weight: 500;
+            display: block;
         }
 
         /* Form Card */
         .form-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 600;
             color: var(--secondary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             display: block;
         }
 
-        .form-input {
+        .form-control {
             width: 100%;
             padding: 14px 16px;
             border: 1px solid var(--border);
-            border-radius: 14px;
+            border-radius: 12px;
             font-size: 14px;
             background: var(--light);
         }
 
-        .form-input:focus {
+        .form-control:focus {
             outline: none;
             border-color: var(--primary);
         }
@@ -319,7 +235,7 @@
             color: white;
             border: none;
             padding: 16px;
-            border-radius: 16px;
+            border-radius: 14px;
             font-weight: 600;
             font-size: 15px;
             width: 100%;
@@ -327,17 +243,16 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 8px 16px -4px rgba(30, 58, 138, 0.3);
         }
 
         /* Order Card */
         .order-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .order-header {
@@ -359,30 +274,33 @@
             font-weight: 600;
         }
 
-        .order-info {
+        .status-badge.pending { background: #fef3c7; color: #92400e; }
+        .status-badge.printing { background: #dbeafe; color: #1e40af; }
+        .status-badge.ready { background: #d1fae5; color: #065f46; }
+        .status-badge.picked { background: #e0e7ff; color: #3730a3; }
+
+        .order-details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 16px;
             font-size: 13px;
-            color: var(--secondary);
         }
 
-        .order-info i {
-            width: 18px;
-            color: var(--primary);
+        .order-details span {
+            color: var(--secondary);
         }
 
         .order-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             border-top: 1px solid var(--border);
             padding-top: 12px;
         }
 
         .action-btn {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             border: none;
             border-radius: 10px;
             font-size: 11px;
@@ -402,7 +320,7 @@
         /* Stock Card */
         .stock-card {
             background: white;
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
             border: 1px solid var(--border);
@@ -413,7 +331,7 @@
             border-left: 4px solid var(--danger);
         }
 
-        .stock-header {
+        .stock-info {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -435,7 +353,6 @@
         .stock-details h4 {
             font-size: 15px;
             font-weight: 700;
-            margin-bottom: 4px;
         }
 
         .stock-details p {
@@ -444,55 +361,34 @@
             color: var(--primary);
         }
 
-        .stock-details span {
-            font-size: 12px;
-            color: var(--secondary);
-            font-weight: 400;
-        }
-
         .stock-actions {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
         }
 
         .stock-actions input {
             flex: 1;
             padding: 10px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 13px;
-        }
-
-        .delete-stock {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            color: var(--danger);
-            font-size: 18px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            background: var(--light);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 10px;
+            font-size: 14px;
         }
 
         /* Bottom Navigation */
         .bottom-nav {
-            position: absolute;
+            position: fixed;
             bottom: 0;
             left: 0;
-            width: 100%;
+            right: 0;
+            max-width: 428px;
+            margin: 0 auto;
             background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px 8px 20px;
+            padding: 12px 8px 20px;
             border-top: 1px solid var(--border);
-            border-radius: 30px 30px 0 0;
             box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 100;
         }
 
         .nav-item {
@@ -501,10 +397,9 @@
             align-items: center;
             gap: 4px;
             padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
+            border-radius: 30px;
             color: var(--secondary);
-            transition: all 0.2s ease;
+            font-size: 12px;
         }
 
         .nav-item.active {
@@ -513,35 +408,25 @@
         }
 
         .nav-item i {
-            font-size: 20px;
-        }
-
-        .nav-item span {
-            font-size: 10px;
-            font-weight: 500;
+            font-size: 18px;
         }
 
         /* Login Screen */
-        .login-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .login-screen {
+            min-height: 100vh;
             background: var(--gradient-1);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2000;
+            padding: 20px;
         }
 
         .login-card {
             background: white;
             border-radius: 32px;
             padding: 32px 24px;
-            width: 90%;
-            max-width: 340px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 360px;
         }
 
         .login-logo {
@@ -563,45 +448,8 @@
         }
 
         .login-title h2 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            color: var(--dark);
-        }
-
-        .login-title p {
-            font-size: 13px;
-            color: var(--secondary);
-            margin-top: 4px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--gradient-1);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 15px;
-            margin-top: 10px;
-        }
-
-        .login-link {
-            text-align: center;
-            display: block;
-            margin-top: 16px;
-            color: var(--primary);
-            font-size: 13px;
-            cursor: pointer;
         }
 
         /* Modal */
@@ -610,13 +458,13 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 3000;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            z-index: 1000;
         }
 
         .modal.active {
@@ -625,63 +473,36 @@
 
         .modal-content {
             background: white;
-            border-radius: 28px;
+            border-radius: 24px;
             padding: 24px;
             width: 100%;
             max-width: 320px;
         }
 
-        /* Bill Paper */
-        .bill-paper {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            font-size: 12px;
-            border: 1px solid var(--border);
+        /* Tab Content */
+        .tab-content {
+            display: none;
         }
 
-        .bill-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .bill-header h2 {
-            font-size: 18px;
-            color: var(--primary);
-        }
-
-        .bill-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
-
-        .bill-table th {
-            background: var(--primary);
-            color: white;
-            padding: 8px;
-        }
-
-        .bill-table td {
-            padding: 6px;
-            border: 1px solid var(--border);
+        .tab-content.active {
+            display: block;
         }
 
         /* Loading */
-        .loading-overlay {
+        .loading {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: rgba(255,255,255,0.9);
-            display: none;
             align-items: center;
             justify-content: center;
-            z-index: 4000;
+            z-index: 2000;
         }
 
-        .loading-overlay.active {
+        .loading.active {
             display: flex;
         }
 
@@ -703,14 +524,17 @@
         .notification {
             position: fixed;
             bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 20px;
+            right: 20px;
+            max-width: 388px;
+            margin: 0 auto;
             background: var(--success);
             color: white;
-            padding: 12px 24px;
+            padding: 14px 20px;
             border-radius: 30px;
-            font-size: 13px;
-            z-index: 5000;
+            font-size: 14px;
+            text-align: center;
+            z-index: 1500;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
@@ -720,6 +544,24 @@
 
         .notification.warning {
             background: var(--warning);
+        }
+
+        /* Chart */
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            height: 200px;
+            margin: 15px 0;
+        }
+
+        /* Bill Preview */
+        .bill-preview {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border);
         }
 
         /* Seal Preview */
@@ -771,15 +613,6 @@
             letter-spacing: 2px;
         }
 
-        /* Chart */
-        .chart-container {
-            background: white;
-            border-radius: 20px;
-            padding: 15px;
-            height: 180px;
-            margin: 15px 0;
-        }
-
         /* Chat */
         .chat-messages {
             height: 200px;
@@ -812,190 +645,146 @@
             opacity: 0.7;
             margin-top: 4px;
         }
-
-        /* Settings */
-        .settings-group {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .settings-group h4 {
-            font-size: 14px;
-            margin-bottom: 12px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Tabs */
-        .tab-pane {
-            display: none;
-        }
-
-        .tab-pane.active {
-            display: block;
-        }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <span>9:41</span>
-            <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-        </div>
-
+    <div class="mobile-container">
         <!-- Login Screen -->
-        <div id="loginScreen" class="login-container">
+        <div id="loginScreen" class="login-screen">
             <div class="login-card">
                 <div class="login-logo">
                     <i class="fas fa-print"></i>
                 </div>
                 <div class="login-title">
                     <h2>InkMaster</h2>
-                    <p>3R PRINTERS</p>
+                    <p style="color: var(--secondary);">3R PRINTERS</p>
                 </div>
-                <input type="email" id="loginEmail" class="login-input" placeholder="Email" value="admin@inkmaster.com">
-                <input type="password" id="loginPassword" class="login-input" placeholder="Password" value="password123">
-                <button class="login-btn" onclick="login()">
+                <input type="email" id="loginEmail" class="form-control" placeholder="Email" value="admin@inkmaster.com" style="margin-bottom: 12px;">
+                <input type="password" id="loginPassword" class="form-control" placeholder="Password" value="password123" style="margin-bottom: 20px;">
+                <button class="btn-primary" onclick="login()">
                     <i class="fas fa-sign-in-alt"></i> Sign In
                 </button>
-                <a class="login-link" onclick="showForgotPassword()">Forgot Password?</a>
-                <a class="login-link" onclick="showSignUp()">Create Account</a>
+                <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+                    <a style="color: var(--primary); font-size: 13px;" onclick="showForgotPassword()">Forgot Password?</a>
+                    <a style="color: var(--primary); font-size: 13px;" onclick="showSignUp()">Create Account</a>
+                </div>
             </div>
         </div>
 
         <!-- Sign Up Screen -->
-        <div id="signupScreen" class="login-container" style="display: none;">
+        <div id="signupScreen" class="login-screen" style="display: none;">
             <div class="login-card">
                 <div class="login-logo">
                     <i class="fas fa-user-plus"></i>
                 </div>
                 <div class="login-title">
                     <h2>Create Account</h2>
-                    <p>Join InkMaster</p>
+                    <p style="color: var(--secondary);">Join InkMaster</p>
                 </div>
-                <input type="text" id="signupName" class="login-input" placeholder="Full Name">
-                <input type="email" id="signupEmail" class="login-input" placeholder="Email">
-                <input type="password" id="signupPassword" class="login-input" placeholder="Password">
-                <input type="password" id="signupConfirm" class="login-input" placeholder="Confirm Password">
-                <button class="login-btn" onclick="signUp()">
+                <input type="text" id="signupName" class="form-control" placeholder="Full Name" style="margin-bottom: 12px;">
+                <input type="email" id="signupEmail" class="form-control" placeholder="Email" style="margin-bottom: 12px;">
+                <input type="password" id="signupPassword" class="form-control" placeholder="Password" style="margin-bottom: 12px;">
+                <input type="password" id="signupConfirm" class="form-control" placeholder="Confirm Password" style="margin-bottom: 20px;">
+                <button class="btn-primary" onclick="signUp()">
                     <i class="fas fa-user-plus"></i> Sign Up
                 </button>
-                <a class="login-link" onclick="showLogin()">Back to Login</a>
-            </div>
-        </div>
-
-        <!-- Forgot Password Modal -->
-        <div id="forgotModal" class="modal">
-            <div class="modal-content">
-                <h3 style="margin-bottom: 15px;">Reset Password</h3>
-                <p style="margin-bottom: 15px; font-size: 13px;">Enter your email to receive reset link</p>
-                <input type="email" id="resetEmail" class="login-input" placeholder="Email">
-                <button class="login-btn" onclick="sendResetLink()">
-                    <i class="fas fa-paper-plane"></i> Send Link
-                </button>
-                <button class="login-btn" style="background: var(--secondary); margin-top: 8px;" onclick="closeForgotPassword()">
-                    Cancel
-                </button>
+                <a style="display: block; text-align: center; margin-top: 16px; color: var(--primary); font-size: 13px;" onclick="showLogin()">Back to Login</a>
             </div>
         </div>
 
         <!-- Main Dashboard -->
-        <div id="dashboard" style="display: none; height: 100%;">
-            <!-- App Header -->
-            <div class="app-header">
-                <div class="app-header-left">
-                    <div class="app-logo">IM</div>
-                    <div class="app-title">
+        <div id="dashboard" style="display: none;">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <div class="logo">IM</div>
+                    <div class="header-title">
                         <h1 id="appNameHeader">InkMaster</h1>
                         <p>3R PRINTERS</p>
                     </div>
                 </div>
-                <div class="app-header-right">
-                    <div class="connection-dot" id="connectionDot"></div>
-                    <div class="logout-icon" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div id="connectionDot" class="connection-status"></div>
+                    <i class="fas fa-sign-out-alt" style="font-size: 20px;" onclick="logout()"></i>
                 </div>
             </div>
 
-            <!-- Main Content (Scrollable) -->
-            <div class="main-content" id="mainContent">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card today">
+                        <div class="stat-label">Today</div>
+                        <div class="stat-value" id="todayRevenue">Rs.0</div>
+                        <i class="fas fa-rupee-sign stat-icon"></i>
+                    </div>
+                    <div class="stat-card week">
+                        <div class="stat-label">This Week</div>
+                        <div class="stat-value" id="weekRevenue">Rs.0</div>
+                        <i class="fas fa-calendar-week stat-icon"></i>
+                    </div>
+                    <div class="stat-card month">
+                        <div class="stat-label">This Month</div>
+                        <div class="stat-value" id="monthRevenue">Rs.0</div>
+                        <i class="fas fa-calendar-alt stat-icon"></i>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value" id="pendingOrders">0</div>
+                        <i class="fas fa-clock stat-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-btn" onclick="quickAction('scanQR')">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Scan QR</span>
+                    </div>
+                    <div class="quick-btn" onclick="quickAction('printLabel')">
+                        <i class="fas fa-tag"></i>
+                        <span>Print</span>
+                    </div>
+                    <div class="quick-btn" onclick="quickAction('findCustomer')">
+                        <i class="fas fa-users"></i>
+                        <span>Find</span>
+                    </div>
+                    <div class="quick-btn" onclick="quickAction('newOrder')">
+                        <i class="fas fa-plus"></i>
+                        <span>New</span>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px; margin-bottom: 16px;">
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('orders')">Orders</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('stock')">Stock</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('bills')">Bills</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('seals')">Seals</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('plates')">Plates</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('reports')">Reports</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('chat')">Chat</button>
+                    <button class="quick-btn" style="flex: none; padding: 10px 16px;" onclick="switchTab('settings')">Settings</button>
+                </div>
+
                 <!-- Orders Tab -->
-                <div id="ordersTab" class="tab-pane active">
-                    <!-- Stats Horizontal Scroll -->
-                    <div class="stats-horizontal">
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon today"><i class="fas fa-rupee-sign"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>Today</h4>
-                                <p id="todayRevenue">Rs. 0</p>
-                            </div>
-                        </div>
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon week"><i class="fas fa-calendar-week"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>This Week</h4>
-                                <p id="weekRevenue">Rs. 0</p>
-                            </div>
-                        </div>
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon month"><i class="fas fa-calendar-alt"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>This Month</h4>
-                                <p id="monthRevenue">Rs. 0</p>
-                            </div>
-                        </div>
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon pending"><i class="fas fa-clock"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>Pending</h4>
-                                <p id="pendingOrders">0</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="quick-grid">
-                        <div class="quick-item" onclick="quickAction('scanQR')">
-                            <i class="fas fa-qrcode"></i>
-                            <span>Scan QR</span>
-                        </div>
-                        <div class="quick-item" onclick="quickAction('printLabel')">
-                            <i class="fas fa-tag"></i>
-                            <span>Print</span>
-                        </div>
-                        <div class="quick-item" onclick="quickAction('findCustomer')">
-                            <i class="fas fa-users"></i>
-                            <span>Find</span>
-                        </div>
-                        <div class="quick-item" onclick="quickAction('newOrder')">
-                            <i class="fas fa-plus"></i>
-                            <span>New</span>
-                        </div>
-                    </div>
-
+                <div id="ordersTab" class="tab-content active">
                     <!-- Add Order Form -->
                     <div class="form-card">
                         <div class="section-title">
-                            <h3><i class="fas fa-plus-circle"></i> New Order</h3>
+                            <h3><i class="fas fa-plus-circle" style="color: var(--primary);"></i> New Order</h3>
                         </div>
                         <div class="form-group">
                             <label>Customer Name</label>
-                            <input type="text" id="custName" class="form-input" placeholder="e.g., John Doe">
+                            <input type="text" id="custName" class="form-control" placeholder="Enter name">
                         </div>
                         <div class="form-group">
                             <label>Phone</label>
-                            <input type="text" id="custPhone" class="form-input" placeholder="077XXXXXXX">
+                            <input type="text" id="custPhone" class="form-control" placeholder="077XXXXXXX">
                         </div>
                         <div class="form-group">
                             <label>Service</label>
-                            <select id="orderService" class="form-input">
+                            <select id="orderService" class="form-control">
                                 <option value="Printing">📄 Printing</option>
                                 <option value="Seal">🖍️ Seal</option>
                                 <option value="Memento">🏆 Memento</option>
@@ -1005,15 +794,15 @@
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" id="orderDesc" class="form-input" placeholder="File name / Details">
+                            <input type="text" id="orderDesc" class="form-control" placeholder="File name / Details">
                         </div>
                         <div class="form-group">
                             <label>Amount (Rs.)</label>
-                            <input type="number" id="orderAmount" class="form-input" placeholder="0.00">
+                            <input type="number" id="orderAmount" class="form-control" placeholder="0.00">
                         </div>
                         <div class="form-group">
                             <label>Payment Status</label>
-                            <select id="orderPayment" class="form-input" onchange="toggleAdvanceField()">
+                            <select id="orderPayment" class="form-control" onchange="toggleAdvanceField()">
                                 <option value="Pending">⏳ Pending</option>
                                 <option value="Advance">💰 Advance</option>
                                 <option value="Paid">✅ Paid</option>
@@ -1022,7 +811,7 @@
                         <div id="advanceField" style="display: none;">
                             <div class="form-group">
                                 <label>Advance Amount</label>
-                                <input type="number" id="advanceAmount" class="form-input" placeholder="Advance received">
+                                <input type="number" id="advanceAmount" class="form-control" placeholder="Advance received">
                             </div>
                         </div>
                         <button class="btn-primary" onclick="addOrder()">
@@ -1032,29 +821,29 @@
 
                     <!-- Orders List -->
                     <div class="section-title">
-                        <h3><i class="fas fa-list"></i> Recent Orders</h3>
-                        <span>View all</span>
+                        <h3><i class="fas fa-list" style="color: var(--primary);"></i> Recent Orders</h3>
+                        <span style="color: var(--primary); font-size: 13px;">View all</span>
                     </div>
                     <div id="ordersList"></div>
                 </div>
 
                 <!-- Stock Tab -->
-                <div id="stockTab" class="tab-pane">
+                <div id="stockTab" class="tab-content">
                     <div class="form-card">
                         <div class="section-title">
-                            <h3><i class="fas fa-plus-circle"></i> Add Stock</h3>
+                            <h3><i class="fas fa-plus-circle" style="color: var(--primary);"></i> Add Stock</h3>
                         </div>
                         <div class="form-group">
                             <label>Item Name</label>
-                            <input type="text" id="stockName" class="form-input" placeholder="e.g., Seal 40mm">
+                            <input type="text" id="stockName" class="form-control" placeholder="e.g., Seal 40mm">
                         </div>
                         <div class="form-group">
                             <label>Size</label>
-                            <input type="text" id="stockSize" class="form-input" placeholder="e.g., 40mm, Standard">
+                            <input type="text" id="stockSize" class="form-control" placeholder="e.g., 40mm">
                         </div>
                         <div class="form-group">
                             <label>Unit</label>
-                            <select id="stockUnit" class="form-input">
+                            <select id="stockUnit" class="form-control">
                                 <option value="pcs">Pieces</option>
                                 <option value="rolls">Rolls</option>
                                 <option value="liters">Liters</option>
@@ -1063,64 +852,64 @@
                         </div>
                         <div class="form-group">
                             <label>Quantity</label>
-                            <input type="number" id="stockQty" class="form-input" placeholder="0">
+                            <input type="number" id="stockQty" class="form-control" placeholder="0">
                         </div>
                         <div class="form-group">
                             <label>Alert Level</label>
-                            <input type="number" id="stockAlert" class="form-input" placeholder="5">
+                            <input type="number" id="stockAlert" class="form-control" placeholder="5">
                         </div>
                         <button class="btn-primary" onclick="addStock()">
                             <i class="fas fa-save"></i> Add Stock
                         </button>
                     </div>
-                    <div id="stockList" class="stock-grid"></div>
+                    <div id="stockList"></div>
                 </div>
 
                 <!-- Bills Tab -->
-                <div id="billsTab" class="tab-pane">
+                <div id="billsTab" class="tab-content">
                     <div class="form-card">
                         <div class="section-title">
-                            <h3><i class="fas fa-file-invoice"></i> Generate Bill</h3>
+                            <h3><i class="fas fa-file-invoice" style="color: var(--primary);"></i> Generate Bill</h3>
                         </div>
                         <div class="form-group">
                             <label>Customer</label>
-                            <input type="text" id="billCustomer" class="form-input" placeholder="Customer name" list="customerList">
+                            <input type="text" id="billCustomer" class="form-control" placeholder="Customer name" list="customerList">
                             <datalist id="customerList"></datalist>
                         </div>
                         <div class="form-group">
                             <label>Date</label>
-                            <input type="date" id="billDate" class="form-input">
+                            <input type="date" id="billDate" class="form-control">
                         </div>
                         <button class="btn-primary" onclick="generateBill()">
-                            <i class="fas fa-file"></i> Generate
+                            <i class="fas fa-file"></i> Generate Bill
                         </button>
                     </div>
-                    <div id="billPreview" class="bill-paper" style="display: none;"></div>
+                    <div id="billPreview" class="bill-preview" style="display: none;"></div>
                 </div>
 
                 <!-- Seals Tab -->
-                <div id="sealsTab" class="tab-pane">
+                <div id="sealsTab" class="tab-content">
                     <div class="form-card">
                         <div class="section-title">
-                            <h3><i class="fas fa-stamp"></i> New Seal</h3>
+                            <h3><i class="fas fa-stamp" style="color: var(--primary);"></i> New Seal</h3>
                         </div>
                         <div class="form-group">
                             <label>Customer</label>
-                            <input type="text" id="sealCustomer" class="form-input">
+                            <input type="text" id="sealCustomer" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Seal Text</label>
-                            <textarea id="sealText" class="form-input" rows="3" oninput="updateSealPreview()"></textarea>
+                            <textarea id="sealText" class="form-control" rows="3" oninput="updateSealPreview()"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Size</label>
-                            <select id="sealSize" class="form-input" onchange="updateSealPreview()">
+                            <select id="sealSize" class="form-control" onchange="updateSealPreview()">
                                 <option value="">Select Size</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Shape</label>
-                            <select id="sealShape" class="form-input" onchange="updateSealPreview()">
+                            <select id="sealShape" class="form-control" onchange="updateSealPreview()">
                                 <option value="circle">Circle</option>
                                 <option value="rectangle">Rectangle</option>
                                 <option value="square">Square</option>
@@ -1129,11 +918,11 @@
                         </div>
                         <div class="form-group">
                             <label>Price</label>
-                            <input type="number" id="sealPrice" class="form-input">
+                            <input type="number" id="sealPrice" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Advance</label>
-                            <input type="number" id="sealAdvance" class="form-input">
+                            <input type="number" id="sealAdvance" class="form-control">
                         </div>
                         
                         <div class="seal-preview">
@@ -1149,28 +938,28 @@
                 </div>
 
                 <!-- Plates Tab -->
-                <div id="platesTab" class="tab-pane">
+                <div id="platesTab" class="tab-content">
                     <div class="form-card">
                         <div class="section-title">
-                            <h3><i class="fas fa-car"></i> New Number Plate</h3>
+                            <h3><i class="fas fa-car" style="color: var(--primary);"></i> New Number Plate</h3>
                         </div>
                         <div class="form-group">
                             <label>Customer</label>
-                            <input type="text" id="plateCustomer" class="form-input">
+                            <input type="text" id="plateCustomer" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Vehicle Number</label>
-                            <input type="text" id="plateNumber" class="form-input" oninput="updatePlatePreview()">
+                            <input type="text" id="plateNumber" class="form-control" oninput="updatePlatePreview()">
                         </div>
                         <div class="form-group">
                             <label>Size</label>
-                            <select id="plateSize" class="form-input">
+                            <select id="plateSize" class="form-control">
                                 <option value="">Select Size</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Type</label>
-                            <select id="plateType" class="form-input">
+                            <select id="plateType" class="form-control">
                                 <option value="Standard">Standard</option>
                                 <option value="Fancy">Fancy</option>
                                 <option value="3D">3D</option>
@@ -1178,11 +967,11 @@
                         </div>
                         <div class="form-group">
                             <label>Price</label>
-                            <input type="number" id="platePrice" class="form-input">
+                            <input type="number" id="platePrice" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Advance</label>
-                            <input type="number" id="plateAdvance" class="form-input">
+                            <input type="number" id="plateAdvance" class="form-control">
                         </div>
                         
                         <div class="plate-preview">
@@ -1196,105 +985,94 @@
                 </div>
 
                 <!-- Reports Tab -->
-                <div id="reportsTab" class="tab-pane">
-                    <div class="quick-grid" style="margin-bottom: 15px;">
-                        <button class="quick-item" onclick="loadReport('daily')">Daily</button>
-                        <button class="quick-item" onclick="loadReport('weekly')">Weekly</button>
-                        <button class="quick-item" onclick="loadReport('monthly')">Monthly</button>
-                        <button class="quick-item" onclick="loadReport('yearly')">Yearly</button>
+                <div id="reportsTab" class="tab-content">
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <button class="quick-btn" style="flex: 1;" onclick="loadReport('daily')">Daily</button>
+                        <button class="quick-btn" style="flex: 1;" onclick="loadReport('weekly')">Weekly</button>
+                        <button class="quick-btn" style="flex: 1;" onclick="loadReport('monthly')">Monthly</button>
                     </div>
                     
                     <div class="chart-container">
                         <canvas id="reportChart"></canvas>
                     </div>
 
-                    <div class="stats-horizontal">
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon today"><i class="fas fa-chart-pie"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>Orders</h4>
-                                <p id="totalOrders">0</p>
-                            </div>
+                    <div class="stats-grid" style="margin-top: 16px;">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Orders</div>
+                            <div class="stat-value" id="totalOrders">0</div>
                         </div>
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon week"><i class="fas fa-users"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>Customers</h4>
-                                <p id="totalCustomers">0</p>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Customers</div>
+                            <div class="stat-value" id="totalCustomers">0</div>
                         </div>
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon month"><i class="fas fa-rupee-sign"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>Revenue</h4>
-                                <p id="totalRevenue">Rs.0</p>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Revenue</div>
+                            <div class="stat-value" id="totalRevenue">Rs.0</div>
                         </div>
-                        <div class="stat-chip">
-                            <div class="stat-chip-icon pending"><i class="fas fa-percent"></i></div>
-                            <div class="stat-chip-info">
-                                <h4>Rate</h4>
-                                <p id="completionRate">0%</p>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Completion</div>
+                            <div class="stat-value" id="completionRate">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Tab -->
+                <div id="chatTab" class="tab-content">
+                    <div class="form-card">
+                        <div class="section-title">
+                            <h3><i class="fas fa-comments" style="color: var(--primary);"></i> Chat</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Customer</label>
+                            <input type="text" id="chatCustomer" class="form-control" list="customerList">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" id="chatPhone" class="form-control">
+                        </div>
+                        <div id="chatMessages" class="chat-messages"></div>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="chatInput" class="form-control" placeholder="Type message..." style="flex: 1;">
+                            <button class="btn-primary" style="width: auto; padding: 12px 16px;" onclick="prepareChatMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <button class="quick-btn" style="flex: 1; background: #25D366; color: white;" onclick="sendChatMessage('whatsapp')">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="quick-btn" style="flex: 1; background: var(--primary); color: white;" onclick="sendChatMessage('sms')">
+                                <i class="fas fa-sms"></i> SMS
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Settings Tab -->
-                <div id="settingsTab" class="tab-pane">
-                    <div class="settings-group">
-                        <h4><i class="fas fa-store"></i> Shop Information</h4>
+                <div id="settingsTab" class="tab-content">
+                    <div class="form-card">
+                        <div class="section-title">
+                            <h3><i class="fas fa-store" style="color: var(--primary);"></i> Shop Information</h3>
+                        </div>
                         <div class="form-group">
                             <label>Shop Name</label>
-                            <input type="text" id="shopNameInput" class="form-input" value="3R PRINTERS">
+                            <input type="text" id="shopNameInput" class="form-control" value="3R PRINTERS">
                         </div>
                         <div class="form-group">
                             <label>Address</label>
-                            <input type="text" id="shopAddressInput" class="form-input" value="123 Main Street">
+                            <input type="text" id="shopAddressInput" class="form-control" value="123 Main Street">
                         </div>
                         <div class="form-group">
                             <label>Phone</label>
-                            <input type="text" id="shopPhoneInput" class="form-input" value="077-1234567">
+                            <input type="text" id="shopPhoneInput" class="form-control" value="077-1234567">
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" id="shopEmailInput" class="form-input" value="3r@gmail.com">
+                            <input type="email" id="shopEmailInput" class="form-control" value="3r@gmail.com">
                         </div>
                         <button class="btn-primary" onclick="saveSettings()">
-                            <i class="fas fa-save"></i> Save
+                            <i class="fas fa-save"></i> Save Settings
                         </button>
-                    </div>
-                </div>
-
-                <!-- Chat Tab -->
-                <div id="chatTab" class="tab-pane">
-                    <div class="form-card">
-                        <div class="section-title">
-                            <h3><i class="fas fa-comments"></i> Chat</h3>
-                        </div>
-                        <div class="form-group">
-                            <label>Customer</label>
-                            <input type="text" id="chatCustomer" class="form-input" list="customerList">
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" id="chatPhone" class="form-input">
-                        </div>
-                        <div id="chatMessages" class="chat-messages"></div>
-                        <div class="chat-input" style="display: flex; gap: 8px;">
-                            <input type="text" id="chatInput" class="form-input" placeholder="Type message..." style="flex: 1;">
-                            <button class="btn-primary" onclick="prepareChatMessage()" style="width: auto; padding: 12px 16px;">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <button class="quick-item" onclick="sendChatMessage('whatsapp')" style="background: #25D366; color: white; border: none;">
-                                <i class="fab fa-whatsapp"></i> WhatsApp
-                            </button>
-                            <button class="quick-item" onclick="sendChatMessage('sms')" style="background: var(--primary); color: white; border: none;">
-                                <i class="fas fa-sms"></i> SMS
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1302,7 +1080,7 @@
             <!-- Bottom Navigation -->
             <div class="bottom-nav">
                 <div class="nav-item active" onclick="switchTab('orders')">
-                    <i class="fas fa-shopping-cart"></i>
+                    <i class="fas fa-home"></i>
                     <span>Home</span>
                 </div>
                 <div class="nav-item" onclick="switchTab('stock')">
@@ -1313,14 +1091,6 @@
                     <i class="fas fa-file-invoice"></i>
                     <span>Bills</span>
                 </div>
-                <div class="nav-item" onclick="switchTab('seals')">
-                    <i class="fas fa-stamp"></i>
-                    <span>Seals</span>
-                </div>
-                <div class="nav-item" onclick="switchTab('plates')">
-                    <i class="fas fa-car"></i>
-                    <span>Plates</span>
-                </div>
                 <div class="nav-item" onclick="switchTab('reports')">
                     <i class="fas fa-chart-bar"></i>
                     <span>Stats</span>
@@ -1329,20 +1099,30 @@
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </div>
-                <div class="nav-item" onclick="switchTab('chat')">
-                    <i class="fas fa-comments"></i>
-                    <span>Chat</span>
-                </div>
             </div>
         </div>
 
         <!-- Modals -->
+        <div id="forgotModal" class="modal">
+            <div class="modal-content">
+                <h3 style="margin-bottom: 15px;">Reset Password</h3>
+                <p style="margin-bottom: 15px; font-size: 14px;">Enter your email to receive reset link</p>
+                <input type="email" id="resetEmail" class="form-control" placeholder="Email" style="margin-bottom: 15px;">
+                <button class="btn-primary" onclick="sendResetLink()">
+                    <i class="fas fa-paper-plane"></i> Send Link
+                </button>
+                <button class="btn-primary" style="margin-top: 8px; background: var(--secondary);" onclick="closeForgotPassword()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
         <div id="paymentModal" class="modal">
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px;">Process Payment</h3>
-                <input type="number" id="remainingAmount" class="form-input" readonly style="margin-bottom: 10px;">
-                <input type="number" id="payAmount" class="form-input" placeholder="Amount" style="margin-bottom: 15px;">
-                <button class="btn-primary" onclick="processPayment()">Confirm</button>
+                <input type="number" id="remainingAmount" class="form-control" readonly style="margin-bottom: 10px;">
+                <input type="number" id="payAmount" class="form-control" placeholder="Amount" style="margin-bottom: 15px;">
+                <button class="btn-primary" onclick="processPayment()">Confirm Payment</button>
             </div>
         </div>
 
@@ -1351,8 +1131,8 @@
                 <h3 style="margin-bottom: 15px;">Delete Order?</h3>
                 <p style="margin-bottom: 20px;">This action cannot be undone.</p>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-primary" onclick="confirmDelete()" style="background: var(--danger);">Delete</button>
-                    <button class="btn-primary" onclick="closeDeleteModal()" style="background: var(--secondary);">Cancel</button>
+                    <button class="btn-primary" style="background: var(--danger);" onclick="confirmDelete()">Delete</button>
+                    <button class="btn-primary" style="background: var(--secondary);" onclick="closeDeleteModal()">Cancel</button>
                 </div>
             </div>
         </div>
@@ -1362,14 +1142,14 @@
                 <h3 style="margin-bottom: 15px;">Delete Stock?</h3>
                 <p style="margin-bottom: 20px;">Remove this item from inventory?</p>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-primary" onclick="confirmStockDelete()" style="background: var(--danger);">Delete</button>
-                    <button class="btn-primary" onclick="closeStockDeleteModal()" style="background: var(--secondary);">Cancel</button>
+                    <button class="btn-primary" style="background: var(--danger);" onclick="confirmStockDelete()">Delete</button>
+                    <button class="btn-primary" style="background: var(--secondary);" onclick="closeStockDeleteModal()">Cancel</button>
                 </div>
             </div>
         </div>
 
         <!-- Loading -->
-        <div id="loadingOverlay" class="loading-overlay">
+        <div id="loadingOverlay" class="loading">
             <div class="spinner"></div>
         </div>
     </div>
@@ -1409,7 +1189,7 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('signupScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-                document.getElementById('connectionDot').style.background = '#059669';
+                document.getElementById('connectionDot').style.background = '#4ade80';
                 loadOrders();
                 loadStock();
                 loadCustomers();
@@ -1418,9 +1198,21 @@
             } else {
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('dashboard').style.display = 'none';
-                document.getElementById('connectionDot').style.background = '#dc2626';
+                document.getElementById('connectionDot').style.background = '#ef4444';
             }
         });
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
+            if (tab === 'reports') loadReport('daily');
+            if (tab === 'seals' || tab === 'plates') loadStockItemsForSelect();
+        }
 
         // Login
         function login() {
@@ -1505,18 +1297,6 @@
             document.getElementById('loginScreen').style.display = 'flex';
         }
 
-        // Tab Switching
-        function switchTab(tab) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-            
-            event.currentTarget.classList.add('active');
-            document.getElementById(tab + 'Tab').classList.add('active');
-            
-            if (tab === 'reports') loadReport('daily');
-            if (tab === 'seals' || tab === 'plates') loadStockItemsForSelect();
-        }
-
         // Quick Actions
         function quickAction(action) {
             if (action === 'newOrder') {
@@ -1555,7 +1335,7 @@
             container.innerHTML = '';
 
             if (allOrders.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 30px;">No orders yet</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--secondary);">No orders yet</div>';
                 return;
             }
 
@@ -1565,13 +1345,13 @@
                     <div class="order-card">
                         <div class="order-header">
                             <span class="customer-name">${order.customerName || 'N/A'}</span>
-                            <span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
+                            <span class="status-badge ${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
                         </div>
-                        <div class="order-info">
-                            <div><i class="fas fa-phone"></i> ${order.phone || 'N/A'}</div>
-                            <div><i class="fas fa-tag"></i> ${order.serviceType || 'Print'}</div>
-                            <div><i class="fas fa-rupee-sign"></i> Rs.${(order.amount || 0).toLocaleString()}</div>
-                            <div><i class="fas fa-credit-card"></i> ${order.paymentStatus || 'Pending'}</div>
+                        <div class="order-details">
+                            <div><i class="fas fa-phone" style="width: 18px; color: var(--primary);"></i> ${order.phone || 'N/A'}</div>
+                            <div><i class="fas fa-tag" style="width: 18px; color: var(--primary);"></i> ${order.serviceType || 'Print'}</div>
+                            <div><i class="fas fa-rupee-sign" style="width: 18px; color: var(--primary);"></i> Rs.${(order.amount || 0).toLocaleString()}</div>
+                            <div><i class="fas fa-credit-card" style="width: 18px; color: var(--primary);"></i> ${order.paymentStatus || 'Pending'}</div>
                         </div>
                         <div class="order-actions">
                             <button class="action-btn btn-print" onclick="updateOrderStatus('${order.id}', 'Printing')"><i class="fas fa-print"></i> Print</button>
@@ -1682,7 +1462,7 @@
             container.innerHTML = '';
 
             if (stockItems.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 30px;">No stock items</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--secondary);">No stock items</div>';
                 return;
             }
 
@@ -1690,18 +1470,20 @@
                 const lowStock = item.quantity <= (item.alertLevel || 5);
                 container.innerHTML += `
                     <div class="stock-card ${lowStock ? 'low-stock' : ''}">
-                        <div class="delete-stock" onclick="openStockDeleteModal('${item.id}')"><i class="fas fa-times"></i></div>
-                        <div class="stock-header">
+                        <div style="position: absolute; top: 12px; right: 12px; color: var(--danger);" onclick="openStockDeleteModal('${item.id}')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="stock-info">
                             <div class="stock-icon"><i class="fas fa-box"></i></div>
                             <div class="stock-details">
                                 <h4>${item.name} ${item.size || ''}</h4>
-                                <p>${item.quantity} <span>${item.unit}</span></p>
+                                <p>${item.quantity} <span style="font-size: 13px; color: var(--secondary);">${item.unit}</span></p>
                             </div>
                         </div>
                         <div class="stock-actions">
                             <input type="number" id="stock-${item.id}" value="1" min="1">
-                            <button class="action-btn btn-ready" onclick="updateStock('${item.id}', 'add')"><i class="fas fa-plus"></i></button>
-                            <button class="action-btn btn-warning" onclick="updateStock('${item.id}', 'remove')"><i class="fas fa-minus"></i></button>
+                            <button class="action-btn btn-ready" style="flex: 0 0 auto;" onclick="updateStock('${item.id}', 'add')"><i class="fas fa-plus"></i></button>
+                            <button class="action-btn btn-delete" style="flex: 0 0 auto;" onclick="updateStock('${item.id}', 'remove')"><i class="fas fa-minus"></i></button>
                         </div>
                     </div>
                 `;
@@ -1937,29 +1719,54 @@
 
             let total = 0, paid = 0;
             let billHTML = `
-                <div class="bill-header">
-                    <h2>${document.getElementById('shopName').textContent}</h2>
-                    <p>${document.getElementById('shopAddress').textContent}</p>
-                    <p>${document.getElementById('shopPhone').textContent}</p>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <h2 style="color: var(--primary);">${document.getElementById('shopNameInput').value}</h2>
+                    <p style="font-size: 12px;">${document.getElementById('shopAddressInput').value}</p>
+                    <p style="font-size: 12px;">Tel: ${document.getElementById('shopPhoneInput').value}</p>
                 </div>
-                <div class="bill-info">
+                <div style="margin-bottom: 15px;">
                     <p><strong>Customer:</strong> ${customer}</p>
                     <p><strong>Date:</strong> ${document.getElementById('billDate').value}</p>
                 </div>
-                <table class="bill-table">
-                    <tr><th>Description</th><th>Amount</th><th>Paid</th><th>Balance</th></tr>
+                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                    <tr style="background: var(--primary); color: white;">
+                        <th style="padding: 8px;">Description</th>
+                        <th style="padding: 8px;">Amount</th>
+                        <th style="padding: 8px;">Paid</th>
+                        <th style="padding: 8px;">Balance</th>
+                    </tr>
             `;
 
             orders.forEach(order => {
                 const paidAmount = order.paymentStatus === 'Paid' ? order.amount : order.advanceAmount || 0;
                 total += order.amount;
                 paid += paidAmount;
-                billHTML += `<tr><td>${order.fileDesc || '-'}</td><td>Rs.${order.amount}</td><td>Rs.${paidAmount}</td><td>Rs.${order.amount - paidAmount}</td></tr>`;
+                billHTML += `<tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 6px;">${order.fileDesc || '-'}</td>
+                    <td style="padding: 6px;">Rs.${order.amount}</td>
+                    <td style="padding: 6px;">Rs.${paidAmount}</td>
+                    <td style="padding: 6px;">Rs.${order.amount - paidAmount}</td>
+                </tr>`;
             });
 
-            billHTML += `</table><div class="bill-totals">Total: Rs.${total} | Paid: Rs.${paid} | Balance: Rs.${total - paid}</div>`;
+            billHTML += `</table>
+                <div style="margin-top: 15px; padding-top: 10px; border-top: 2px solid var(--primary); text-align: right;">
+                    <p><strong>Total:</strong> Rs.${total}</p>
+                    <p><strong>Paid:</strong> Rs.${paid}</p>
+                    <p><strong>Balance:</strong> Rs.${total - paid}</p>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn-primary" onclick="downloadBill()">
+                        <i class="fas fa-download"></i> Download Bill
+                    </button>
+                </div>`;
             document.getElementById('billPreview').innerHTML = billHTML;
             document.getElementById('billPreview').style.display = 'block';
+        }
+
+        function downloadBill() {
+            const element = document.getElementById('billPreview');
+            html2pdf().from(element).save('bill.pdf');
         }
 
         // Payment Modal
@@ -2016,9 +1823,6 @@
             document.getElementById('shopEmailInput').value = shopEmail;
 
             document.getElementById('appNameHeader').textContent = 'InkMaster';
-            document.getElementById('shopName').textContent = shopName;
-            document.getElementById('shopAddress').textContent = shopAddress;
-            document.getElementById('shopPhone').textContent = `Tel: ${shopPhone}`;
         }
 
         function saveSettings() {
@@ -2038,14 +1842,48 @@
 
             if (period === 'daily') {
                 for (let i = 6; i >= 0; i--) {
-                    const d = new Date(now); d.setDate(d.getDate() - i);
+                    const d = new Date(now);
+                    d.setDate(d.getDate() - i);
                     labels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+                    
                     const dayStart = new Date(d.setHours(0,0,0,0));
                     const dayEnd = new Date(d.setHours(23,59,59,999));
+                    
                     const revenue = allOrders.filter(o => {
                         const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
                         return date >= dayStart && date <= dayEnd;
                     }).reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0), 0);
+                    
+                    data.push(revenue);
+                }
+            } else if (period === 'weekly') {
+                for (let i = 3; i >= 0; i--) {
+                    const weekStart = new Date(now);
+                    weekStart.setDate(weekStart.getDate() - (weekStart.getDay() + 7 * i));
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekEnd.getDate() + 6);
+                    
+                    labels.push(`Week ${i+1}`);
+                    
+                    const revenue = allOrders.filter(o => {
+                        const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
+                        return date >= weekStart && date <= weekEnd;
+                    }).reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0), 0);
+                    
+                    data.push(revenue);
+                }
+            } else if (period === 'monthly') {
+                for (let i = 5; i >= 0; i--) {
+                    const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+                    
+                    labels.push(monthStart.toLocaleDateString('en-US', { month: 'short' }));
+                    
+                    const revenue = allOrders.filter(o => {
+                        const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
+                        return date >= monthStart && date <= monthEnd;
+                    }).reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0), 0);
+                    
                     data.push(revenue);
                 }
             }
@@ -2058,8 +1896,24 @@
             if (reportChart) reportChart.destroy();
             reportChart = new Chart(ctx, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'Revenue', data, borderColor: '#1e3a8a', tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Revenue',
+                        data: data,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
             });
         }
 
@@ -2097,15 +1951,21 @@
 
         // Update Stats
         function updateStats() {
-            const today = new Date(); today.setHours(0,0,0,0);
-            const weekAgo = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
-            const monthAgo = new Date(today); monthAgo.setMonth(monthAgo.getMonth() - 1);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            const monthAgo = new Date(today);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
 
             let todayRev = 0, weekRev = 0, monthRev = 0, pending = 0;
 
             allOrders.forEach(order => {
                 const date = order.timestamp?.toDate ? order.timestamp.toDate() : new Date();
                 const paid = order.paymentStatus === 'Paid' ? order.amount : order.advanceAmount || 0;
+                
                 if (date >= today) todayRev += paid;
                 if (date >= weekAgo) weekRev += paid;
                 if (date >= monthAgo) monthRev += paid;
