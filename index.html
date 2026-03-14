@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>InkMaster</title>
+    <title>InkMaster - 3R PRINTERS</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Mobile First Design */
+        /* Mobile First Design - සම්පූර්ණයෙන්ම හදපු UI එක */
         * {
             margin: 0;
             padding: 0;
@@ -34,6 +34,7 @@
             --success: #059669;
             --warning: #d97706;
             --danger: #dc2626;
+            --info: #3b82f6;
             --light: #f8fafc;
             --dark: #020617;
             --border: #e2e8f0;
@@ -41,6 +42,7 @@
             --gradient-2: linear-gradient(135deg, #b45309 0%, #d97706 100%);
             --gradient-3: linear-gradient(135deg, #065f46 0%, #059669 100%);
             --gradient-4: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+            --gradient-5: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         }
 
         body {
@@ -54,13 +56,13 @@
             margin: 0;
         }
 
-        /* App Container - Mobile Size */
+        /* App Container - Mobile Size (iPhone 14 Pro Max size) */
         .app-container {
             width: 100%;
-            max-width: 390px;
+            max-width: 393px;
             height: 100vh;
-            max-height: 844px;
-            background: var(--gradient-1);
+            max-height: 852px;
+            background: var(--light);
             position: relative;
             overflow: hidden;
             border-radius: 0;
@@ -69,32 +71,33 @@
 
         @media (min-width: 768px) {
             .app-container {
-                border-radius: 40px;
-                height: 844px;
+                border-radius: 44px;
+                height: 852px;
                 margin: 20px auto;
             }
         }
 
-        /* Status Bar */
+        /* Status Bar - නිවැරදි කරපු Status Bar */
         .status-bar {
             background: var(--primary-dark);
-            padding: 12px 20px 8px;
+            padding: 14px 20px 10px;
             color: white;
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
-        /* App Header */
+        /* App Header - හරියටම හදපු Header */
         .app-header {
             background: var(--gradient-1);
-            padding: 16px 20px;
+            padding: 14px 20px;
             color: white;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .app-header-left {
@@ -104,61 +107,76 @@
         }
 
         .app-logo {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: white;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .app-title h1 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            line-height: 1.2;
         }
 
         .app-title p {
             font-size: 11px;
-            opacity: 0.8;
+            opacity: 0.9;
             margin-top: 2px;
+            font-weight: 500;
         }
 
         .app-header-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .connection-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: var(--success);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
         }
 
         .logout-icon {
-            background: rgba(255, 255, 255, 0.2);
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        /* Main Content Area - Scrollable */
+        .logout-icon:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Main Content Area - නිවැරදි Scroll */
         .main-content {
-            height: calc(100% - 130px);
+            height: calc(100% - 136px);
             overflow-y: auto;
-            padding: 16px;
-            padding-bottom: 80px;
+            overflow-x: hidden;
+            padding: 16px 16px 80px;
             background: var(--light);
             scrollbar-width: none;
         }
@@ -167,13 +185,14 @@
             display: none;
         }
 
-        /* Stats Cards - Horizontal Scroll */
+        /* Stats Cards - හරියටම Horizontal Scroll */
         .stats-horizontal {
             display: flex;
             gap: 12px;
             overflow-x: auto;
-            padding: 4px 0 12px;
+            padding: 4px 0 16px;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .stats-horizontal::-webkit-scrollbar {
@@ -182,24 +201,24 @@
 
         .stat-chip {
             background: white;
-            border-radius: 20px;
-            padding: 12px 20px;
-            min-width: 140px;
+            border-radius: 24px;
+            padding: 14px 20px;
+            min-width: 150px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            gap: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border);
         }
 
         .stat-chip-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .stat-chip-icon.today { background: var(--gradient-1); color: white; }
@@ -208,63 +227,80 @@
         .stat-chip-icon.pending { background: var(--gradient-4); color: white; }
 
         .stat-chip-info h4 {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--secondary);
             font-weight: 500;
+            margin-bottom: 2px;
         }
 
         .stat-chip-info p {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--dark);
-            margin-top: 2px;
         }
 
-        /* Quick Action Grid */
+        /* Quick Action Grid - නිවැරදි Grid */
         .quick-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
-            margin: 20px 0;
+            margin: 16px 0 20px;
         }
 
         .quick-item {
             background: white;
-            border-radius: 16px;
-            padding: 12px 4px;
+            border-radius: 18px;
+            padding: 14px 6px;
             text-align: center;
             border: 1px solid var(--border);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .quick-item:active {
+            transform: scale(0.96);
+            background: var(--primary);
+            color: white;
+        }
+
+        .quick-item:active i {
+            color: white;
         }
 
         .quick-item i {
-            font-size: 20px;
+            font-size: 22px;
             color: var(--primary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .quick-item span {
-            font-size: 10px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
             display: block;
             color: var(--dark);
         }
 
-        /* Section Title */
+        .quick-item:active span {
+            color: white;
+        }
+
+        /* Section Title - නිවැරදි කරපු Title */
         .section-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 20px 0 12px;
+            margin: 20px 0 14px;
+            padding: 0 4px;
         }
 
         .section-title h3 {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .section-title h3 i {
@@ -273,214 +309,260 @@
         }
 
         .section-title span {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--primary);
-            font-weight: 500;
+            font-weight: 600;
+            background: rgba(30, 58, 138, 0.1);
+            padding: 6px 12px;
+            border-radius: 30px;
         }
 
-        /* Form Card */
+        /* Form Card - නිවැරදි කරපු Form */
         .form-card {
             background: white;
-            border-radius: 24px;
-            padding: 20px;
+            border-radius: 28px;
+            padding: 22px;
             margin-bottom: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--secondary);
-            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 6px;
             display: block;
+            margin-left: 4px;
         }
 
         .form-input {
             width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            font-size: 14px;
+            padding: 16px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 18px;
+            font-size: 15px;
             background: var(--light);
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
+        }
+
+        select.form-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 18px;
         }
 
         .btn-primary {
             background: var(--gradient-1);
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 16px;
+            padding: 18px;
+            border-radius: 20px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 16px;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 8px 16px -4px rgba(30, 58, 138, 0.3);
+            gap: 10px;
+            box-shadow: 0 8px 20px -4px rgba(30, 58, 138, 0.4);
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        /* Order Card */
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px -4px rgba(30, 58, 138, 0.4);
+        }
+
+        /* Order Card - නිවැරදි කරපු Order Card */
         .order-card {
             background: white;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 12px;
+            border-radius: 24px;
+            padding: 18px;
+            margin-bottom: 14px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .order-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .customer-name {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
+            color: var(--dark);
         }
 
         .status-badge {
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 30px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
         }
 
         .order-info {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 16px;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--secondary);
+            background: var(--light);
+            padding: 14px;
+            border-radius: 16px;
         }
 
         .order-info i {
-            width: 18px;
+            width: 20px;
             color: var(--primary);
         }
 
         .order-actions {
             display: flex;
             gap: 6px;
-            border-top: 1px solid var(--border);
-            padding-top: 12px;
+            flex-wrap: wrap;
         }
 
         .action-btn {
             flex: 1;
-            padding: 8px;
+            min-width: 60px;
+            padding: 10px 6px;
             border: none;
-            border-radius: 10px;
+            border-radius: 14px;
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(0.96);
         }
 
         .btn-print { background: var(--warning); color: white; }
         .btn-ready { background: var(--success); color: white; }
         .btn-pick { background: var(--primary); color: white; }
-        .btn-pay { background: #3b82f6; color: white; }
+        .btn-pay { background: var(--info); color: white; }
         .btn-delete { background: var(--danger); color: white; }
 
-        /* Stock Card */
+        /* Stock Card - නිවැරදි කරපු Stock Card */
         .stock-card {
             background: white;
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 12px;
+            border-radius: 24px;
+            padding: 18px;
+            margin-bottom: 14px;
             border: 1px solid var(--border);
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .stock-card.low-stock {
-            border-left: 4px solid var(--danger);
+            border-left: 5px solid var(--danger);
         }
 
         .stock-header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 12px;
+            gap: 16px;
+            margin-bottom: 14px;
         }
 
         .stock-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: var(--gradient-1);
-            border-radius: 14px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 22px;
+            font-size: 24px;
+        }
+
+        .stock-details {
+            flex: 1;
         }
 
         .stock-details h4 {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 4px;
+            color: var(--dark);
         }
 
         .stock-details p {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--primary);
         }
 
         .stock-details span {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--secondary);
-            font-weight: 400;
+            font-weight: 500;
         }
 
         .stock-actions {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .stock-actions input {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 13px;
+            border-radius: 16px;
+            font-size: 14px;
+            background: var(--light);
         }
 
         .delete-stock {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 14px;
+            right: 14px;
             color: var(--danger);
             font-size: 18px;
             cursor: pointer;
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             background: var(--light);
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
         }
 
-        /* Bottom Navigation */
+        .delete-stock:active {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Bottom Navigation - නිවැරදි Bottom Nav */
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -489,10 +571,11 @@
             background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px 8px 20px;
+            padding: 10px 6px 24px;
             border-top: 1px solid var(--border);
             border-radius: 30px 30px 0 0;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            z-index: 100;
         }
 
         .nav-item {
@@ -500,7 +583,7 @@
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 20px;
             cursor: pointer;
             color: var(--secondary);
@@ -513,15 +596,15 @@
         }
 
         .nav-item i {
-            font-size: 20px;
+            font-size: 22px;
         }
 
         .nav-item span {
             font-size: 10px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        /* Login Screen */
+        /* Login Screen - නිවැරදි Login */
         .login-container {
             position: absolute;
             top: 0;
@@ -537,74 +620,76 @@
 
         .login-card {
             background: white;
-            border-radius: 32px;
-            padding: 32px 24px;
+            border-radius: 40px;
+            padding: 40px 28px;
             width: 90%;
             max-width: 340px;
-            margin: 0 auto;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
         }
 
         .login-logo {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             background: var(--gradient-1);
-            border-radius: 20px;
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
+            margin: 0 auto 24px;
             color: white;
-            font-size: 32px;
+            font-size: 36px;
         }
 
         .login-title {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .login-title h2 {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 800;
             color: var(--dark);
+            margin-bottom: 4px;
         }
 
         .login-title p {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--secondary);
-            margin-top: 4px;
         }
 
         .login-input {
             width: 100%;
-            padding: 16px;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            font-size: 14px;
+            padding: 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 14px;
+            font-size: 15px;
         }
 
         .login-btn {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: var(--gradient-1);
             color: white;
             border: none;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 16px;
             margin-top: 10px;
+            cursor: pointer;
         }
 
         .login-link {
             text-align: center;
             display: block;
-            margin-top: 16px;
+            margin-top: 18px;
             color: var(--primary);
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        /* Modal */
+        /* Modal - නිවැරදි Modal */
         .modal {
             display: none;
             position: fixed;
@@ -617,6 +702,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
         .modal.active {
@@ -625,49 +711,75 @@
 
         .modal-content {
             background: white;
-            border-radius: 28px;
-            padding: 24px;
+            border-radius: 32px;
+            padding: 28px;
             width: 100%;
-            max-width: 320px;
+            max-width: 340px;
+            animation: modalSlide 0.3s ease;
         }
 
-        /* Bill Paper */
+        @keyframes modalSlide {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Bill Paper - නිවැරදි Bill */
         .bill-paper {
             background: white;
-            border-radius: 20px;
-            padding: 20px;
-            font-size: 12px;
+            border-radius: 24px;
+            padding: 24px;
+            font-size: 13px;
             border: 1px solid var(--border);
+            margin-top: 16px;
         }
 
         .bill-header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed var(--border);
         }
 
         .bill-header h2 {
-            font-size: 18px;
+            font-size: 22px;
             color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .bill-header p {
+            font-size: 12px;
+            color: var(--secondary);
+            line-height: 1.5;
         }
 
         .bill-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
+            font-size: 12px;
+            margin: 15px 0;
         }
 
         .bill-table th {
             background: var(--primary);
             color: white;
-            padding: 8px;
+            padding: 10px;
+            font-weight: 600;
         }
 
         .bill-table td {
-            padding: 6px;
+            padding: 8px;
             border: 1px solid var(--border);
         }
 
-        /* Loading */
+        .bill-totals {
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border);
+            font-weight: 600;
+        }
+
+        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -679,6 +791,7 @@
             align-items: center;
             justify-content: center;
             z-index: 4000;
+            backdrop-filter: blur(5px);
         }
 
         .loading-overlay.active {
@@ -686,10 +799,10 @@
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--primary);
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -707,11 +820,14 @@
             transform: translateX(-50%);
             background: var(--success);
             color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 13px;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
             z-index: 5000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: notifSlide 0.3s ease;
+            white-space: nowrap;
         }
 
         .notification.error {
@@ -722,113 +838,126 @@
             background: var(--warning);
         }
 
-        /* Seal Preview */
+        @keyframes notifSlide {
+            from { bottom: 50px; opacity: 0; }
+            to { bottom: 100px; opacity: 1; }
+        }
+
+        /* Seal Preview - නිවැරදි Preview */
         .seal-preview {
             background: var(--gradient-1);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px 0;
+            border-radius: 24px;
+            padding: 24px;
+            margin: 20px 0;
             display: flex;
             justify-content: center;
         }
 
         #sealPreview {
-            width: 160px;
-            height: 160px;
+            width: 180px;
+            height: 180px;
             background: white;
             border: 3px solid var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            padding: 10px;
-            font-size: 12px;
+            padding: 12px;
+            font-size: 13px;
             text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         #sealPreview.circle { border-radius: 50%; }
-        #sealPreview.rectangle { border-radius: 10px; }
+        #sealPreview.rectangle { border-radius: 16px; }
         #sealPreview.square { border-radius: 0; }
         #sealPreview.oval { border-radius: 50% / 40%; }
 
         /* Plate Preview */
         .plate-preview {
             background: var(--gradient-1);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px 0;
+            border-radius: 24px;
+            padding: 24px;
+            margin: 20px 0;
             text-align: center;
         }
 
         .plate-sample {
             background: #FCD34D;
             border: 3px solid var(--dark);
-            border-radius: 8px;
-            padding: 15px 20px;
+            border-radius: 12px;
+            padding: 18px 24px;
             display: inline-block;
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            color: var(--dark);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
 
         /* Chart */
         .chart-container {
             background: white;
-            border-radius: 20px;
-            padding: 15px;
-            height: 180px;
-            margin: 15px 0;
+            border-radius: 24px;
+            padding: 16px;
+            height: 200px;
+            margin: 16px 0 20px;
+            border: 1px solid var(--border);
         }
 
         /* Chat */
         .chat-messages {
-            height: 200px;
+            height: 220px;
             overflow-y: auto;
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 12px;
-            margin-bottom: 12px;
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 14px;
+            background: white;
         }
 
         .chat-message {
-            margin-bottom: 8px;
-            padding: 8px 12px;
-            border-radius: 16px;
+            margin-bottom: 10px;
+            padding: 12px 16px;
+            border-radius: 18px;
             max-width: 80%;
+            word-wrap: break-word;
         }
 
         .chat-message.sent {
             background: var(--primary);
             color: white;
             margin-left: auto;
+            border-bottom-right-radius: 4px;
         }
 
         .chat-message.received {
             background: var(--light);
+            border-bottom-left-radius: 4px;
         }
 
         .chat-time {
-            font-size: 9px;
+            font-size: 10px;
             opacity: 0.7;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         /* Settings */
         .settings-group {
             background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
             border: 1px solid var(--border);
         }
 
         .settings-group h4 {
-            font-size: 14px;
-            margin-bottom: 12px;
+            font-size: 16px;
+            margin-bottom: 16px;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         /* Tabs */
@@ -839,6 +968,14 @@
         .tab-pane.active {
             display: block;
         }
+
+        /* Status Badge Colors */
+        .status-pending { background: rgba(217, 119, 6, 0.15); color: var(--warning); }
+        .status-printing { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+        .status-ready { background: rgba(5, 150, 105, 0.15); color: var(--success); }
+        .status-picked { background: rgba(100, 116, 139, 0.15); color: var(--secondary); }
+        .status-paid { background: rgba(5, 150, 105, 0.15); color: var(--success); }
+        .status-advance { background: rgba(30, 58, 138, 0.15); color: var(--primary); }
     </style>
 </head>
 <body>
@@ -893,13 +1030,13 @@
         <!-- Forgot Password Modal -->
         <div id="forgotModal" class="modal">
             <div class="modal-content">
-                <h3 style="margin-bottom: 15px;">Reset Password</h3>
-                <p style="margin-bottom: 15px; font-size: 13px;">Enter your email to receive reset link</p>
+                <h3 style="margin-bottom: 15px; font-size: 20px;">Reset Password</h3>
+                <p style="margin-bottom: 20px; font-size: 14px; color: var(--secondary);">Enter your email to receive reset link</p>
                 <input type="email" id="resetEmail" class="login-input" placeholder="Email">
-                <button class="login-btn" onclick="sendResetLink()">
+                <button class="login-btn" onclick="sendResetLink()" style="margin-top: 0;">
                     <i class="fas fa-paper-plane"></i> Send Link
                 </button>
-                <button class="login-btn" style="background: var(--secondary); margin-top: 8px;" onclick="closeForgotPassword()">
+                <button class="login-btn" style="background: var(--secondary); margin-top: 10px;" onclick="closeForgotPassword()">
                     Cancel
                 </button>
             </div>
@@ -982,8 +1119,8 @@
 
                     <!-- Add Order Form -->
                     <div class="form-card">
-                        <div class="section-title">
-                            <h3><i class="fas fa-plus-circle"></i> New Order</h3>
+                        <div class="section-title" style="margin-top: 0;">
+                            <h3><i class="fas fa-plus-circle" style="color: var(--primary);"></i> New Order</h3>
                         </div>
                         <div class="form-group">
                             <label>Customer Name</label>
@@ -1041,7 +1178,7 @@
                 <!-- Stock Tab -->
                 <div id="stockTab" class="tab-pane">
                     <div class="form-card">
-                        <div class="section-title">
+                        <div class="section-title" style="margin-top: 0;">
                             <h3><i class="fas fa-plus-circle"></i> Add Stock</h3>
                         </div>
                         <div class="form-group">
@@ -1079,7 +1216,7 @@
                 <!-- Bills Tab -->
                 <div id="billsTab" class="tab-pane">
                     <div class="form-card">
-                        <div class="section-title">
+                        <div class="section-title" style="margin-top: 0;">
                             <h3><i class="fas fa-file-invoice"></i> Generate Bill</h3>
                         </div>
                         <div class="form-group">
@@ -1101,7 +1238,7 @@
                 <!-- Seals Tab -->
                 <div id="sealsTab" class="tab-pane">
                     <div class="form-card">
-                        <div class="section-title">
+                        <div class="section-title" style="margin-top: 0;">
                             <h3><i class="fas fa-stamp"></i> New Seal</h3>
                         </div>
                         <div class="form-group">
@@ -1151,7 +1288,7 @@
                 <!-- Plates Tab -->
                 <div id="platesTab" class="tab-pane">
                     <div class="form-card">
-                        <div class="section-title">
+                        <div class="section-title" style="margin-top: 0;">
                             <h3><i class="fas fa-car"></i> New Number Plate</h3>
                         </div>
                         <div class="form-group">
@@ -1261,7 +1398,7 @@
                             <input type="email" id="shopEmailInput" class="form-input" value="3r@gmail.com">
                         </div>
                         <button class="btn-primary" onclick="saveSettings()">
-                            <i class="fas fa-save"></i> Save
+                            <i class="fas fa-save"></i> Save Settings
                         </button>
                     </div>
                 </div>
@@ -1269,7 +1406,7 @@
                 <!-- Chat Tab -->
                 <div id="chatTab" class="tab-pane">
                     <div class="form-card">
-                        <div class="section-title">
+                        <div class="section-title" style="margin-top: 0;">
                             <h3><i class="fas fa-comments"></i> Chat</h3>
                         </div>
                         <div class="form-group">
@@ -1283,15 +1420,15 @@
                         <div id="chatMessages" class="chat-messages"></div>
                         <div class="chat-input" style="display: flex; gap: 8px;">
                             <input type="text" id="chatInput" class="form-input" placeholder="Type message..." style="flex: 1;">
-                            <button class="btn-primary" onclick="prepareChatMessage()" style="width: auto; padding: 12px 16px;">
+                            <button class="btn-primary" onclick="prepareChatMessage()" style="width: auto; padding: 12px 20px;">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <button class="quick-item" onclick="sendChatMessage('whatsapp')" style="background: #25D366; color: white; border: none;">
+                        <div style="display: flex; gap: 8px; margin-top: 10px;">
+                            <button class="quick-item" onclick="sendChatMessage('whatsapp')" style="background: #25D366; color: white; border: none; flex: 1;">
                                 <i class="fab fa-whatsapp"></i> WhatsApp
                             </button>
-                            <button class="quick-item" onclick="sendChatMessage('sms')" style="background: var(--primary); color: white; border: none;">
+                            <button class="quick-item" onclick="sendChatMessage('sms')" style="background: var(--primary); color: white; border: none; flex: 1;">
                                 <i class="fas fa-sms"></i> SMS
                             </button>
                         </div>
@@ -1302,7 +1439,7 @@
             <!-- Bottom Navigation -->
             <div class="bottom-nav">
                 <div class="nav-item active" onclick="switchTab('orders')">
-                    <i class="fas fa-shopping-cart"></i>
+                    <i class="fas fa-home"></i>
                     <span>Home</span>
                 </div>
                 <div class="nav-item" onclick="switchTab('stock')">
@@ -1342,7 +1479,7 @@
                 <h3 style="margin-bottom: 15px;">Process Payment</h3>
                 <input type="number" id="remainingAmount" class="form-input" readonly style="margin-bottom: 10px;">
                 <input type="number" id="payAmount" class="form-input" placeholder="Amount" style="margin-bottom: 15px;">
-                <button class="btn-primary" onclick="processPayment()">Confirm</button>
+                <button class="btn-primary" onclick="processPayment()">Confirm Payment</button>
             </div>
         </div>
 
@@ -1351,8 +1488,8 @@
                 <h3 style="margin-bottom: 15px;">Delete Order?</h3>
                 <p style="margin-bottom: 20px;">This action cannot be undone.</p>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-primary" onclick="confirmDelete()" style="background: var(--danger);">Delete</button>
-                    <button class="btn-primary" onclick="closeDeleteModal()" style="background: var(--secondary);">Cancel</button>
+                    <button class="btn-primary" onclick="confirmDelete()" style="background: var(--danger); flex: 1;">Delete</button>
+                    <button class="btn-primary" onclick="closeDeleteModal()" style="background: var(--secondary); flex: 1;">Cancel</button>
                 </div>
             </div>
         </div>
@@ -1362,8 +1499,8 @@
                 <h3 style="margin-bottom: 15px;">Delete Stock?</h3>
                 <p style="margin-bottom: 20px;">Remove this item from inventory?</p>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-primary" onclick="confirmStockDelete()" style="background: var(--danger);">Delete</button>
-                    <button class="btn-primary" onclick="closeStockDeleteModal()" style="background: var(--secondary);">Cancel</button>
+                    <button class="btn-primary" onclick="confirmStockDelete()" style="background: var(--danger); flex: 1;">Delete</button>
+                    <button class="btn-primary" onclick="closeStockDeleteModal()" style="background: var(--secondary); flex: 1;">Cancel</button>
                 </div>
             </div>
         </div>
@@ -1555,7 +1692,7 @@
             container.innerHTML = '';
 
             if (allOrders.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 30px;">No orders yet</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px;">✨ No orders yet</div>';
                 return;
             }
 
@@ -1682,7 +1819,7 @@
             container.innerHTML = '';
 
             if (stockItems.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 30px;">No stock items</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px;">📦 No stock items</div>';
                 return;
             }
 
@@ -1945,6 +2082,7 @@
                 <div class="bill-info">
                     <p><strong>Customer:</strong> ${customer}</p>
                     <p><strong>Date:</strong> ${document.getElementById('billDate').value}</p>
+                    <p><strong>Phone:</strong> ${orders[0].phone || 'N/A'}</p>
                 </div>
                 <table class="bill-table">
                     <tr><th>Description</th><th>Amount</th><th>Paid</th><th>Balance</th></tr>
@@ -2058,15 +2196,13 @@
             if (reportChart) reportChart.destroy();
             reportChart = new Chart(ctx, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'Revenue', data, borderColor: '#1e3a8a', tension: 0.4 }] },
+                data: { labels, datasets: [{ label: 'Revenue', data, borderColor: '#1e3a8a', backgroundColor: 'rgba(30, 58, 138, 0.1)', tension: 0.4, fill: true }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
         // Chat
-        function prepareChatMessage() {
-            // Just store message for sending
-        }
+        function prepareChatMessage() {}
 
         function sendChatMessage(type) {
             const phone = document.getElementById('chatPhone').value.trim();
