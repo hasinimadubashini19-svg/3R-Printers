@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>InkMaster - 3R PRINTERS</title>
+    <title>InkMaster Pro - 3R PRINTERS</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Mobile First Design - සම්පූර්ණයෙන්ම හදපු UI එක */
+        /* Professional Mobile Design */
         * {
             margin: 0;
             padding: 0;
@@ -27,77 +27,86 @@
         }
 
         :root {
-            --primary: #1e3a8a;
-            --primary-dark: #0f2b63;
-            --primary-light: #3b5fb0;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --primary-soft: #dbeafe;
             --secondary: #64748b;
-            --success: #059669;
-            --warning: #d97706;
-            --danger: #dc2626;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
             --info: #3b82f6;
-            --light: #f8fafc;
-            --dark: #020617;
-            --border: #e2e8f0;
-            --gradient-1: linear-gradient(135deg, #1e3a8a 0%, #3b5fb0 100%);
-            --gradient-2: linear-gradient(135deg, #b45309 0%, #d97706 100%);
-            --gradient-3: linear-gradient(135deg, #065f46 0%, #059669 100%);
-            --gradient-4: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
-            --gradient-5: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --info-light: #dbeafe;
+            --light: #f9fafb;
+            --dark: #111827;
+            --border: #e5e7eb;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --gradient-1: linear-gradient(145deg, #2563eb, #1e40af);
+            --gradient-2: linear-gradient(145deg, #f59e0b, #b45309);
+            --gradient-3: linear-gradient(145deg, #10b981, #047857);
+            --gradient-4: linear-gradient(145deg, #ef4444, #b91c1c);
+            --gradient-5: linear-gradient(145deg, #8b5cf6, #6d28d9);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--gradient-1);
+            background: #f3f4f6;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
+            padding: 12px;
             margin: 0;
         }
 
-        /* App Container - Mobile Size (iPhone 14 Pro Max size) */
+        /* App Container */
         .app-container {
             width: 100%;
-            max-width: 393px;
-            height: 100vh;
-            max-height: 852px;
-            background: var(--light);
+            max-width: 380px;
+            height: 820px;
+            background: white;
             position: relative;
             overflow: hidden;
-            border-radius: 0;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 36px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        @media (min-width: 768px) {
-            .app-container {
-                border-radius: 44px;
-                height: 852px;
-                margin: 20px auto;
-            }
-        }
-
-        /* Status Bar - නිවැරදි කරපු Status Bar */
+        /* Dynamic Island Style Status Bar */
         .status-bar {
-            background: var(--primary-dark);
-            padding: 14px 20px 10px;
+            background: var(--dark);
+            padding: 12px 24px;
             color: white;
             display: flex;
             justify-content: space-between;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.3px;
         }
 
-        /* App Header - හරියටම හදපු Header */
+        /* App Header */
         .app-header {
             background: var(--gradient-1);
-            padding: 14px 20px;
+            padding: 16px 20px;
             color: white;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+
+        .app-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .app-header-left {
@@ -107,28 +116,28 @@
         }
 
         .app-logo {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             background: white;
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .app-title h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
             line-height: 1.2;
         }
 
         .app-title p {
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.9;
             margin-top: 2px;
             font-weight: 500;
@@ -137,47 +146,48 @@
         .app-header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .connection-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: var(--success);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--success);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
             animation: pulse 2s infinite;
         }
 
         .logout-icon {
             background: rgba(255, 255, 255, 0.15);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            backdrop-filter: blur(10px);
             transition: all 0.2s ease;
         }
 
-        .logout-icon:hover {
-            background: rgba(255, 255, 255, 0.25);
+        .logout-icon:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
         }
 
         @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        /* Main Content Area - නිවැරදි Scroll */
+        /* Main Content */
         .main-content {
-            height: calc(100% - 136px);
+            height: calc(100% - 130px);
             overflow-y: auto;
             overflow-x: hidden;
             padding: 16px 16px 80px;
-            background: var(--light);
+            background: #f3f4f6;
             scrollbar-width: none;
         }
 
@@ -185,7 +195,7 @@
             display: none;
         }
 
-        /* Stats Cards - හරියටම Horizontal Scroll */
+        /* Stats Cards */
         .stats-horizontal {
             display: flex;
             gap: 12px;
@@ -202,32 +212,34 @@
         .stat-chip {
             background: white;
             border-radius: 24px;
-            padding: 14px 20px;
-            min-width: 150px;
+            padding: 14px 18px;
+            min-width: 160px;
             display: flex;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
         }
 
         .stat-chip-icon {
             width: 44px;
             height: 44px;
-            border-radius: 14px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            color: white;
         }
 
-        .stat-chip-icon.today { background: var(--gradient-1); color: white; }
-        .stat-chip-icon.week { background: var(--gradient-2); color: white; }
-        .stat-chip-icon.month { background: var(--gradient-3); color: white; }
-        .stat-chip-icon.pending { background: var(--gradient-4); color: white; }
+        .stat-chip-icon.today { background: var(--gradient-1); }
+        .stat-chip-icon.week { background: var(--gradient-2); }
+        .stat-chip-icon.month { background: var(--gradient-3); }
+        .stat-chip-icon.pending { background: var(--gradient-4); }
 
         .stat-chip-info h4 {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--secondary);
             font-weight: 500;
             margin-bottom: 2px;
@@ -239,7 +251,7 @@
             color: var(--dark);
         }
 
-        /* Quick Action Grid - නිවැරදි Grid */
+        /* Quick Action Grid */
         .quick-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -249,22 +261,26 @@
 
         .quick-item {
             background: white;
-            border-radius: 18px;
-            padding: 14px 6px;
+            border-radius: 20px;
+            padding: 14px 4px;
             text-align: center;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: var(--card-shadow);
             transition: all 0.2s ease;
             cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .quick-item:active {
-            transform: scale(0.96);
+            transform: scale(0.95);
             background: var(--primary);
             color: white;
         }
 
         .quick-item:active i {
+            color: white;
+        }
+
+        .quick-item:active span {
             color: white;
         }
 
@@ -275,56 +291,52 @@
         }
 
         .quick-item span {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             display: block;
             color: var(--dark);
         }
 
-        .quick-item:active span {
-            color: white;
-        }
-
-        /* Section Title - නිවැරදි කරපු Title */
+        /* Section Title */
         .section-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 20px 0 14px;
+            margin: 20px 0 12px;
             padding: 0 4px;
         }
 
         .section-title h3 {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .section-title h3 i {
             color: var(--primary);
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .section-title span {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--primary);
             font-weight: 600;
-            background: rgba(30, 58, 138, 0.1);
-            padding: 6px 12px;
-            border-radius: 30px;
+            background: var(--primary-soft);
+            padding: 4px 10px;
+            border-radius: 20px;
         }
 
-        /* Form Card - නිවැරදි කරපු Form */
+        /* Form Card */
         .form-card {
             background: white;
             border-radius: 28px;
             padding: 22px;
             margin-bottom: 20px;
-            border: 1px solid var(--border);
-            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .form-group {
@@ -332,21 +344,28 @@
         }
 
         .form-group label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--dark);
             margin-bottom: 6px;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 4px;
             margin-left: 4px;
+        }
+
+        .form-group label i {
+            color: var(--primary);
+            font-size: 12px;
         }
 
         .form-input {
             width: 100%;
-            padding: 16px 18px;
+            padding: 14px 18px;
             border: 1.5px solid var(--border);
             border-radius: 18px;
-            font-size: 15px;
-            background: var(--light);
+            font-size: 14px;
+            background: #f9fafb;
             transition: all 0.2s ease;
             font-family: 'Inter', sans-serif;
         }
@@ -355,12 +374,12 @@
             outline: none;
             border-color: var(--primary);
             background: white;
-            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
+            box-shadow: 0 0 0 4px var(--primary-soft);
         }
 
         select.form-input {
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 18px center;
             background-size: 18px;
@@ -370,33 +389,39 @@
             background: var(--gradient-1);
             color: white;
             border: none;
-            padding: 18px;
+            padding: 16px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 8px 20px -4px rgba(30, 58, 138, 0.4);
+            gap: 8px;
+            box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.3);
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-primary:active {
             transform: scale(0.98);
-            box-shadow: 0 4px 12px -4px rgba(30, 58, 138, 0.4);
+            box-shadow: 0 4px 8px -4px rgba(37, 99, 235, 0.3);
         }
 
-        /* Order Card - නිවැරදි කරපු Order Card */
+        /* Order Card */
         .order-card {
             background: white;
             border-radius: 24px;
             padding: 18px;
             margin-bottom: 14px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.2s ease;
+        }
+
+        .order-card:active {
+            transform: scale(0.99);
+            box-shadow: var(--card-shadow-hover);
         }
 
         .order-header {
@@ -410,31 +435,75 @@
             font-weight: 700;
             font-size: 16px;
             color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .customer-name i {
+            color: var(--primary);
+            font-size: 14px;
         }
 
         .status-badge {
             padding: 6px 14px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
         .order-info {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
+            gap: 12px;
             margin-bottom: 16px;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--secondary);
-            background: var(--light);
+            background: #f9fafb;
             padding: 14px;
-            border-radius: 16px;
+            border-radius: 18px;
         }
 
         .order-info i {
-            width: 20px;
+            width: 18px;
             color: var(--primary);
+            font-size: 12px;
         }
+
+        .payment-info {
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px dashed var(--border);
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .payment-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .payment-label {
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .payment-value {
+            font-weight: 600;
+        }
+
+        .payment-value.paid { color: var(--success); }
+        .payment-value.advance { color: var(--warning); }
+        .payment-value.pending { color: var(--danger); }
 
         .order-actions {
             display: flex;
@@ -444,8 +513,8 @@
 
         .action-btn {
             flex: 1;
-            min-width: 60px;
-            padding: 10px 6px;
+            min-width: 55px;
+            padding: 10px 4px;
             border: none;
             border-radius: 14px;
             font-size: 11px;
@@ -456,31 +525,33 @@
             gap: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+            color: white;
         }
 
         .action-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.95);
+            filter: brightness(0.9);
         }
 
-        .btn-print { background: var(--warning); color: white; }
-        .btn-ready { background: var(--success); color: white; }
-        .btn-pick { background: var(--primary); color: white; }
-        .btn-pay { background: var(--info); color: white; }
-        .btn-delete { background: var(--danger); color: white; }
+        .btn-print { background: var(--gradient-2); }
+        .btn-ready { background: var(--gradient-3); }
+        .btn-pick { background: var(--gradient-1); }
+        .btn-pay { background: var(--gradient-5); }
+        .btn-delete { background: var(--gradient-4); }
 
-        /* Stock Card - නිවැරදි කරපු Stock Card */
+        /* Stock Card */
         .stock-card {
             background: white;
             border-radius: 24px;
             padding: 18px;
             margin-bottom: 14px;
-            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
             position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .stock-card.low-stock {
-            border-left: 5px solid var(--danger);
+            border-left: 4px solid var(--danger);
         }
 
         .stock-header {
@@ -491,15 +562,15 @@
         }
 
         .stock-icon {
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             background: var(--gradient-1);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .stock-details {
@@ -507,20 +578,21 @@
         }
 
         .stock-details h4 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             margin-bottom: 4px;
             color: var(--dark);
         }
 
         .stock-details p {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--primary);
+            line-height: 1.2;
         }
 
         .stock-details span {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--secondary);
             font-weight: 500;
         }
@@ -537,23 +609,23 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             font-size: 14px;
-            background: var(--light);
+            background: #f9fafb;
         }
 
         .delete-stock {
             position: absolute;
             top: 14px;
             right: 14px;
-            color: var(--danger);
-            font-size: 18px;
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            background: var(--light);
-            border-radius: 12px;
+            width: 32px;
+            height: 32px;
+            background: #f9fafb;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--danger);
+            font-size: 16px;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
 
@@ -562,19 +634,18 @@
             color: white;
         }
 
-        /* Bottom Navigation - නිවැරදි Bottom Nav */
+        /* Bottom Navigation */
         .bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
+            right: 0;
             background: white;
             display: flex;
             justify-content: space-around;
-            padding: 10px 6px 24px;
+            padding: 10px 8px 20px;
             border-top: 1px solid var(--border);
-            border-radius: 30px 30px 0 0;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
             z-index: 100;
         }
 
@@ -582,29 +653,31 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            padding: 8px 10px;
+            gap: 2px;
+            padding: 8px 8px;
             border-radius: 20px;
             cursor: pointer;
             color: var(--secondary);
             transition: all 0.2s ease;
+            min-width: 40px;
         }
 
         .nav-item.active {
-            background: var(--gradient-1);
-            color: white;
+            background: var(--primary-soft);
+            color: var(--primary);
         }
 
         .nav-item i {
-            font-size: 22px;
+            font-size: 20px;
+            margin-bottom: 2px;
         }
 
         .nav-item span {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
         }
 
-        /* Login Screen - නිවැරදි Login */
+        /* Login Screen */
         .login-container {
             position: absolute;
             top: 0;
@@ -619,11 +692,12 @@
         }
 
         .login-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 40px;
-            padding: 40px 28px;
+            padding: 40px 24px;
             width: 90%;
-            max-width: 340px;
+            max-width: 320px;
             box-shadow: 0 30px 50px rgba(0,0,0,0.3);
         }
 
@@ -659,37 +733,39 @@
 
         .login-input {
             width: 100%;
-            padding: 18px;
+            padding: 16px 18px;
             border: 1.5px solid var(--border);
             border-radius: 20px;
-            margin-bottom: 14px;
-            font-size: 15px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            background: white;
         }
 
         .login-btn {
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             background: var(--gradient-1);
             color: white;
             border: none;
             border-radius: 20px;
             font-weight: 700;
-            font-size: 16px;
-            margin-top: 10px;
+            font-size: 15px;
+            margin-top: 8px;
             cursor: pointer;
+            box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.3);
         }
 
         .login-link {
             text-align: center;
             display: block;
-            margin-top: 18px;
+            margin-top: 16px;
             color: var(--primary);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
         }
 
-        /* Modal - නිවැරදි Modal */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -714,7 +790,7 @@
             border-radius: 32px;
             padding: 28px;
             width: 100%;
-            max-width: 340px;
+            max-width: 320px;
             animation: modalSlide 0.3s ease;
         }
 
@@ -723,14 +799,15 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* Bill Paper - නිවැරදි Bill */
+        /* Bill Paper */
         .bill-paper {
             background: white;
             border-radius: 24px;
             padding: 24px;
-            font-size: 13px;
+            font-size: 12px;
             border: 1px solid var(--border);
             margin-top: 16px;
+            box-shadow: var(--card-shadow);
         }
 
         .bill-header {
@@ -741,13 +818,13 @@
         }
 
         .bill-header h2 {
-            font-size: 22px;
+            font-size: 20px;
             color: var(--primary);
             margin-bottom: 4px;
         }
 
         .bill-header p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--secondary);
             line-height: 1.5;
         }
@@ -755,14 +832,14 @@
         .bill-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 11px;
             margin: 15px 0;
         }
 
         .bill-table th {
             background: var(--primary);
             color: white;
-            padding: 10px;
+            padding: 8px;
             font-weight: 600;
         }
 
@@ -778,6 +855,141 @@
             border-top: 2px solid var(--border);
             font-weight: 600;
         }
+
+        /* Seal Preview */
+        .seal-preview {
+            background: #f3f4f6;
+            border-radius: 24px;
+            padding: 24px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        #sealPreview {
+            width: 160px;
+            height: 160px;
+            background: white;
+            border: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 12px;
+            font-size: 12px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        #sealPreview.circle { border-radius: 50%; }
+        #sealPreview.rectangle { border-radius: 16px; }
+        #sealPreview.square { border-radius: 0; }
+        #sealPreview.oval { border-radius: 50% / 40%; }
+
+        /* Plate Preview */
+        .plate-preview {
+            background: #f3f4f6;
+            border-radius: 24px;
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .plate-sample {
+            background: linear-gradient(145deg, #FCD34D, #FBBF24);
+            border: 3px solid var(--dark);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: inline-block;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--dark);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            height: 200px;
+            margin: 16px 0 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Chat Styles */
+        .chat-messages {
+            height: 220px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 14px;
+            background: white;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 13px;
+        }
+
+        .chat-message.sent {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.received {
+            background: #f3f4f6;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-time {
+            font-size: 9px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Settings Group */
+        .settings-group {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .settings-group h4 {
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Tab Pane */
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Status Badge Colors */
+        .status-pending { background: var(--warning-light); color: var(--warning); }
+        .status-printing { background: var(--info-light); color: var(--info); }
+        .status-ready { background: var(--success-light); color: var(--success); }
+        .status-picked { background: #f3f4f6; color: var(--secondary); }
+        .status-paid { background: var(--success-light); color: var(--success); }
+        .status-advance { background: var(--warning-light); color: var(--warning); }
 
         /* Loading Overlay */
         .loading-overlay {
@@ -799,8 +1011,8 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border: 4px solid var(--border);
             border-top: 4px solid var(--primary);
             border-radius: 50%;
@@ -820,9 +1032,9 @@
             transform: translateX(-50%);
             background: var(--success);
             color: white;
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: 40px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             z-index: 5000;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -843,139 +1055,11 @@
             to { bottom: 100px; opacity: 1; }
         }
 
-        /* Seal Preview - නිවැරදි Preview */
-        .seal-preview {
-            background: var(--gradient-1);
-            border-radius: 24px;
-            padding: 24px;
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        #sealPreview {
-            width: 180px;
-            height: 180px;
-            background: white;
-            border: 3px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 12px;
-            font-size: 13px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        #sealPreview.circle { border-radius: 50%; }
-        #sealPreview.rectangle { border-radius: 16px; }
-        #sealPreview.square { border-radius: 0; }
-        #sealPreview.oval { border-radius: 50% / 40%; }
-
-        /* Plate Preview */
-        .plate-preview {
-            background: var(--gradient-1);
-            border-radius: 24px;
-            padding: 24px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .plate-sample {
-            background: #FCD34D;
-            border: 3px solid var(--dark);
-            border-radius: 12px;
-            padding: 18px 24px;
-            display: inline-block;
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: var(--dark);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-
-        /* Chart */
-        .chart-container {
-            background: white;
-            border-radius: 24px;
-            padding: 16px;
-            height: 200px;
-            margin: 16px 0 20px;
-            border: 1px solid var(--border);
-        }
-
-        /* Chat */
-        .chat-messages {
-            height: 220px;
-            overflow-y: auto;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 14px;
-            margin-bottom: 14px;
-            background: white;
-        }
-
-        .chat-message {
-            margin-bottom: 10px;
-            padding: 12px 16px;
-            border-radius: 18px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-
-        .chat-message.sent {
-            background: var(--primary);
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-message.received {
-            background: var(--light);
-            border-bottom-left-radius: 4px;
-        }
-
-        .chat-time {
-            font-size: 10px;
-            opacity: 0.7;
-            margin-top: 6px;
-        }
-
-        /* Settings */
-        .settings-group {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .settings-group h4 {
-            font-size: 16px;
-            margin-bottom: 16px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Tabs */
-        .tab-pane {
-            display: none;
-        }
-
-        .tab-pane.active {
-            display: block;
-        }
-
-        /* Status Badge Colors */
-        .status-pending { background: rgba(217, 119, 6, 0.15); color: var(--warning); }
-        .status-printing { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
-        .status-ready { background: rgba(5, 150, 105, 0.15); color: var(--success); }
-        .status-picked { background: rgba(100, 116, 139, 0.15); color: var(--secondary); }
-        .status-paid { background: rgba(5, 150, 105, 0.15); color: var(--success); }
-        .status-advance { background: rgba(30, 58, 138, 0.15); color: var(--primary); }
+        /* Utility Classes */
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-primary { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -1030,7 +1114,7 @@
         <!-- Forgot Password Modal -->
         <div id="forgotModal" class="modal">
             <div class="modal-content">
-                <h3 style="margin-bottom: 15px; font-size: 20px;">Reset Password</h3>
+                <h3 style="margin-bottom: 15px;">Reset Password</h3>
                 <p style="margin-bottom: 20px; font-size: 14px; color: var(--secondary);">Enter your email to receive reset link</p>
                 <input type="email" id="resetEmail" class="login-input" placeholder="Email">
                 <button class="login-btn" onclick="sendResetLink()" style="margin-top: 0;">
@@ -1061,11 +1145,11 @@
                 </div>
             </div>
 
-            <!-- Main Content (Scrollable) -->
+            <!-- Main Content -->
             <div class="main-content" id="mainContent">
                 <!-- Orders Tab -->
                 <div id="ordersTab" class="tab-pane active">
-                    <!-- Stats Horizontal Scroll -->
+                    <!-- Stats -->
                     <div class="stats-horizontal">
                         <div class="stat-chip">
                             <div class="stat-chip-icon today"><i class="fas fa-rupee-sign"></i></div>
@@ -1101,7 +1185,7 @@
                     <div class="quick-grid">
                         <div class="quick-item" onclick="quickAction('scanQR')">
                             <i class="fas fa-qrcode"></i>
-                            <span>Scan QR</span>
+                            <span>Scan</span>
                         </div>
                         <div class="quick-item" onclick="quickAction('printLabel')">
                             <i class="fas fa-tag"></i>
@@ -1120,18 +1204,18 @@
                     <!-- Add Order Form -->
                     <div class="form-card">
                         <div class="section-title" style="margin-top: 0;">
-                            <h3><i class="fas fa-plus-circle" style="color: var(--primary);"></i> New Order</h3>
+                            <h3><i class="fas fa-plus-circle"></i> New Order</h3>
                         </div>
                         <div class="form-group">
-                            <label>Customer Name</label>
-                            <input type="text" id="custName" class="form-input" placeholder="e.g., John Doe">
+                            <label><i class="fas fa-user"></i> Customer Name</label>
+                            <input type="text" id="custName" class="form-input" placeholder="Enter customer name">
                         </div>
                         <div class="form-group">
-                            <label>Phone</label>
+                            <label><i class="fas fa-phone"></i> Phone</label>
                             <input type="text" id="custPhone" class="form-input" placeholder="077XXXXXXX">
                         </div>
                         <div class="form-group">
-                            <label>Service</label>
+                            <label><i class="fas fa-tag"></i> Service</label>
                             <select id="orderService" class="form-input">
                                 <option value="Printing">📄 Printing</option>
                                 <option value="Seal">🖍️ Seal</option>
@@ -1141,15 +1225,15 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Description</label>
+                            <label><i class="fas fa-file"></i> Description</label>
                             <input type="text" id="orderDesc" class="form-input" placeholder="File name / Details">
                         </div>
                         <div class="form-group">
-                            <label>Amount (Rs.)</label>
+                            <label><i class="fas fa-rupee-sign"></i> Amount (Rs.)</label>
                             <input type="number" id="orderAmount" class="form-input" placeholder="0.00">
                         </div>
                         <div class="form-group">
-                            <label>Payment Status</label>
+                            <label><i class="fas fa-credit-card"></i> Payment Status</label>
                             <select id="orderPayment" class="form-input" onchange="toggleAdvanceField()">
                                 <option value="Pending">⏳ Pending</option>
                                 <option value="Advance">💰 Advance</option>
@@ -1158,7 +1242,7 @@
                         </div>
                         <div id="advanceField" style="display: none;">
                             <div class="form-group">
-                                <label>Advance Amount</label>
+                                <label><i class="fas fa-hand-holding-usd"></i> Advance Amount</label>
                                 <input type="number" id="advanceAmount" class="form-input" placeholder="Advance received">
                             </div>
                         </div>
@@ -1182,15 +1266,15 @@
                             <h3><i class="fas fa-plus-circle"></i> Add Stock</h3>
                         </div>
                         <div class="form-group">
-                            <label>Item Name</label>
+                            <label><i class="fas fa-box"></i> Item Name</label>
                             <input type="text" id="stockName" class="form-input" placeholder="e.g., Seal 40mm">
                         </div>
                         <div class="form-group">
-                            <label>Size</label>
-                            <input type="text" id="stockSize" class="form-input" placeholder="e.g., 40mm, Standard">
+                            <label><i class="fas fa-ruler"></i> Size</label>
+                            <input type="text" id="stockSize" class="form-input" placeholder="e.g., 40mm">
                         </div>
                         <div class="form-group">
-                            <label>Unit</label>
+                            <label><i class="fas fa-balance-scale"></i> Unit</label>
                             <select id="stockUnit" class="form-input">
                                 <option value="pcs">Pieces</option>
                                 <option value="rolls">Rolls</option>
@@ -1199,11 +1283,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Quantity</label>
+                            <label><i class="fas fa-hashtag"></i> Quantity</label>
                             <input type="number" id="stockQty" class="form-input" placeholder="0">
                         </div>
                         <div class="form-group">
-                            <label>Alert Level</label>
+                            <label><i class="fas fa-exclamation-triangle"></i> Alert Level</label>
                             <input type="number" id="stockAlert" class="form-input" placeholder="5">
                         </div>
                         <button class="btn-primary" onclick="addStock()">
@@ -1220,16 +1304,16 @@
                             <h3><i class="fas fa-file-invoice"></i> Generate Bill</h3>
                         </div>
                         <div class="form-group">
-                            <label>Customer</label>
+                            <label><i class="fas fa-user"></i> Customer</label>
                             <input type="text" id="billCustomer" class="form-input" placeholder="Customer name" list="customerList">
                             <datalist id="customerList"></datalist>
                         </div>
                         <div class="form-group">
-                            <label>Date</label>
+                            <label><i class="fas fa-calendar"></i> Date</label>
                             <input type="date" id="billDate" class="form-input">
                         </div>
                         <button class="btn-primary" onclick="generateBill()">
-                            <i class="fas fa-file"></i> Generate
+                            <i class="fas fa-file-pdf"></i> Generate
                         </button>
                     </div>
                     <div id="billPreview" class="bill-paper" style="display: none;"></div>
@@ -1242,21 +1326,21 @@
                             <h3><i class="fas fa-stamp"></i> New Seal</h3>
                         </div>
                         <div class="form-group">
-                            <label>Customer</label>
+                            <label><i class="fas fa-user"></i> Customer</label>
                             <input type="text" id="sealCustomer" class="form-input">
                         </div>
                         <div class="form-group">
-                            <label>Seal Text</label>
+                            <label><i class="fas fa-pen"></i> Seal Text</label>
                             <textarea id="sealText" class="form-input" rows="3" oninput="updateSealPreview()"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Size</label>
+                            <label><i class="fas fa-ruler"></i> Size</label>
                             <select id="sealSize" class="form-input" onchange="updateSealPreview()">
                                 <option value="">Select Size</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Shape</label>
+                            <label><i class="fas fa-shapes"></i> Shape</label>
                             <select id="sealShape" class="form-input" onchange="updateSealPreview()">
                                 <option value="circle">Circle</option>
                                 <option value="rectangle">Rectangle</option>
@@ -1265,11 +1349,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Price</label>
+                            <label><i class="fas fa-rupee-sign"></i> Price</label>
                             <input type="number" id="sealPrice" class="form-input">
                         </div>
                         <div class="form-group">
-                            <label>Advance</label>
+                            <label><i class="fas fa-hand-holding-usd"></i> Advance</label>
                             <input type="number" id="sealAdvance" class="form-input">
                         </div>
                         
@@ -1292,21 +1376,21 @@
                             <h3><i class="fas fa-car"></i> New Number Plate</h3>
                         </div>
                         <div class="form-group">
-                            <label>Customer</label>
+                            <label><i class="fas fa-user"></i> Customer</label>
                             <input type="text" id="plateCustomer" class="form-input">
                         </div>
                         <div class="form-group">
-                            <label>Vehicle Number</label>
+                            <label><i class="fas fa-hashtag"></i> Vehicle Number</label>
                             <input type="text" id="plateNumber" class="form-input" oninput="updatePlatePreview()">
                         </div>
                         <div class="form-group">
-                            <label>Size</label>
+                            <label><i class="fas fa-ruler"></i> Size</label>
                             <select id="plateSize" class="form-input">
                                 <option value="">Select Size</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Type</label>
+                            <label><i class="fas fa-star"></i> Type</label>
                             <select id="plateType" class="form-input">
                                 <option value="Standard">Standard</option>
                                 <option value="Fancy">Fancy</option>
@@ -1314,11 +1398,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Price</label>
+                            <label><i class="fas fa-rupee-sign"></i> Price</label>
                             <input type="number" id="platePrice" class="form-input">
                         </div>
                         <div class="form-group">
-                            <label>Advance</label>
+                            <label><i class="fas fa-hand-holding-usd"></i> Advance</label>
                             <input type="number" id="plateAdvance" class="form-input">
                         </div>
                         
@@ -1418,9 +1502,9 @@
                             <input type="text" id="chatPhone" class="form-input">
                         </div>
                         <div id="chatMessages" class="chat-messages"></div>
-                        <div class="chat-input" style="display: flex; gap: 8px;">
+                        <div style="display: flex; gap: 8px;">
                             <input type="text" id="chatInput" class="form-input" placeholder="Type message..." style="flex: 1;">
-                            <button class="btn-primary" onclick="prepareChatMessage()" style="width: auto; padding: 12px 20px;">
+                            <button class="btn-primary" onclick="prepareChatMessage()" style="width: auto; padding: 12px 18px;">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -1436,7 +1520,7 @@
                 </div>
             </div>
 
-            <!-- Bottom Navigation -->
+            <!-- Bottom Navigation (Smaller icons) -->
             <div class="bottom-nav">
                 <div class="nav-item active" onclick="switchTab('orders')">
                     <i class="fas fa-home"></i>
@@ -1477,16 +1561,22 @@
         <div id="paymentModal" class="modal">
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px;">Process Payment</h3>
-                <input type="number" id="remainingAmount" class="form-input" readonly style="margin-bottom: 10px;">
+                <div class="payment-info" style="margin-bottom: 15px;">
+                    <div class="payment-row">
+                        <span class="payment-label"><i class="fas fa-rupee-sign"></i> Remaining</span>
+                        <span class="payment-value">Rs. <span id="remainingAmount"></span></span>
+                    </div>
+                </div>
                 <input type="number" id="payAmount" class="form-input" placeholder="Amount" style="margin-bottom: 15px;">
                 <button class="btn-primary" onclick="processPayment()">Confirm Payment</button>
+                <button class="btn-primary" onclick="closeModal()" style="background: var(--secondary); margin-top: 10px;">Cancel</button>
             </div>
         </div>
 
         <div id="deleteModal" class="modal">
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px;">Delete Order?</h3>
-                <p style="margin-bottom: 20px;">This action cannot be undone.</p>
+                <p style="margin-bottom: 20px; color: var(--secondary);">This action cannot be undone.</p>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn-primary" onclick="confirmDelete()" style="background: var(--danger); flex: 1;">Delete</button>
                     <button class="btn-primary" onclick="closeDeleteModal()" style="background: var(--secondary); flex: 1;">Cancel</button>
@@ -1497,7 +1587,7 @@
         <div id="stockDeleteModal" class="modal">
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px;">Delete Stock?</h3>
-                <p style="margin-bottom: 20px;">Remove this item from inventory?</p>
+                <p style="margin-bottom: 20px; color: var(--secondary);">Remove this item from inventory?</p>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn-primary" onclick="confirmStockDelete()" style="background: var(--danger); flex: 1;">Delete</button>
                     <button class="btn-primary" onclick="closeStockDeleteModal()" style="background: var(--secondary); flex: 1;">Cancel</button>
@@ -1546,7 +1636,7 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('signupScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-                document.getElementById('connectionDot').style.background = '#059669';
+                document.getElementById('connectionDot').style.background = '#10b981';
                 loadOrders();
                 loadStock();
                 loadCustomers();
@@ -1555,7 +1645,7 @@
             } else {
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('dashboard').style.display = 'none';
-                document.getElementById('connectionDot').style.background = '#dc2626';
+                document.getElementById('connectionDot').style.background = '#ef4444';
             }
         });
 
@@ -1686,35 +1776,62 @@
                 });
         }
 
-        // Display Orders
+        // Display Orders with enhanced payment info
         function displayOrders() {
             const container = document.getElementById('ordersList');
             container.innerHTML = '';
 
             if (allOrders.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px;">✨ No orders yet</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--secondary);"><i class="fas fa-inbox" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></i><br>No orders yet</div>';
                 return;
             }
 
             allOrders.slice(0, 10).forEach(order => {
-                const remaining = order.amount - (order.advanceAmount || 0);
+                const totalAmount = order.amount || 0;
+                const advanceAmount = order.advanceAmount || 0;
+                const remainingAmount = totalAmount - advanceAmount;
+                const paymentStatus = order.paymentStatus || 'Pending';
+                
+                let paymentClass = '';
+                if (paymentStatus === 'Paid') paymentClass = 'paid';
+                else if (paymentStatus === 'Advance') paymentClass = 'advance';
+                else paymentClass = 'pending';
+
                 container.innerHTML += `
                     <div class="order-card">
                         <div class="order-header">
-                            <span class="customer-name">${order.customerName || 'N/A'}</span>
+                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${order.customerName || 'N/A'}</span>
                             <span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
                         </div>
                         <div class="order-info">
                             <div><i class="fas fa-phone"></i> ${order.phone || 'N/A'}</div>
                             <div><i class="fas fa-tag"></i> ${order.serviceType || 'Print'}</div>
-                            <div><i class="fas fa-rupee-sign"></i> Rs.${(order.amount || 0).toLocaleString()}</div>
-                            <div><i class="fas fa-credit-card"></i> ${order.paymentStatus || 'Pending'}</div>
+                            <div><i class="fas fa-file"></i> ${order.fileDesc || '-'}</div>
+                            <div><i class="fas fa-calendar"></i> ${order.timestamp ? new Date(order.timestamp.toDate()).toLocaleDateString() : 'N/A'}</div>
+                        </div>
+                        <div class="payment-info">
+                            <div class="payment-row">
+                                <span class="payment-label"><i class="fas fa-rupee-sign"></i> Total</span>
+                                <span class="payment-value">Rs. ${totalAmount.toLocaleString()}</span>
+                            </div>
+                            <div class="payment-row">
+                                <span class="payment-label"><i class="fas fa-hand-holding-usd"></i> Advance</span>
+                                <span class="payment-value ${paymentClass}">Rs. ${advanceAmount.toLocaleString()}</span>
+                            </div>
+                            <div class="payment-row">
+                                <span class="payment-label"><i class="fas fa-hourglass-half"></i> Balance</span>
+                                <span class="payment-value">Rs. ${remainingAmount.toLocaleString()}</span>
+                            </div>
+                            <div class="payment-row">
+                                <span class="payment-label"><i class="fas fa-credit-card"></i> Status</span>
+                                <span class="payment-value ${paymentClass}">${paymentStatus}</span>
+                            </div>
                         </div>
                         <div class="order-actions">
                             <button class="action-btn btn-print" onclick="updateOrderStatus('${order.id}', 'Printing')"><i class="fas fa-print"></i> Print</button>
                             <button class="action-btn btn-ready" onclick="updateOrderStatus('${order.id}', 'Ready')"><i class="fas fa-check"></i> Ready</button>
                             <button class="action-btn btn-pick" onclick="updateOrderStatus('${order.id}', 'Picked')"><i class="fas fa-box"></i> Pick</button>
-                            ${remaining > 0 ? `<button class="action-btn btn-pay" onclick="openPaymentModal('${order.id}', ${remaining})"><i class="fas fa-money-bill"></i> Pay</button>` : ''}
+                            ${remainingAmount > 0 ? `<button class="action-btn btn-pay" onclick="openPaymentModal('${order.id}', ${remainingAmount})"><i class="fas fa-money-bill"></i> Pay</button>` : ''}
                             <button class="action-btn btn-delete" onclick="openDeleteModal('${order.id}')"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
@@ -1819,7 +1936,7 @@
             container.innerHTML = '';
 
             if (stockItems.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px;">📦 No stock items</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--secondary);"><i class="fas fa-box-open" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></i><br>No stock items</div>';
                 return;
             }
 
@@ -1833,12 +1950,13 @@
                             <div class="stock-details">
                                 <h4>${item.name} ${item.size || ''}</h4>
                                 <p>${item.quantity} <span>${item.unit}</span></p>
+                                ${lowStock ? '<small style="color: var(--danger);"><i class="fas fa-exclamation-circle"></i> Low Stock</small>' : ''}
                             </div>
                         </div>
                         <div class="stock-actions">
                             <input type="number" id="stock-${item.id}" value="1" min="1">
                             <button class="action-btn btn-ready" onclick="updateStock('${item.id}', 'add')"><i class="fas fa-plus"></i></button>
-                            <button class="action-btn btn-warning" onclick="updateStock('${item.id}', 'remove')"><i class="fas fa-minus"></i></button>
+                            <button class="action-btn btn-print" onclick="updateStock('${item.id}', 'remove')"><i class="fas fa-minus"></i></button>
                         </div>
                     </div>
                 `;
@@ -2075,11 +2193,11 @@
             let total = 0, paid = 0;
             let billHTML = `
                 <div class="bill-header">
-                    <h2>${document.getElementById('shopName').textContent}</h2>
-                    <p>${document.getElementById('shopAddress').textContent}</p>
-                    <p>${document.getElementById('shopPhone').textContent}</p>
+                    <h2>${document.getElementById('shopNameInput').value}</h2>
+                    <p>${document.getElementById('shopAddressInput').value}</p>
+                    <p>${document.getElementById('shopPhoneInput').value}</p>
                 </div>
-                <div class="bill-info">
+                <div style="margin-bottom: 20px;">
                     <p><strong>Customer:</strong> ${customer}</p>
                     <p><strong>Date:</strong> ${document.getElementById('billDate').value}</p>
                     <p><strong>Phone:</strong> ${orders[0].phone || 'N/A'}</p>
@@ -2103,7 +2221,7 @@
         // Payment Modal
         function openPaymentModal(orderId, amount) {
             currentOrderId = orderId;
-            document.getElementById('remainingAmount').value = amount;
+            document.getElementById('remainingAmount').innerText = amount;
             document.getElementById('payAmount').value = amount;
             document.getElementById('paymentModal').classList.add('active');
         }
@@ -2114,7 +2232,7 @@
 
         async function processPayment() {
             const pay = parseInt(document.getElementById('payAmount').value);
-            const remain = parseInt(document.getElementById('remainingAmount').value);
+            const remain = parseInt(document.getElementById('remainingAmount').innerText);
             if (!pay || pay <= 0 || pay > remain) {
                 showNotification('Invalid amount!', 'warning');
                 return;
@@ -2154,9 +2272,6 @@
             document.getElementById('shopEmailInput').value = shopEmail;
 
             document.getElementById('appNameHeader').textContent = 'InkMaster';
-            document.getElementById('shopName').textContent = shopName;
-            document.getElementById('shopAddress').textContent = shopAddress;
-            document.getElementById('shopPhone').textContent = `Tel: ${shopPhone}`;
         }
 
         function saveSettings() {
@@ -2196,8 +2311,42 @@
             if (reportChart) reportChart.destroy();
             reportChart = new Chart(ctx, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'Revenue', data, borderColor: '#1e3a8a', backgroundColor: 'rgba(30, 58, 138, 0.1)', tension: 0.4, fill: true }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { 
+                    labels, 
+                    datasets: [{ 
+                        label: 'Revenue', 
+                        data, 
+                        borderColor: '#2563eb', 
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)', 
+                        tension: 0.4, 
+                        fill: true,
+                        pointBackgroundColor: '#2563eb',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false } 
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: true,
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
             });
         }
 
