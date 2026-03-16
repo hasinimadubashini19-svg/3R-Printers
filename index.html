@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Modern Dark Theme with Fullscreen Optimization */
+        /* Modern Dark Theme with Full Cross-Platform Support */
         * {
             margin: 0;
             padding: 0;
@@ -93,7 +93,7 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Fullscreen App Container */
+        /* Cross-Platform App Container */
         .app-container {
             width: 100%;
             height: 100vh;
@@ -108,17 +108,88 @@
             padding-right: var(--safe-area-inset-right);
         }
 
-        /* Responsive Design for Larger Screens */
-        @media (min-width: 768px) {
+        /* Laptop/Desktop Styles */
+        @media (min-width: 1024px) {
             body {
                 padding: 20px;
+                background: linear-gradient(145deg, #0B0E14, #151921);
             }
             .app-container {
-                max-width: 450px;
+                max-width: 1200px;
+                height: 90vh;
+                border-radius: 48px;
+                box-shadow: var(--card-shadow);
+                border: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .main-content {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                padding: 20px;
+                height: calc(100% - 130px);
+                overflow-y: auto;
+            }
+            
+            .form-card {
+                flex: 1;
+                min-width: 300px;
+            }
+            
+            #ordersList, #stockList, #suppliersList, #expensesList, #customersList {
+                flex: 2;
+                min-width: 400px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 16px;
+            }
+            
+            .stats-horizontal {
+                width: 100%;
+            }
+            
+            .quick-access {
+                max-width: 600px;
+                margin: 0 auto;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 40px;
+            }
+        }
+
+        /* Tablet Styles */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body {
+                padding: 16px;
+            }
+            .app-container {
+                max-width: 800px;
                 height: 95vh;
                 border-radius: 48px;
                 box-shadow: var(--card-shadow);
                 border: 1px solid var(--border);
+                margin: 0 auto;
+            }
+            
+            #ordersList, #stockList {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 767px) {
+            .app-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            #ordersList, #stockList {
+                display: block;
             }
         }
 
@@ -223,34 +294,51 @@
             50% { opacity: 0.8; transform: scale(1.1); }
         }
 
-        /* Main Content - Optimized for Fullscreen */
+        /* Main Content - Cross-Platform Scroll */
         .main-content {
-            height: calc(100% - 130px);
+            flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 16px 16px 80px;
             background: var(--bg-primary);
-            scrollbar-width: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-secondary);
             -webkit-overflow-scrolling: touch;
         }
 
         .main-content::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+            height: 6px;
         }
 
-        /* Stats Cards - Clean Design */
+        .main-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        /* Stats Cards - Cross-Platform */
         .stats-horizontal {
             display: flex;
             gap: 12px;
             overflow-x: auto;
             padding: 4px 0 16px;
-            scrollbar-width: none;
+            scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
             margin: 0 -4px;
         }
 
         .stats-horizontal::-webkit-scrollbar {
-            display: none;
+            height: 4px;
+        }
+
+        .stats-horizontal::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
         }
 
         .stat-chip {
@@ -303,7 +391,7 @@
             color: var(--text-primary);
         }
 
-        /* Quick Action Grid - Clean */
+        /* Quick Action Grid - Cross-Platform */
         .quick-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -322,10 +410,13 @@
             border: 1px solid var(--border);
         }
 
-        .quick-item:active {
+        .quick-item:hover {
             background: var(--bg-card-hover);
-            transform: scale(0.95);
             border-color: var(--primary);
+        }
+
+        .quick-item:active {
+            transform: scale(0.95);
         }
 
         .quick-item i {
@@ -341,7 +432,7 @@
             color: var(--text-secondary);
         }
 
-        /* Alert Banner - Clean */
+        /* Alert Banner */
         .alert-banner {
             background: var(--bg-card);
             border-left: 4px solid var(--warning);
@@ -372,7 +463,7 @@
             font-weight: 700;
         }
 
-        /* Section Title - Clean */
+        /* Section Title */
         .section-title {
             display: flex;
             align-items: center;
@@ -406,11 +497,11 @@
             border: 1px solid var(--border);
         }
 
-        .section-title span:active {
+        .section-title span:hover {
             background: var(--bg-card-hover);
         }
 
-        /* Form Card - Clean */
+        /* Form Card */
         .form-card {
             background: var(--bg-card);
             border-radius: 24px;
@@ -442,10 +533,10 @@
 
         .form-input {
             width: 100%;
-            padding: 16px 16px;  /* 16px to prevent auto-zoom on iOS */
+            padding: 16px 16px;
             border: 1.5px solid var(--border);
             border-radius: 16px;
-            font-size: 16px;  /* Minimum 16px to prevent zoom on iOS */
+            font-size: 16px;
             background: var(--bg-secondary);
             transition: all 0.2s ease;
             font-family: 'Inter', sans-serif;
@@ -480,7 +571,7 @@
             resize: vertical;
         }
 
-        /* Buttons - Clean Design (No Glow) */
+        /* Buttons */
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
@@ -497,6 +588,11 @@
             cursor: pointer;
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
 
         .btn-primary:active {
@@ -520,7 +616,7 @@
             color: white;
         }
 
-        /* Order Card - Clean */
+        /* Order Card */
         .order-card {
             background: var(--bg-card);
             border-radius: 22px;
@@ -531,9 +627,14 @@
             transition: all 0.2s ease;
         }
 
-        .order-card:active {
+        .order-card:hover {
             background: var(--bg-card-hover);
             border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .order-card:active {
+            transform: scale(0.98);
         }
 
         .order-header {
@@ -645,6 +746,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
         .action-btn:active {
             opacity: 0.8;
             transform: scale(0.95);
@@ -657,7 +763,7 @@
         .btn-delete { background: var(--gradient-danger); }
         .btn-whatsapp { background: #25D366; }
 
-        /* Stock Card - Clean */
+        /* Stock Card */
         .stock-card {
             background: var(--bg-card);
             border-radius: 22px;
@@ -667,6 +773,11 @@
             position: relative;
             border: 1px solid var(--border);
             transition: all 0.2s ease;
+        }
+
+        .stock-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
         }
 
         .stock-card.low-stock {
@@ -732,7 +843,7 @@
             padding: 12px;
             border: 1px solid var(--border);
             border-radius: 14px;
-            font-size: 16px;  /* Prevent zoom on iOS */
+            font-size: 16px;
             background: var(--bg-secondary);
             color: var(--text-primary);
         }
@@ -760,12 +871,148 @@
             border: 1px solid var(--border);
         }
 
-        .delete-stock:active {
+        .delete-stock:hover {
             background: var(--danger);
             color: white;
         }
 
-        /* Menu Toggle Button - Clean */
+        .delete-stock:active {
+            transform: scale(0.9);
+        }
+
+        /* Number Plate Preview - Enhanced */
+        .plate-preview {
+            background: linear-gradient(145deg, #1E2430, #151921);
+            border-radius: 22px;
+            padding: 24px;
+            margin: 16px 0;
+            text-align: center;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plate-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .plate-sample {
+            background: linear-gradient(145deg, #FCD34D, #FBBF24);
+            border: 4px solid #1E1E1E;
+            border-radius: 16px;
+            padding: 20px 30px;
+            display: inline-block;
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #1E1E1E;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .plate-sample.standard {
+            background: linear-gradient(145deg, #FCD34D, #FBBF24);
+        }
+
+        .plate-sample.fancy {
+            background: linear-gradient(145deg, #FF6B6B, #FF4757);
+            color: white;
+            border-color: #FFF;
+            font-style: italic;
+        }
+
+        .plate-sample.plate-3d {
+            background: linear-gradient(145deg, #C0C0C0, #808080);
+            color: #1E1E1E;
+            border-color: #FFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transform: perspective(500px) rotateX(5deg);
+        }
+
+        /* Seal Preview - Enhanced */
+        .seal-preview {
+            background: linear-gradient(145deg, #1E2430, #151921);
+            border-radius: 22px;
+            padding: 24px;
+            margin: 16px 0;
+            display: flex;
+            justify-content: center;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .seal-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        #sealPreview {
+            width: 180px;
+            height: 180px;
+            background: white;
+            border: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 16px;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            color: var(--bg-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        #sealPreview.circle { 
+            border-radius: 50%; 
+        }
+        
+        #sealPreview.rectangle { 
+            border-radius: 24px; 
+        }
+        
+        #sealPreview.square { 
+            border-radius: 0; 
+        }
+        
+        #sealPreview.oval { 
+            border-radius: 50% / 40%; 
+        }
+
+        #sealPreviewText {
+            width: 100%;
+            max-height: 140px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        #sealPreviewText div {
+            margin: 2px 0;
+        }
+
+        /* Menu Toggle Button */
         .menu-toggle {
             position: absolute;
             bottom: calc(80px + var(--safe-area-inset-bottom));
@@ -784,6 +1031,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
         .menu-toggle i {
             font-size: 24px;
             color: white;
@@ -794,7 +1045,7 @@
             transform: rotate(45deg);
         }
 
-        /* Bottom Navigation - Clean */
+        /* Bottom Navigation */
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -818,7 +1069,12 @@
         }
 
         .bottom-nav::-webkit-scrollbar {
-            display: none;
+            width: 4px;
+        }
+
+        .bottom-nav::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
         }
 
         .bottom-nav-grid {
@@ -841,7 +1097,7 @@
             border: 1px solid transparent;
         }
 
-        .nav-item:active {
+        .nav-item:hover {
             background: var(--bg-secondary);
             border-color: var(--border);
         }
@@ -863,7 +1119,7 @@
             text-align: center;
         }
 
-        /* Quick Access Bar - Clean */
+        /* Quick Access Bar */
         .quick-access {
             position: absolute;
             bottom: 0;
@@ -890,6 +1146,10 @@
             max-width: 60px;
         }
 
+        .quick-item-small:hover {
+            color: var(--primary);
+        }
+
         .quick-item-small.active {
             color: var(--primary);
         }
@@ -904,7 +1164,7 @@
             font-weight: 600;
         }
 
-        /* Login Screen - Clean */
+        /* Login Screen */
         .login-container {
             position: absolute;
             top: 0;
@@ -968,7 +1228,7 @@
             border: 1.5px solid var(--border);
             border-radius: 18px;
             margin-bottom: 12px;
-            font-size: 16px;  /* Prevent zoom on iOS */
+            font-size: 16px;
             background: var(--bg-secondary);
             color: var(--text-primary);
         }
@@ -992,6 +1252,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .login-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
         .login-btn:active {
             opacity: 0.8;
             transform: scale(0.98);
@@ -1007,7 +1272,11 @@
             cursor: pointer;
         }
 
-        /* Modal - Clean */
+        .login-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -1045,7 +1314,7 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* Bill Paper - Clean */
+        /* Bill Paper */
         .bill-paper {
             background: var(--bg-card);
             border-radius: 22px;
@@ -1103,33 +1372,6 @@
             font-weight: 600;
         }
 
-        /* Seal Preview */
-        .seal-preview {
-            background: var(--bg-secondary);
-            border-radius: 22px;
-            padding: 20px;
-            margin: 16px 0;
-            display: flex;
-            justify-content: center;
-            border: 1px solid var(--border);
-        }
-
-        #sealPreview {
-            width: 150px;
-            height: 150px;
-            background: white;
-            border: 3px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 10px;
-            font-size: 11px;
-            text-align: center;
-            box-shadow: var(--card-shadow);
-            color: var(--bg-primary);
-        }
-
         /* Chart Container */
         .chart-container {
             background: var(--bg-card);
@@ -1173,7 +1415,12 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Notification - Clean */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification */
         .notification {
             position: fixed;
             bottom: calc(100px + var(--safe-area-inset-bottom));
@@ -1228,7 +1475,7 @@
         .status-advance { background: var(--warning-light); color: var(--warning); }
 
         /* Responsive Adjustments */
-        @media (max-width: 380px) {
+        @media (max-width: 480px) {
             .main-content {
                 padding: 12px 12px 80px;
             }
@@ -1251,10 +1498,21 @@
             .stat-chip-info p {
                 font-size: 15px;
             }
+            
+            .plate-sample {
+                font-size: 20px;
+                padding: 15px 20px;
+            }
+            
+            #sealPreview {
+                width: 150px;
+                height: 150px;
+                font-size: 12px;
+            }
         }
 
         /* Landscape Mode Handling */
-        @media (orientation: landscape) and (max-height: 500px) {
+        @media (orientation: landscape) and (max-height: 600px) {
             .app-container {
                 height: 100vh;
                 border-radius: 0;
@@ -1267,6 +1525,14 @@
             .bottom-nav {
                 max-height: 50vh;
             }
+            
+            .quick-access {
+                padding: 4px 12px 10px;
+            }
+            
+            .quick-item-small {
+                padding: 4px 0;
+            }
         }
 
         /* Prevent zoom on iOS inputs */
@@ -1274,6 +1540,229 @@
             input, select, textarea {
                 font-size: 16px !important;
             }
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            height: 220px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 14px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 13px;
+        }
+
+        .chat-message.sent {
+            background: var(--gradient-primary);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.received {
+            background: var(--bg-card);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-time {
+            font-size: 9px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Settings Group */
+        .settings-group {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .settings-group h4 {
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Customer Card */
+        .customer-card {
+            background: var(--bg-card);
+            border-radius: 22px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .customer-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+
+        .customer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .customer-header h4 {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-primary);
+        }
+
+        .customer-header i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .customer-order-item {
+            font-size: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+        }
+
+        .customer-order-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Supplier Card */
+        .supplier-card {
+            background: var(--bg-card);
+            border-radius: 22px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .supplier-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .supplier-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--secondary-soft);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-size: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .supplier-info {
+            flex: 1;
+        }
+
+        .supplier-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .supplier-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .supplier-balance {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 12px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            border: 1px solid var(--border);
+        }
+
+        .balance-due {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Expense Card */
+        .expense-card {
+            background: var(--bg-card);
+            border-radius: 22px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .expense-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .expense-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--danger-light);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--danger);
+            font-size: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .expense-details {
+            flex: 1;
+        }
+
+        .expense-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .expense-details p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .expense-amount {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--danger);
         }
     </style>
 </head>
@@ -1451,8 +1940,6 @@
                                 <option value="Memento">🏆 Memento</option>
                                 <option value="NumberPlate">🚗 Number Plate</option>
                                 <option value="Banner">🎯 Banner</option>
-                                <option value="Banner">📄 bill book</option>
-                                <option value="Banner">other</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1677,7 +2164,7 @@
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-pen"></i> Seal Text</label>
-                            <textarea id="sealText" class="form-input" rows="3" oninput="updateSealPreview()"></textarea>
+                            <textarea id="sealText" class="form-input" rows="3" placeholder="Enter seal text (one line or multiple)" oninput="updateSealPreview()"></textarea>
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-ruler"></i> Size</label>
@@ -1727,7 +2214,7 @@
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-hashtag"></i> Vehicle Number</label>
-                            <input type="text" id="plateNumber" class="form-input" oninput="updatePlatePreview()">
+                            <input type="text" id="plateNumber" class="form-input" placeholder="e.g., CAA-1234" oninput="updatePlatePreview()">
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-ruler"></i> Size</label>
@@ -1737,7 +2224,7 @@
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-star"></i> Type</label>
-                            <select id="plateType" class="form-input">
+                            <select id="plateType" class="form-input" onchange="updatePlatePreview()">
                                 <option value="Standard">Standard</option>
                                 <option value="Fancy">Fancy</option>
                                 <option value="3D">3D</option>
@@ -1753,7 +2240,7 @@
                         </div>
                         
                         <div class="plate-preview">
-                            <div class="plate-sample" id="platePreview">CAA-1234</div>
+                            <div class="plate-sample standard" id="platePreview">CAA-1234</div>
                         </div>
 
                         <button class="btn-primary" onclick="addPlateOrder()">
@@ -2082,7 +2569,7 @@
             toggle.classList.toggle('active');
         }
 
-        // Tab Switching with Mobile Optimization
+        // Tab Switching with Cross-Platform Support
         function switchTab(tab, event) {
             // Close menu if open
             document.getElementById('bottomNav').classList.remove('visible');
@@ -2807,17 +3294,47 @@
             }
         }
 
-        // Update Seal Preview
+        // Update Seal Preview - Fixed for all shapes
         function updateSealPreview() {
-            const text = document.getElementById('sealText').value || 'InkMaster';
+            const text = document.getElementById('sealText').value || '3R PRINTERS';
             const shape = document.getElementById('sealShape').value;
-            document.getElementById('sealPreview').className = shape;
-            document.getElementById('sealPreviewText').innerHTML = text.split('\n').map(l => `<div>${l}</div>`).join('');
+            const preview = document.getElementById('sealPreview');
+            const previewText = document.getElementById('sealPreviewText');
+            
+            // Remove all shape classes and add the selected one
+            preview.className = '';
+            preview.classList.add(shape);
+            
+            // Split text by lines and wrap each line in a div
+            const lines = text.split('\n');
+            previewText.innerHTML = lines.map(line => {
+                if (line.trim() === '') return '<br>';
+                return `<div>${line}</div>`;
+            }).join('');
+            
+            // Adjust font size based on text length
+            const maxLength = Math.max(...lines.map(l => l.length));
+            if (maxLength > 15) {
+                preview.style.fontSize = '10px';
+            } else if (maxLength > 10) {
+                preview.style.fontSize = '12px';
+            } else {
+                preview.style.fontSize = '14px';
+            }
         }
 
-        // Update Plate Preview
+        // Update Plate Preview - Fixed with type styles
         function updatePlatePreview() {
-            document.getElementById('platePreview').textContent = document.getElementById('plateNumber').value || 'CAA-1234';
+            const plateNumber = document.getElementById('plateNumber').value || 'CAA-1234';
+            const plateType = document.getElementById('plateType').value;
+            const preview = document.getElementById('platePreview');
+            
+            // Remove all type classes
+            preview.className = 'plate-sample';
+            // Add type-specific class
+            preview.classList.add(plateType.toLowerCase());
+            // Update text
+            preview.textContent = plateNumber.toUpperCase();
         }
 
         // Add Seal Order
