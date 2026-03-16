@@ -1752,12 +1752,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <span>9:41</span>
-            <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-        </div>
-
         <!-- Login Screen -->
         <div id="loginScreen" class="login-container">
             <div class="login-card">
@@ -1766,10 +1760,10 @@
                 </div>
                 <div class="login-title">
                     <h2>InkMaster</h2>
-                    <p>3R PRINTERS</p>
+                    <p>print your life</p>
                 </div>
-                <input type="email" id="loginEmail" class="login-input" placeholder="Email" value="admin@inkmaster.com">
-                <input type="password" id="loginPassword" class="login-input" placeholder="Password" value="password123">
+                <input type="email" id="loginEmail" class="login-input" placeholder="Email">
+                <input type="password" id="loginPassword" class="login-input" placeholder="Password">
                 <button class="login-btn" onclick="login()">
                     <i class="fas fa-sign-in-alt"></i> Sign In
                 </button>
@@ -1924,6 +1918,8 @@
                                 <option value="Memento">🏆 Memento</option>
                                 <option value="NumberPlate">🚗 Number Plate</option>
                                 <option value="Banner">🎯 Banner</option>
+                                <option value="Bill">📄 Bill Book</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -2008,6 +2004,7 @@
                                 <option value="rolls">Rolls</option>
                                 <option value="liters">Liters</option>
                                 <option value="kg">Kg</option>
+                                <option value="other">Other</ption>
                             </select>
                         </div>
                         <div class="form-group">
