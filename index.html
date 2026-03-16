@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Modern Dark Theme with Full Cross-Platform Support */
+        /* Modern Dark Theme with Proper Scrolling */
         * {
             margin: 0;
             padding: 0;
@@ -84,28 +84,25 @@
             background: var(--bg-primary);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
+            flex-direction: column;
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Cross-Platform App Container */
+        /* Cross-Platform App Container - Removed overflow: hidden */
         .app-container {
             width: 100%;
-            height: 100vh;
-            height: -webkit-fill-available;
+            min-height: 100vh;
             background: var(--bg-primary);
             position: relative;
-            overflow: hidden;
             z-index: 1;
             padding-top: var(--safe-area-inset-top);
             padding-bottom: var(--safe-area-inset-bottom);
             padding-left: var(--safe-area-inset-left);
             padding-right: var(--safe-area-inset-right);
+            display: flex;
+            flex-direction: column;
         }
 
         /* Laptop/Desktop Styles */
@@ -116,12 +113,11 @@
             }
             .app-container {
                 max-width: 1200px;
-                height: 90vh;
+                min-height: 90vh;
+                margin: 0 auto;
                 border-radius: 48px;
                 box-shadow: var(--card-shadow);
                 border: 1px solid var(--border);
-                display: flex;
-                flex-direction: column;
             }
             
             .main-content {
@@ -129,8 +125,6 @@
                 flex-wrap: wrap;
                 gap: 20px;
                 padding: 20px;
-                height: calc(100% - 130px);
-                overflow-y: auto;
             }
             
             .form-card {
@@ -166,11 +160,11 @@
             }
             .app-container {
                 max-width: 800px;
-                height: 95vh;
+                min-height: 95vh;
+                margin: 0 auto;
                 border-radius: 48px;
                 box-shadow: var(--card-shadow);
                 border: 1px solid var(--border);
-                margin: 0 auto;
             }
             
             #ordersList, #stockList {
@@ -184,7 +178,7 @@
         @media (max-width: 767px) {
             .app-container {
                 width: 100%;
-                height: 100vh;
+                min-height: 100vh;
                 border-radius: 0;
             }
             
@@ -206,9 +200,12 @@
             font-size: 15px;
             font-weight: 600;
             border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* App Header */
+        /* App Header - Clean version */
         .app-header {
             background: var(--bg-secondary);
             padding: 16px 20px;
@@ -217,6 +214,9 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 45px;
+            z-index: 99;
         }
 
         .app-header-left {
@@ -284,8 +284,11 @@
             color: var(--text-secondary);
         }
 
-        .logout-icon:active {
+        .logout-icon:hover {
             background: var(--bg-card-hover);
+        }
+
+        .logout-icon:active {
             transform: scale(0.95);
         }
 
@@ -294,34 +297,16 @@
             50% { opacity: 0.8; transform: scale(1.1); }
         }
 
-        /* Main Content - Cross-Platform Scroll */
+        /* Main Content - Proper Scrolling */
         .main-content {
             flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 16px 16px 80px;
+            padding: 16px 16px 100px;
             background: var(--bg-primary);
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--bg-secondary);
+            scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
 
-        .main-content::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        .main-content::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-        }
-
-        .main-content::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        /* Stats Cards - Cross-Platform */
+        /* Stats Cards - Horizontal Scroll */
         .stats-horizontal {
             display: flex;
             gap: 12px;
@@ -334,6 +319,11 @@
 
         .stats-horizontal::-webkit-scrollbar {
             height: 4px;
+        }
+
+        .stats-horizontal::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
         }
 
         .stats-horizontal::-webkit-scrollbar-thumb {
@@ -391,7 +381,7 @@
             color: var(--text-primary);
         }
 
-        /* Quick Action Grid - Cross-Platform */
+        /* Quick Action Grid */
         .quick-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -536,7 +526,7 @@
             padding: 16px 16px;
             border: 1.5px solid var(--border);
             border-radius: 16px;
-            font-size: 16px;
+            font-size: 16px; /* Prevents zoom on iOS */
             background: var(--bg-secondary);
             transition: all 0.2s ease;
             font-family: 'Inter', sans-serif;
@@ -880,7 +870,7 @@
             transform: scale(0.9);
         }
 
-        /* Number Plate Preview - Enhanced */
+        /* Number Plate Preview */
         .plate-preview {
             background: linear-gradient(145deg, #1E2430, #151921);
             border-radius: 22px;
@@ -939,7 +929,7 @@
             transform: perspective(500px) rotateX(5deg);
         }
 
-        /* Seal Preview - Enhanced */
+        /* Seal Preview */
         .seal-preview {
             background: linear-gradient(145deg, #1E2430, #151921);
             border-radius: 22px;
@@ -1014,7 +1004,7 @@
 
         /* Menu Toggle Button */
         .menu-toggle {
-            position: absolute;
+            position: fixed;
             bottom: calc(80px + var(--safe-area-inset-bottom));
             right: 16px;
             width: 56px;
@@ -1047,7 +1037,7 @@
 
         /* Bottom Navigation */
         .bottom-nav {
-            position: absolute;
+            position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
@@ -1121,7 +1111,7 @@
 
         /* Quick Access Bar */
         .quick-access {
-            position: absolute;
+            position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
@@ -1166,7 +1156,7 @@
 
         /* Login Screen */
         .login-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -1177,8 +1167,7 @@
             justify-content: center;
             z-index: 2000;
             padding: 20px;
-            padding-top: var(--safe-area-inset-top);
-            padding-bottom: var(--safe-area-inset-bottom);
+            overflow-y: auto;
         }
 
         .login-card {
@@ -1189,6 +1178,7 @@
             max-width: 340px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border);
+            margin: auto;
         }
 
         .login-logo {
@@ -1289,8 +1279,7 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
-            padding-top: var(--safe-area-inset-top);
-            padding-bottom: var(--safe-area-inset-bottom);
+            overflow-y: auto;
         }
 
         .modal.active {
@@ -1307,6 +1296,7 @@
             max-height: 80vh;
             overflow-y: auto;
             border: 1px solid var(--border);
+            margin: auto;
         }
 
         @keyframes modalSlide {
@@ -1426,7 +1416,6 @@
             bottom: calc(100px + var(--safe-area-inset-bottom));
             left: 16px;
             right: 16px;
-            transform: translateX(0);
             background: var(--bg-card);
             color: var(--text-primary);
             padding: 14px 20px;
@@ -1477,7 +1466,7 @@
         /* Responsive Adjustments */
         @media (max-width: 480px) {
             .main-content {
-                padding: 12px 12px 80px;
+                padding: 12px 12px 100px;
             }
             
             .form-card {
@@ -1514,12 +1503,7 @@
         /* Landscape Mode Handling */
         @media (orientation: landscape) and (max-height: 600px) {
             .app-container {
-                height: 100vh;
-                border-radius: 0;
-            }
-            
-            .main-content {
-                height: calc(100% - 100px);
+                min-height: 100vh;
             }
             
             .bottom-nav {
@@ -1831,7 +1815,7 @@
         </div>
 
         <!-- Main Dashboard -->
-        <div id="dashboard" style="display: none; height: 100%;">
+        <div id="dashboard" style="display: none;">
             <!-- App Header -->
             <div class="app-header">
                 <div class="app-header-left">
