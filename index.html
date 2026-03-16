@@ -40,6 +40,8 @@
             --danger-light: #fee2e2;
             --info: #3b82f6;
             --info-light: #dbeafe;
+            --purple: #8b5cf6;
+            --purple-light: #ede9fe;
             --light: #f9fafb;
             --dark: #111827;
             --border: #e5e7eb;
@@ -50,6 +52,7 @@
             --gradient-3: linear-gradient(145deg, #10b981, #047857);
             --gradient-4: linear-gradient(145deg, #ef4444, #b91c1c);
             --gradient-5: linear-gradient(145deg, #8b5cf6, #6d28d9);
+            --gradient-6: linear-gradient(145deg, #6b7280, #374151);
         }
 
         body {
@@ -237,6 +240,8 @@
         .stat-chip-icon.week { background: var(--gradient-2); }
         .stat-chip-icon.month { background: var(--gradient-3); }
         .stat-chip-icon.pending { background: var(--gradient-4); }
+        .stat-chip-icon.expense { background: var(--gradient-6); }
+        .stat-chip-icon.profit { background: var(--gradient-5); }
 
         .stat-chip-info h4 {
             font-size: 12px;
@@ -297,6 +302,35 @@
             color: var(--dark);
         }
 
+        /* Alert Banner */
+        .alert-banner {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--warning);
+            box-shadow: var(--card-shadow);
+        }
+
+        .alert-banner i {
+            font-size: 20px;
+        }
+
+        .alert-banner .alert-count {
+            background: var(--warning);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
         /* Section Title */
         .section-title {
             display: flex;
@@ -327,6 +361,7 @@
             background: var(--primary-soft);
             padding: 4px 10px;
             border-radius: 20px;
+            cursor: pointer;
         }
 
         /* Form Card */
@@ -385,6 +420,11 @@
             background-size: 18px;
         }
 
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
         .btn-primary {
             background: var(--gradient-1);
             color: white;
@@ -406,6 +446,21 @@
         .btn-primary:active {
             transform: scale(0.98);
             box-shadow: 0 4px 8px -4px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-success {
+            background: var(--gradient-3);
+            box-shadow: 0 8px 16px -4px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-warning {
+            background: var(--gradient-2);
+            box-shadow: 0 8px 16px -4px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-purple {
+            background: var(--gradient-5);
+            box-shadow: 0 8px 16px -4px rgba(139, 92, 246, 0.3);
         }
 
         /* Order Card */
@@ -538,6 +593,7 @@
         .btn-pick { background: var(--gradient-1); }
         .btn-pay { background: var(--gradient-5); }
         .btn-delete { background: var(--gradient-4); }
+        .btn-whatsapp { background: #25D366; }
 
         /* Stock Card */
         .stock-card {
@@ -634,6 +690,165 @@
             color: white;
         }
 
+        /* Supplier Card */
+        .supplier-card {
+            background: white;
+            border-radius: 24px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .supplier-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .supplier-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--purple-light);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purple);
+            font-size: 20px;
+        }
+
+        .supplier-info {
+            flex: 1;
+        }
+
+        .supplier-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .supplier-info p {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        .supplier-balance {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .balance-due {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Customer Card */
+        .customer-card {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .customer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .customer-header h4 {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .customer-header i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .customer-orders {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 16px;
+        }
+
+        .customer-order-item {
+            font-size: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .customer-order-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Expense Card */
+        .expense-card {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .expense-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .expense-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--danger-light);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--danger);
+            font-size: 18px;
+        }
+
+        .expense-details {
+            flex: 1;
+        }
+
+        .expense-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .expense-details p {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        .expense-amount {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--danger);
+        }
+
         /* Bottom Navigation */
         .bottom-nav {
             position: absolute;
@@ -647,6 +862,11 @@
             border-top: 1px solid var(--border);
             box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
             z-index: 100;
+            overflow-x: auto;
+        }
+
+        .bottom-nav::-webkit-scrollbar {
+            display: none;
         }
 
         .nav-item {
@@ -659,7 +879,7 @@
             cursor: pointer;
             color: var(--secondary);
             transition: all 0.2s ease;
-            min-width: 40px;
+            min-width: 44px;
         }
 
         .nav-item.active {
@@ -792,6 +1012,8 @@
             width: 100%;
             max-width: 320px;
             animation: modalSlide 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         @keyframes modalSlide {
@@ -1060,6 +1282,11 @@
         .text-warning { color: var(--warning); }
         .text-danger { color: var(--danger); }
         .text-primary { color: var(--primary); }
+        .text-purple { color: var(--purple); }
+        .mt-2 { margin-top: 8px; }
+        .mb-2 { margin-bottom: 8px; }
+        .flex { display: flex; }
+        .gap-2 { gap: 8px; }
     </style>
 </head>
 <body>
@@ -1143,6 +1370,13 @@
                         <i class="fas fa-sign-out-alt"></i>
                     </div>
                 </div>
+            </div>
+
+            <!-- Low Stock Alert Banner (Dynamic) -->
+            <div id="lowStockAlert" class="alert-banner" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Low Stock Items</span>
+                <span class="alert-count" id="lowStockCount">0</span>
             </div>
 
             <!-- Main Content -->
@@ -1254,7 +1488,7 @@
                     <!-- Orders List -->
                     <div class="section-title">
                         <h3><i class="fas fa-list"></i> Recent Orders</h3>
-                        <span>View all</span>
+                        <span onclick="viewAllOrders()">View all</span>
                     </div>
                     <div id="ordersList"></div>
                 </div>
@@ -1295,6 +1529,95 @@
                         </button>
                     </div>
                     <div id="stockList" class="stock-grid"></div>
+                </div>
+
+                <!-- Suppliers Tab (New) -->
+                <div id="suppliersTab" class="tab-pane">
+                    <div class="form-card">
+                        <div class="section-title" style="margin-top: 0;">
+                            <h3><i class="fas fa-truck"></i> Add Supplier</h3>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Supplier Name</label>
+                            <input type="text" id="supplierName" class="form-input" placeholder="Enter supplier name">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> Phone</label>
+                            <input type="text" id="supplierPhone" class="form-input" placeholder="077XXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-box"></i> Material</label>
+                            <input type="text" id="supplierMaterial" class="form-input" placeholder="e.g., Flex, Ink, Roll">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-rupee-sign"></i> Balance Due</label>
+                            <input type="number" id="supplierBalance" class="form-input" placeholder="0.00">
+                        </div>
+                        <button class="btn-primary" onclick="addSupplier()">
+                            <i class="fas fa-save"></i> Add Supplier
+                        </button>
+                    </div>
+                    <div id="suppliersList"></div>
+                </div>
+
+                <!-- Expenses Tab (New) -->
+                <div id="expensesTab" class="tab-pane">
+                    <div class="stats-horizontal">
+                        <div class="stat-chip">
+                            <div class="stat-chip-icon expense"><i class="fas fa-arrow-down"></i></div>
+                            <div class="stat-chip-info">
+                                <h4>Total Expenses</h4>
+                                <p id="totalExpenses">Rs. 0</p>
+                            </div>
+                        </div>
+                        <div class="stat-chip">
+                            <div class="stat-chip-icon profit"><i class="fas fa-chart-line"></i></div>
+                            <div class="stat-chip-info">
+                                <h4>Net Profit</h4>
+                                <p id="netProfit">Rs. 0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <div class="section-title" style="margin-top: 0;">
+                            <h3><i class="fas fa-plus-circle"></i> Add Expense</h3>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-tag"></i> Category</label>
+                            <select id="expenseCategory" class="form-input">
+                                <option value="Electricity">⚡ Electricity Bill</option>
+                                <option value="Salary">👥 Staff Salary</option>
+                                <option value="Material">📦 Raw Material</option>
+                                <option value="Rent">🏢 Rent</option>
+                                <option value="Other">🔄 Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-file"></i> Description</label>
+                            <input type="text" id="expenseDesc" class="form-input" placeholder="Expense details">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-rupee-sign"></i> Amount</label>
+                            <input type="number" id="expenseAmount" class="form-input" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Date</label>
+                            <input type="date" id="expenseDate" class="form-input">
+                        </div>
+                        <button class="btn-primary btn-warning" onclick="addExpense()">
+                            <i class="fas fa-save"></i> Add Expense
+                        </button>
+                    </div>
+                    <div id="expensesList"></div>
+                </div>
+
+                <!-- Customers Tab (New) -->
+                <div id="customersTab" class="tab-pane">
+                    <div class="form-group">
+                        <input type="text" id="searchCustomer" class="form-input" placeholder="🔍 Search customer..." onkeyup="filterCustomers()">
+                    </div>
+                    <div id="customersList"></div>
                 </div>
 
                 <!-- Bills Tab -->
@@ -1485,6 +1808,17 @@
                             <i class="fas fa-save"></i> Save Settings
                         </button>
                     </div>
+
+                    <div class="settings-group">
+                        <h4><i class="fas fa-bell"></i> Notifications</h4>
+                        <div class="form-group">
+                            <label>WhatsApp Business Number</label>
+                            <input type="text" id="whatsappNumber" class="form-input" placeholder="077XXXXXXX">
+                        </div>
+                        <button class="btn-primary btn-success" onclick="saveWhatsAppNumber()">
+                            <i class="fab fa-whatsapp"></i> Save WhatsApp
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Chat Tab -->
@@ -1520,7 +1854,7 @@
                 </div>
             </div>
 
-            <!-- Bottom Navigation (Smaller icons) -->
+            <!-- Bottom Navigation (Expanded with new tabs) -->
             <div class="bottom-nav">
                 <div class="nav-item active" onclick="switchTab('orders')">
                     <i class="fas fa-home"></i>
@@ -1529,6 +1863,18 @@
                 <div class="nav-item" onclick="switchTab('stock')">
                     <i class="fas fa-boxes"></i>
                     <span>Stock</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('suppliers')">
+                    <i class="fas fa-truck"></i>
+                    <span>Supply</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('expenses')">
+                    <i class="fas fa-wallet"></i>
+                    <span>Expense</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('customers')">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
                 </div>
                 <div class="nav-item" onclick="switchTab('bills')">
                     <i class="fas fa-file-invoice"></i>
@@ -1595,6 +1941,14 @@
             </div>
         </div>
 
+        <div id="customerHistoryModal" class="modal">
+            <div class="modal-content">
+                <h3 id="customerHistoryName" style="margin-bottom: 15px;"></h3>
+                <div id="customerHistoryList" style="max-height: 300px; overflow-y: auto;"></div>
+                <button class="btn-primary" onclick="closeCustomerHistory()" style="background: var(--secondary); margin-top: 15px;">Close</button>
+            </div>
+        </div>
+
         <!-- Loading -->
         <div id="loadingOverlay" class="loading-overlay">
             <div class="spinner"></div>
@@ -1625,6 +1979,8 @@
         // Global Variables
         let allOrders = [];
         let stockItems = [];
+        let suppliers = [];
+        let expenses = [];
         let currentOrderId = null;
         let deleteOrderId = null;
         let deleteStockId = null;
@@ -1639,9 +1995,12 @@
                 document.getElementById('connectionDot').style.background = '#10b981';
                 loadOrders();
                 loadStock();
+                loadSuppliers();
+                loadExpenses();
                 loadCustomers();
                 loadSettings();
                 updateDate();
+                checkLowStock();
             } else {
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('dashboard').style.display = 'none';
@@ -1742,15 +2101,24 @@
             
             if (tab === 'reports') loadReport('daily');
             if (tab === 'seals' || tab === 'plates') loadStockItemsForSelect();
+            if (tab === 'customers') displayCustomers();
+            if (tab === 'expenses') updateExpenseStats();
         }
 
         // Quick Actions
         function quickAction(action) {
             if (action === 'newOrder') {
                 document.getElementById('custName').focus();
+            } else if (action === 'findCustomer') {
+                switchTab('customers');
             } else {
                 showNotification(`${action} feature coming soon!`);
             }
+        }
+
+        // View All Orders
+        function viewAllOrders() {
+            displayOrders(true);
         }
 
         // Toggle Advance Field
@@ -1762,6 +2130,18 @@
         // Update Date
         function updateDate() {
             document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        // Check Low Stock
+        function checkLowStock() {
+            const lowStockItems = stockItems.filter(item => item.quantity <= (item.alertLevel || 5));
+            if (lowStockItems.length > 0) {
+                document.getElementById('lowStockAlert').style.display = 'flex';
+                document.getElementById('lowStockCount').textContent = lowStockItems.length;
+            } else {
+                document.getElementById('lowStockAlert').style.display = 'none';
+            }
         }
 
         // Load Orders
@@ -1773,11 +2153,12 @@
                     snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
                     displayOrders();
                     updateStats();
+                    loadCustomers();
                 });
         }
 
-        // Display Orders with enhanced payment info
-        function displayOrders() {
+        // Display Orders
+        function displayOrders(showAll = false) {
             const container = document.getElementById('ordersList');
             container.innerHTML = '';
 
@@ -1786,7 +2167,8 @@
                 return;
             }
 
-            allOrders.slice(0, 10).forEach(order => {
+            const ordersToShow = showAll ? allOrders : allOrders.slice(0, 10);
+            ordersToShow.forEach(order => {
                 const totalAmount = order.amount || 0;
                 const advanceAmount = order.advanceAmount || 0;
                 const remainingAmount = totalAmount - advanceAmount;
@@ -1832,6 +2214,7 @@
                             <button class="action-btn btn-ready" onclick="updateOrderStatus('${order.id}', 'Ready')"><i class="fas fa-check"></i> Ready</button>
                             <button class="action-btn btn-pick" onclick="updateOrderStatus('${order.id}', 'Picked')"><i class="fas fa-box"></i> Pick</button>
                             ${remainingAmount > 0 ? `<button class="action-btn btn-pay" onclick="openPaymentModal('${order.id}', ${remainingAmount})"><i class="fas fa-money-bill"></i> Pay</button>` : ''}
+                            <button class="action-btn btn-whatsapp" onclick="sendWhatsAppNotification('${order.phone}', '${order.customerName}', '${order.status}')"><i class="fab fa-whatsapp"></i></button>
                             <button class="action-btn btn-delete" onclick="openDeleteModal('${order.id}')"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
@@ -1893,6 +2276,28 @@
             }
         }
 
+        // Send WhatsApp Notification
+        function sendWhatsAppNotification(phone, customerName, status) {
+            if (!phone) {
+                showNotification('No phone number!', 'warning');
+                return;
+            }
+
+            let message = '';
+            if (status === 'Ready') {
+                message = `Hello ${customerName}, your order at 3R PRINTERS is now ready for pickup. Thank you for your business!`;
+            } else if (status === 'Picked') {
+                message = `Thank you ${customerName} for choosing 3R PRINTERS. We hope to serve you again!`;
+            } else {
+                message = `Hello ${customerName}, your order at 3R PRINTERS is being processed. We'll notify you when ready.`;
+            }
+
+            let formattedPhone = phone.replace(/\D/g, '');
+            if (formattedPhone.startsWith('0')) formattedPhone = '94' + formattedPhone.substring(1);
+            
+            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
         // Delete Order
         function openDeleteModal(orderId) {
             deleteOrderId = orderId;
@@ -1927,6 +2332,7 @@
                     stockItems = [];
                     snapshot.forEach(doc => stockItems.push({ id: doc.id, ...doc.data() }));
                     displayStock();
+                    checkLowStock();
                 });
         }
 
@@ -2047,6 +2453,224 @@
             } finally {
                 hideLoading();
             }
+        }
+
+        // Load Suppliers
+        function loadSuppliers() {
+            if (!db) return;
+            db.collection('suppliers').get()
+                .then(snapshot => {
+                    suppliers = [];
+                    snapshot.forEach(doc => suppliers.push({ id: doc.id, ...doc.data() }));
+                    displaySuppliers();
+                });
+        }
+
+        // Display Suppliers
+        function displaySuppliers() {
+            const container = document.getElementById('suppliersList');
+            container.innerHTML = '';
+
+            if (suppliers.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--secondary);"><i class="fas fa-truck" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></i><br>No suppliers yet</div>';
+                return;
+            }
+
+            suppliers.forEach(supplier => {
+                container.innerHTML += `
+                    <div class="supplier-card">
+                        <div class="supplier-header">
+                            <div class="supplier-avatar"><i class="fas fa-user-tie"></i></div>
+                            <div class="supplier-info">
+                                <h4>${supplier.name}</h4>
+                                <p><i class="fas fa-phone"></i> ${supplier.phone || 'N/A'}</p>
+                            </div>
+                        </div>
+                        <div class="supplier-balance">
+                            <span><i class="fas fa-box"></i> ${supplier.material || 'N/A'}</span>
+                            <span class="balance-due">Rs. ${(supplier.balance || 0).toLocaleString()}</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="action-btn btn-pay" onclick="paySupplier('${supplier.id}')" style="flex: 1;"><i class="fas fa-money-bill"></i> Pay</button>
+                            <button class="action-btn btn-delete" onclick="deleteSupplier('${supplier.id}')" style="flex: 0;"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Add Supplier
+        async function addSupplier() {
+            const name = document.getElementById('supplierName').value.trim();
+            if (!name) {
+                showNotification('Enter supplier name!', 'warning');
+                return;
+            }
+
+            const supplier = {
+                name: name,
+                phone: document.getElementById('supplierPhone').value.trim(),
+                material: document.getElementById('supplierMaterial').value.trim(),
+                balance: parseInt(document.getElementById('supplierBalance').value) || 0
+            };
+
+            showLoading();
+            try {
+                await db.collection('suppliers').add(supplier);
+                showNotification('Supplier added!');
+                document.getElementById('supplierName').value = '';
+                document.getElementById('supplierPhone').value = '';
+                document.getElementById('supplierMaterial').value = '';
+                document.getElementById('supplierBalance').value = '';
+                loadSuppliers();
+            } catch (error) {
+                showNotification('Error!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Pay Supplier
+        async function paySupplier(supplierId) {
+            const amount = prompt('Enter payment amount:');
+            if (!amount) return;
+
+            const supplier = suppliers.find(s => s.id === supplierId);
+            if (!supplier) return;
+
+            showLoading();
+            try {
+                const newBalance = (supplier.balance || 0) - parseInt(amount);
+                await db.collection('suppliers').doc(supplierId).update({ balance: newBalance });
+                showNotification('Payment recorded!');
+                loadSuppliers();
+            } catch (error) {
+                showNotification('Error!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Delete Supplier
+        async function deleteSupplier(supplierId) {
+            if (!confirm('Delete this supplier?')) return;
+            showLoading();
+            try {
+                await db.collection('suppliers').doc(supplierId).delete();
+                showNotification('Deleted!');
+                loadSuppliers();
+            } catch (error) {
+                showNotification('Error!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Load Expenses
+        function loadExpenses() {
+            if (!db) return;
+            db.collection('expenses').orderBy('date', 'desc').get()
+                .then(snapshot => {
+                    expenses = [];
+                    snapshot.forEach(doc => expenses.push({ id: doc.id, ...doc.data() }));
+                    displayExpenses();
+                    updateExpenseStats();
+                });
+        }
+
+        // Display Expenses
+        function displayExpenses() {
+            const container = document.getElementById('expensesList');
+            container.innerHTML = '';
+
+            if (expenses.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--secondary);"><i class="fas fa-receipt" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></i><br>No expenses yet</div>';
+                return;
+            }
+
+            expenses.slice(0, 10).forEach(expense => {
+                container.innerHTML += `
+                    <div class="expense-card">
+                        <div class="expense-header">
+                            <div class="expense-icon"><i class="fas ${getExpenseIcon(expense.category)}"></i></div>
+                            <div class="expense-details">
+                                <h4>${expense.category}</h4>
+                                <p>${expense.description || '-'}</p>
+                            </div>
+                            <div class="expense-amount">Rs. ${(expense.amount || 0).toLocaleString()}</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--secondary);">
+                            <span><i class="fas fa-calendar"></i> ${expense.date || 'N/A'}</span>
+                            <span class="delete-stock" onclick="deleteExpense('${expense.id}')" style="position: relative; top: 0; right: 0;"><i class="fas fa-trash"></i></span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function getExpenseIcon(category) {
+            const icons = {
+                'Electricity': 'fa-bolt',
+                'Salary': 'fa-users',
+                'Material': 'fa-cubes',
+                'Rent': 'fa-building',
+                'Other': 'fa-circle'
+            };
+            return icons[category] || 'fa-receipt';
+        }
+
+        // Add Expense
+        async function addExpense() {
+            const amount = document.getElementById('expenseAmount').value;
+            if (!amount) {
+                showNotification('Enter amount!', 'warning');
+                return;
+            }
+
+            const expense = {
+                category: document.getElementById('expenseCategory').value,
+                description: document.getElementById('expenseDesc').value.trim(),
+                amount: parseInt(amount),
+                date: document.getElementById('expenseDate').value || new Date().toISOString().split('T')[0]
+            };
+
+            showLoading();
+            try {
+                await db.collection('expenses').add(expense);
+                showNotification('Expense added!');
+                document.getElementById('expenseDesc').value = '';
+                document.getElementById('expenseAmount').value = '';
+                loadExpenses();
+            } catch (error) {
+                showNotification('Error!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Delete Expense
+        async function deleteExpense(expenseId) {
+            if (!confirm('Delete this expense?')) return;
+            showLoading();
+            try {
+                await db.collection('expenses').doc(expenseId).delete();
+                showNotification('Deleted!');
+                loadExpenses();
+            } catch (error) {
+                showNotification('Error!', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Update Expense Stats
+        function updateExpenseStats() {
+            const totalExpenses = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+            document.getElementById('totalExpenses').textContent = `Rs. ${totalExpenses.toLocaleString()}`;
+
+            const totalRevenue = allOrders.reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0), 0);
+            const netProfit = totalRevenue - totalExpenses;
+            document.getElementById('netProfit').textContent = `Rs. ${netProfit.toLocaleString()}`;
         }
 
         // Load Stock for Select
@@ -2176,6 +2800,77 @@
             document.getElementById('customerList').innerHTML = customers.map(c => `<option value="${c}">`).join('');
         }
 
+        // Display Customers with History
+        function displayCustomers() {
+            const container = document.getElementById('customersList');
+            const customers = [...new Set(allOrders.map(o => o.customerName).filter(Boolean))];
+            
+            if (customers.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--secondary);"><i class="fas fa-users" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></i><br>No customers yet</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            customers.forEach(customer => {
+                const customerOrders = allOrders.filter(o => o.customerName === customer);
+                const totalSpent = customerOrders.reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0), 0);
+                const lastOrder = customerOrders[0]?.timestamp?.toDate?.() || new Date();
+
+                container.innerHTML += `
+                    <div class="customer-card">
+                        <div class="customer-header" onclick="showCustomerHistory('${customer}')">
+                            <h4><i class="fas fa-user-circle"></i> ${customer}</h4>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--secondary);">
+                            <span><i class="fas fa-shopping-bag"></i> ${customerOrders.length} orders</span>
+                            <span><i class="fas fa-rupee-sign"></i> Rs. ${totalSpent.toLocaleString()}</span>
+                            <span><i class="fas fa-clock"></i> ${lastOrder.toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Filter Customers
+        function filterCustomers() {
+            const searchTerm = document.getElementById('searchCustomer').value.toLowerCase();
+            const customerCards = document.querySelectorAll('.customer-card');
+            
+            customerCards.forEach(card => {
+                const name = card.querySelector('h4').textContent.toLowerCase();
+                card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // Show Customer History
+        function showCustomerHistory(customerName) {
+            const customerOrders = allOrders.filter(o => o.customerName === customerName);
+            document.getElementById('customerHistoryName').textContent = `${customerName}'s Orders`;
+            
+            let historyHTML = '';
+            customerOrders.forEach(order => {
+                const date = order.timestamp?.toDate ? order.timestamp.toDate().toLocaleDateString() : 'N/A';
+                const status = order.status || 'Pending';
+                const paid = order.paymentStatus === 'Paid' ? order.amount : order.advanceAmount || 0;
+                
+                historyHTML += `
+                    <div class="customer-order-item">
+                        <span><i class="fas fa-file"></i> ${order.fileDesc || '-'}</span>
+                        <span>Rs. ${order.amount}</span>
+                        <span class="status-badge status-${status.toLowerCase()}">${status}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('customerHistoryList').innerHTML = historyHTML;
+            document.getElementById('customerHistoryModal').classList.add('active');
+        }
+
+        function closeCustomerHistory() {
+            document.getElementById('customerHistoryModal').classList.remove('active');
+        }
+
         // Generate Bill
         function generateBill() {
             const customer = document.getElementById('billCustomer').value.trim();
@@ -2265,11 +2960,13 @@
             const shopAddress = localStorage.getItem('shopAddress') || '123 Main Street, Colombo';
             const shopPhone = localStorage.getItem('shopPhone') || '077-1234567';
             const shopEmail = localStorage.getItem('shopEmail') || '3r@gmail.com';
+            const whatsapp = localStorage.getItem('whatsappNumber') || '';
 
             document.getElementById('shopNameInput').value = shopName;
             document.getElementById('shopAddressInput').value = shopAddress;
             document.getElementById('shopPhoneInput').value = shopPhone;
             document.getElementById('shopEmailInput').value = shopEmail;
+            document.getElementById('whatsappNumber').value = whatsapp;
 
             document.getElementById('appNameHeader').textContent = 'InkMaster';
         }
@@ -2283,54 +2980,85 @@
             showNotification('Settings saved!');
         }
 
+        function saveWhatsAppNumber() {
+            localStorage.setItem('whatsappNumber', document.getElementById('whatsappNumber').value);
+            showNotification('WhatsApp number saved!');
+        }
+
         // Reports
         function loadReport(period) {
             const labels = [];
-            const data = [];
+            const revenueData = [];
+            const expenseData = [];
             const now = new Date();
 
             if (period === 'daily') {
                 for (let i = 6; i >= 0; i--) {
                     const d = new Date(now); d.setDate(d.getDate() - i);
                     labels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+                    
                     const dayStart = new Date(d.setHours(0,0,0,0));
                     const dayEnd = new Date(d.setHours(23,59,59,999));
+                    
+                    // Revenue for the day
                     const revenue = allOrders.filter(o => {
                         const date = o.timestamp?.toDate ? o.timestamp.toDate() : new Date();
                         return date >= dayStart && date <= dayEnd;
                     }).reduce((sum, o) => sum + (o.paymentStatus === 'Paid' ? o.amount : o.advanceAmount || 0), 0);
-                    data.push(revenue);
+                    
+                    // Expenses for the day
+                    const expense = expenses.filter(e => {
+                        const expDate = new Date(e.date);
+                        return expDate >= dayStart && expDate <= dayEnd;
+                    }).reduce((sum, e) => sum + (e.amount || 0), 0);
+                    
+                    revenueData.push(revenue);
+                    expenseData.push(expense);
                 }
             }
 
-            updateChart(labels, data);
+            updateChart(labels, revenueData, expenseData);
         }
 
-        function updateChart(labels, data) {
+        function updateChart(labels, revenueData, expenseData) {
             const ctx = document.getElementById('reportChart').getContext('2d');
             if (reportChart) reportChart.destroy();
             reportChart = new Chart(ctx, {
                 type: 'line',
                 data: { 
                     labels, 
-                    datasets: [{ 
-                        label: 'Revenue', 
-                        data, 
-                        borderColor: '#2563eb', 
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)', 
-                        tension: 0.4, 
-                        fill: true,
-                        pointBackgroundColor: '#2563eb',
-                        pointBorderColor: 'white',
-                        pointBorderWidth: 2,
-                        pointRadius: 4
-                    }] 
+                    datasets: [
+                        { 
+                            label: 'Revenue', 
+                            data: revenueData, 
+                            borderColor: '#2563eb', 
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)', 
+                            tension: 0.4, 
+                            fill: true,
+                            pointBackgroundColor: '#2563eb',
+                            pointBorderColor: 'white',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        { 
+                            label: 'Expenses', 
+                            data: expenseData, 
+                            borderColor: '#ef4444', 
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)', 
+                            tension: 0.4, 
+                            fill: true,
+                            pointBackgroundColor: '#ef4444',
+                            pointBorderColor: 'white',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }
+                    ] 
                 },
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
                     plugins: { 
-                        legend: { display: false } 
+                        legend: { display: true, position: 'top' } 
                     },
                     scales: {
                         y: {
